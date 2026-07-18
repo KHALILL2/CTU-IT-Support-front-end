@@ -1,0 +1,16 @@
+# Development OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (if added later)
+node_modules/
+.npm/
+
+# VS Code environment (optional, some prefer to ignore this)
+.vscode/
+
+# Build folders (if added later)
+dist/
+build/
+.cache/

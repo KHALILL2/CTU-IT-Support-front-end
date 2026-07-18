@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — CTU Support</title>
+  <meta name="description" content="Sign in to your CTU Support dashboard.">
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="auth-section page-transition">
+    <div class="auth-container">
+      <!-- Left: Decorative -->
+      <div class="auth-visual">
+        <div class="auth-visual-content">
+          <div class="auth-visual-orb orb-1"></div>
+          <div class="auth-visual-orb orb-2"></div>
+          <div class="auth-visual-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h2>CTU Support</h2>
+          <p>Your one-stop technical support platform for Children's Technological University.</p>
+          <div class="auth-visual-features">
+            <div class="auth-feature"><i class="fas fa-check-circle"></i> <span>Track your reports in real-time</span></div>
+            <div class="auth-feature"><i class="fas fa-check-circle"></i> <span>Connect with support engineers</span></div>
+            <div class="auth-feature"><i class="fas fa-check-circle"></i> <span>Manage attendance & profile</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="auth-form-wrapper">
+        <div class="auth-form-card reveal">
+          <div class="auth-form-header">
+            <h2 data-i18n="login.title">Welcome Back</h2>
+            <p data-i18n="login.subtitle">Sign in to access your dashboard</p>
+          </div>
+
+          <form id="login-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" data-i18n="login.email">Email Address</label>
+              <div class="input-icon-wrapper">
+                <i class="fas fa-envelope"></i>
+                <input type="email" class="form-input" id="login-email" required aria-required="true" placeholder="student@ctu.edu.eg">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" data-i18n="login.password">Password</label>
+              <div class="input-icon-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" class="form-input" id="login-password" required aria-required="true" placeholder="••••••••">
+                <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)" aria-label="Toggle password visibility">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg ripple" style="width:100%" data-i18n="login.btn">
+              <i class="fas fa-right-to-bracket"></i> Sign In
+            </button>
+          </form>
+
+          <div class="auth-switch">
+            <span data-i18n="login.signup">Don't have an account?</span>
+            <a href="signup.html" data-i18n="login.signup.link">Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    document.getElementById('login-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email');
+      const password = document.getElementById('login-password');
+      let valid = true;
+
+      [email, password].forEach(field => {
+        field.classList.remove('shake');
+        if (!field.value.trim()) {
+          field.classList.add('shake');
+          field.closest('.input-icon-wrapper').style.borderColor = 'var(--danger-500)';
+          valid = false;
+          setTimeout(() => {
+            field.classList.remove('shake');
+            field.closest('.input-icon-wrapper').style.borderColor = '';
+          }, 600);
+        }
+      });
+
+      if (!valid) return;
+
+      // Simulate login — redirect to student dashboard
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + t('common.loading');
+      btn.disabled = true;
+
+      setTimeout(() => {
+        localStorage.setItem('ctu_auth_token', 'mock_token_123');
+        if (email.value.toLowerCase().includes('admin')) {
+          window.location.href = 'admin/dashboard.html';
+        } else {
+          window.location.href = 'student/dashboard.html';
+        }
+      }, 1200);
+    });
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+  </script>
+
+  <style>
+    .auth-section {
+      min-height: calc(100vh - var(--navbar-height));
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-container {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      min-height: calc(100vh - var(--navbar-height));
+    }
+
+    /* Visual Side */
+    .auth-visual {
+      flex: 1;
+      background: var(--gradient-hero);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-visual-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      max-width: 380px;
+    }
+
+    .auth-visual-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+    }
+
+    .auth-visual-orb.orb-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary-500);
+      top: -50px;
+      right: -50px;
+      animation: orbFloat 15s ease-in-out infinite;
+    }
+
+    .auth-visual-orb.orb-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--secondary-500);
+      bottom: -30px;
+      left: -30px;
+      animation: orbFloat 12s ease-in-out infinite reverse;
+    }
+
+    .auth-visual-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-visual h2 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .auth-visual p {
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .auth-visual-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .auth-feature i {
+      color: var(--secondary-400);
+    }
+
+    /* Form Side */
+    .auth-form-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--bg-primary);
+    }
+
+    .auth-form-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .auth-form-header {
+      margin-bottom: 2rem;
+    }
+
+    .auth-form-header h2 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-form-header p {
+      color: var(--text-tertiary);
+    }
+
+    /* Input with icon */
+    .input-icon-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-base);
+    }
+
+    .input-icon-wrapper:focus-within {
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      background: var(--bg-primary);
+    }
+
+    .input-icon-wrapper > i {
+      padding-left: 1rem;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+
+    [dir="rtl"] .input-icon-wrapper > i {
+      padding-left: 0;
+      padding-right: 1rem;
+    }
+
+    .input-icon-wrapper .form-input {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      padding-left: 0.75rem;
+    }
+
+    .input-icon-wrapper .form-input:focus {
+      box-shadow: none;
+    }
+
+    .password-toggle {
+      background: none;
+      border: none;
+      padding: 0 1rem;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: color var(--transition-fast);
+    }
+
+    .password-toggle:hover {
+      color: var(--primary-500);
+    }
+
+    .auth-switch {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-tertiary);
+    }
+
+    .auth-switch a {
+      font-weight: 600;
+      color: var(--primary-500);
+      margin-left: 0.25rem;
+    }
+
+    [dir="rtl"] .auth-switch a {
+      margin-left: 0;
+      margin-right: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .auth-container {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .auth-visual {
+        padding: 2rem;
+        min-height: 250px;
+      }
+
+      .auth-visual-features {
+        display: none;
+      }
+    }
+  </style>
+</body>
+</html>

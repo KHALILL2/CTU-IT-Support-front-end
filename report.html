@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report a Problem — CTU Support</title>
+  <meta name="description" content="Submit a technical support ticket to the CTU Support team.">
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div id="navbar-placeholder"></div>
+
+  <section class="section page-transition">
+    <div class="container">
+      <div class="report-layout">
+        <!-- Report Form -->
+        <div class="report-form-wrapper reveal">
+          <div class="card-glass report-card">
+            <div class="report-card-header">
+              <div class="report-card-icon">
+                <i class="fas fa-bug"></i>
+              </div>
+              <div>
+                <h2 data-i18n="report.title">Report a Problem</h2>
+                <p data-i18n="report.subtitle">Fill in the details below and our team will respond promptly.</p>
+              </div>
+            </div>
+
+            <form id="report-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" data-i18n="report.name">Full Name</label>
+                <input type="text" class="form-input" id="report-name" required aria-required="true" data-i18n-placeholder="report.name">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" data-i18n="report.phone">Phone Number</label>
+                <input type="tel" class="form-input" id="report-phone" required aria-required="true" pattern="^01[0-9]{9}$" placeholder="01XXXXXXXXX">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" data-i18n="report.location">Location</label>
+                <select class="form-select" id="report-location" required aria-required="true">
+                  <option value="" data-i18n="report.location.placeholder">Select location...</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" data-i18n="report.problem">Problem Description</label>
+                <textarea class="form-textarea" id="report-problem" required aria-required="true" rows="5" data-i18n-placeholder="report.problem.placeholder"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg ripple" style="width:100%" data-i18n="report.submit">
+                <i class="fas fa-paper-plane"></i> Submit Report
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Engineers Sidebar -->
+        <div class="engineers-sidebar reveal-right">
+          <h3 data-i18n="report.engineers.title">Available Engineers</h3>
+          <p class="text-muted mb-3" data-i18n="report.engineers.subtitle" style="font-size:0.9rem">Contact our support team directly if needed.</p>
+          <div class="engineers-list" id="engineers-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal" style="text-align:center">
+      <button class="modal-close" onclick="closeSuccessModal()">×</button>
+      <div class="success-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3 data-i18n="report.success.title">Report Submitted!</h3>
+      <p class="mt-2" data-i18n="report.success.msg">Your report has been received successfully. Our team will review it shortly.</p>
+      <button class="btn btn-primary mt-3" onclick="closeSuccessModal()" data-i18n="common.close">Close</button>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      populateLocations();
+      renderEngineers();
+      initReportForm();
+    });
+
+    window.addEventListener('languageChanged', () => {
+      populateLocations();
+      renderEngineers();
+    });
+
+    function populateLocations() {
+      const select = document.getElementById('report-location');
+      if (!select) return;
+      const currentVal = select.value;
+      // Keep the first option (placeholder)
+      select.innerHTML = `<option value="" data-i18n="report.location.placeholder">${t('report.location.placeholder')}</option>`;
+      CTU_DATA.locations.forEach(loc => {
+        const opt = document.createElement('option');
+        opt.value = loc.value;
+        opt.textContent = getLocalized(loc, 'label');
+        select.appendChild(opt);
+      });
+      if (currentVal) select.value = currentVal;
+    }
+
+    function renderEngineers() {
+      const list = document.getElementById('engineers-list');
+      if (!list) return;
+      list.innerHTML = CTU_DATA.teamMembers.map(member => `
+        <div class="engineer-card">
+          <img src="${member.image}" alt="${getLocalized(member, 'name')}" loading="lazy">
+          <div class="engineer-card-info">
+            <h5>${getLocalized(member, 'name')}</h5>
+            <span>${member.phone}</span>
+          </div>
+          <button class="copy-btn" onclick="copyToClipboard('${member.phone}', this)" data-i18n="report.copy">
+            <i class="fas fa-copy"></i> ${t('report.copy')}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function initReportForm() {
+      const form = document.getElementById('report-form');
+      if (!form) return;
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Validate
+        const name = document.getElementById('report-name');
+        const phone = document.getElementById('report-phone');
+        const location = document.getElementById('report-location');
+        const problem = document.getElementById('report-problem');
+
+        let valid = true;
+
+        [name, phone, location, problem].forEach(field => {
+          field.classList.remove('shake');
+          if (!field.value.trim()) {
+            field.classList.add('shake');
+            field.style.borderColor = 'var(--danger-500)';
+            valid = false;
+            setTimeout(() => {
+              field.classList.remove('shake');
+              field.style.borderColor = '';
+            }, 600);
+          }
+        });
+
+        // Phone format validation
+        if (phone.value && !/^01[0-9]{9}$/.test(phone.value.trim())) {
+          phone.classList.add('shake');
+          phone.style.borderColor = 'var(--danger-500)';
+          valid = false;
+          setTimeout(() => {
+            phone.classList.remove('shake');
+            phone.style.borderColor = '';
+          }, 600);
+        }
+
+        if (!valid) return;
+
+        // Show success modal
+        document.getElementById('success-modal').classList.add('active');
+        form.reset();
+      });
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('success-modal').classList.remove('active');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('success-modal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeSuccessModal();
+    });
+  </script>
+
+  <style>
+    .report-layout {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .report-card {
+      padding: 2.5rem;
+    }
+
+    .report-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .report-card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      background: rgba(99, 102, 241, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--primary-500);
+      flex-shrink: 0;
+    }
+
+    .report-card-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .report-card-header p {
+      font-size: 0.9rem;
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+
+    .engineers-sidebar h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .engineers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .report-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .report-card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Information — CTU Support</title>
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <script>
+    if (!localStorage.getItem('ctu_auth_token')) {
+      window.location.href = '../login.html';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen"><div class="loading-spinner"></div><p data-i18n="common.loading">Loading...</p></div>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header"><div class="sidebar-logo">C</div><div><h4 data-i18n="nav.brand">CTU Support</h4><span>Student Panel</span></div></div>
+      <nav class="sidebar-nav"><div class="sidebar-nav-section"><div class="sidebar-nav-section-title" data-i18n="dash.sidebar.general">General</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i><span data-i18n="dash.sidebar.dashboard">Dashboard</span></a>
+        <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i><span data-i18n="dash.sidebar.profile">Profile</span></a>
+        <a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i><span data-i18n="dash.sidebar.attendance">Attendance</span></a>
+        <a href="information.html" class="sidebar-link active"><i class="fas fa-chart-pie"></i><span data-i18n="dash.sidebar.information">Information</span></a>
+      </div></nav>
+      <div class="sidebar-footer">
+        <a href="../index.html" class="sidebar-link" style="color:var(--danger-500)" onclick="localStorage.removeItem('ctu_auth_token')"><i class="fas fa-right-from-bracket"></i><span data-i18n="dash.sidebar.logout">Logout</span></a>
+        <div class="sidebar-user"><div class="sidebar-user-avatar"><img src="" alt="" id="sidebar-avatar"></div><div class="sidebar-user-info"><h5 id="sidebar-name"></h5><span id="sidebar-role"></span></div></div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+          <h2 data-i18n="info.title">Statistics & Analytics</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon primary"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-card-info"><h3 id="stat-att">0</h3><p data-i18n="info.total.att">Total Attendance</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon success"><i class="fas fa-check-double"></i></div>
+            <div class="stat-card-info"><h3 id="stat-completed">0</h3><p data-i18n="info.completed">Completed Tasks</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon warning"><i class="fas fa-hourglass-half"></i></div>
+            <div class="stat-card-info"><h3 id="stat-pending">0</h3><p data-i18n="info.pending">Pending Tasks</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon teal"><i class="fas fa-percentage"></i></div>
+            <div class="stat-card-info"><h3 id="stat-rate">0%</h3><p data-i18n="info.rate">Completion Rate</p></div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+          <div class="chart-card reveal">
+            <h4 data-i18n="info.chart.tasks">Task Completion</h4>
+            <canvas id="chart-tasks"></canvas>
+          </div>
+          <div class="chart-card reveal">
+            <h4 data-i18n="info.chart.attendance">Weekly Attendance</h4>
+            <canvas id="chart-attendance"></canvas>
+          </div>
+        </div>
+        <div class="charts-grid">
+          <div class="chart-card reveal" style="grid-column: 1 / -1">
+            <h4 data-i18n="info.chart.activity">Activity Timeline</h4>
+            <canvas id="chart-activity"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    let charts = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSidebar();
+      document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+      document.getElementById('lang-toggle')?.addEventListener('click', toggleLanguage);
+      loadUserInfo();
+      renderStats();
+      renderCharts();
+    });
+
+    window.addEventListener('themeChanged', renderCharts);
+    window.addEventListener('languageChanged', () => { loadUserInfo(); renderCharts(); });
+
+    function loadUserInfo() {
+      const user = CTU_DATA.currentUser;
+      document.getElementById('sidebar-avatar').src = user.image;
+      document.getElementById('sidebar-name').textContent = getLocalized(user, 'name');
+      document.getElementById('sidebar-role').textContent = getLocalized(user, 'department');
+    }
+
+    function renderStats() {
+      const user = CTU_DATA.currentUser;
+      const student = CTU_DATA.students.find(s => s.id === user.id);
+      if (!student) return;
+
+      const completed = student.tasks;
+      const totalTasks = student.tasks + 5; // pending tasks
+      const pending = totalTasks - completed;
+      const rate = Math.round((completed / totalTasks) * 100);
+
+      animateCounter(document.getElementById('stat-att'), student.attendance, 1000);
+      animateCounter(document.getElementById('stat-completed'), completed, 1000);
+      animateCounter(document.getElementById('stat-pending'), pending, 1000);
+      
+      const rateEl = document.getElementById('stat-rate');
+      let start = 0;
+      const duration = 1000;
+      const startTime = performance.now();
+      function update(time) {
+        const progress = Math.min((time - startTime) / duration, 1);
+        rateEl.textContent = Math.floor(progress * rate) + '%';
+        if (progress < 1) requestAnimationFrame(update);
+        else rateEl.textContent = rate + '%';
+      }
+      requestAnimationFrame(update);
+    }
+
+    function getChartColors() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      return {
+        text: isDark ? '#D1D5DB' : '#4B5563',
+        grid: isDark ? '#374151' : '#E5E7EB',
+        bg: isDark ? '#1F2937' : '#FFFFFF'
+      };
+    }
+
+    function renderCharts() {
+      // Destroy existing charts
+      charts.forEach(c => c.destroy());
+      charts = [];
+
+      const colors = getChartColors();
+      Chart.defaults.color = colors.text;
+
+      // Doughnut — Task Completion
+      const user = CTU_DATA.students.find(s => s.id === CTU_DATA.currentUser.id);
+      const completed = user?.tasks || 0;
+      const pending = 5;
+
+      charts.push(new Chart(document.getElementById('chart-tasks'), {
+        type: 'doughnut',
+        data: {
+          labels: [t('info.completed'), t('info.pending')],
+          datasets: [{
+            data: [completed, pending],
+            backgroundColor: ['#22C55E', '#F59E0B'],
+            borderWidth: 0,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          cutout: '70%',
+          plugins: {
+            legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 12 } }
+          }
+        }
+      }));
+
+      // Bar — Weekly Attendance
+      charts.push(new Chart(document.getElementById('chart-attendance'), {
+        type: 'bar',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3'],
+          datasets: [{
+            label: t('att.days'),
+            data: [4, 5, 3],
+            backgroundColor: 'rgba(99, 102, 241, 0.7)',
+            borderRadius: 8,
+            borderSkipped: false,
+            barThickness: 36
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: colors.grid }, ticks: { stepSize: 1 } },
+            x: { grid: { display: false } }
+          }
+        }
+      }));
+
+      // Line — Activity Timeline
+      charts.push(new Chart(document.getElementById('chart-activity'), {
+        type: 'line',
+        data: {
+          labels: ['Jul 1', 'Jul 3', 'Jul 6', 'Jul 8', 'Jul 10', 'Jul 13', 'Jul 15', 'Jul 17', 'Jul 18'],
+          datasets: [
+            {
+              label: t('info.completed'),
+              data: [1, 2, 4, 5, 6, 8, 9, 11, 12],
+              borderColor: '#22C55E',
+              backgroundColor: 'rgba(34, 197, 94, 0.1)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6
+            },
+            {
+              label: t('att.days'),
+              data: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+              borderColor: '#6366F1',
+              backgroundColor: 'rgba(99, 102, 241, 0.1)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 12 } }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: colors.grid } },
+            x: { grid: { display: false } }
+          }
+        }
+      }));
+    }
+  </script>
+</body>
+</html>

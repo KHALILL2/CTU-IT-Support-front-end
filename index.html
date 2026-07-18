@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CTU Support — Technical Support Hub</title>
+  <meta name="description" content="CTU Support Team — Professional IT support for Children's Technological University at Borg El Arab Technological University.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- ============ HERO SECTION ============ -->
+  <section class="hero hero-bg-animated" id="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="particle-grid"></div>
+    
+    <div class="container hero-content">
+      <div class="hero-badge reveal">
+        <i class="fas fa-shield-halved"></i>
+        <span>Technical Support Hub</span>
+      </div>
+      <h1 class="reveal" data-i18n="hero.title">CTU Support Team</h1>
+      <p class="hero-subtitle reveal" data-i18n="hero.subtitle">Professional IT support for Children's Technological University. We keep your technology running smoothly so you can focus on learning.</p>
+      <div class="hero-actions reveal">
+        <a href="report.html" class="btn btn-primary btn-lg ripple" data-i18n="hero.cta">Submit a Report</a>
+        <a href="#about-team" class="btn btn-secondary btn-lg" data-i18n="hero.secondary">Learn More</a>
+      </div>
+      
+      <!-- Hero Stats -->
+      <div class="hero-stats reveal">
+        <div class="hero-stat">
+          <span class="hero-stat-number" id="stat-resolved">150</span>
+          <span class="hero-stat-label">Issues Resolved</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" id="stat-engineers">6</span>
+          <span class="hero-stat-label">Engineers</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" id="stat-response">&lt;2h</span>
+          <span class="hero-stat-label">Response Time</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT TEAM SECTION ============ -->
+  <section class="section" id="about-team">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2 data-i18n="team.title">Meet Our Team</h2>
+        <p data-i18n="team.subtitle">Professional engineers and specialists dedicated to solving your technical challenges.</p>
+      </div>
+
+      <div class="grid grid-3" id="team-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT UNIVERSITIES SECTION ============ -->
+  <section class="section section-alt" id="about-universities">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2 data-i18n="uni.title">About Our Universities</h2>
+        <p data-i18n="uni.subtitle">Learn about the institutions that make CTU possible.</p>
+      </div>
+
+      <div class="uni-content">
+        <!-- CTU -->
+        <div class="uni-block reveal-left">
+          <div class="uni-text">
+            <h3 id="ctu-name"></h3>
+            <p id="ctu-desc"></p>
+          </div>
+          <div class="uni-icon-block">
+            <div class="uni-icon-circle">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- BATU -->
+        <div class="uni-block reverse reveal-right">
+          <div class="uni-icon-block">
+            <div class="uni-icon-circle batu">
+              <i class="fas fa-university"></i>
+            </div>
+          </div>
+          <div class="uni-text">
+            <h3 id="batu-name"></h3>
+            <p id="batu-desc"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Gallery -->
+      <div class="gallery-section reveal">
+        <h3 class="mb-3" data-i18n="uni.gallery">Campus Gallery</h3>
+        <div class="gallery-grid" id="campus-gallery">
+          <!-- 6 generated gallery images -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FACULTIES SECTION ============ -->
+  <section class="section" id="faculties">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2 data-i18n="fac.title">Our Faculties</h2>
+        <p data-i18n="fac.subtitle">Explore the academic departments that drive innovation.</p>
+      </div>
+
+      <div class="grid grid-2" id="faculties-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS SECTION ============ -->
+  <section class="section section-alt" id="how-it-works">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2 data-i18n="how.title">How It Works</h2>
+        <p data-i18n="how.subtitle">Reporting a technical problem is simple and straightforward.</p>
+      </div>
+
+      <div class="steps-container reveal">
+        <div class="step">
+          <div class="step-icon"><i class="fas fa-pen-to-square"></i></div>
+          <div class="step-connector"></div>
+          <h4 data-i18n="how.step1.title">Submit Report</h4>
+          <p data-i18n="how.step1.desc">Fill out the problem report form with details about your issue.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon"><i class="fas fa-magnifying-glass"></i></div>
+          <div class="step-connector"></div>
+          <h4 data-i18n="how.step2.title">Team Reviews</h4>
+          <p data-i18n="how.step2.desc">Our support team reviews and prioritizes your report.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon"><i class="fas fa-wrench"></i></div>
+          <div class="step-connector"></div>
+          <h4 data-i18n="how.step3.title">Engineer Assigned</h4>
+          <p data-i18n="how.step3.desc">A qualified engineer is assigned to resolve your problem.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon"><i class="fas fa-circle-check"></i></div>
+          <h4 data-i18n="how.step4.title">Problem Resolved</h4>
+          <p data-i18n="how.step4.desc">Your issue is fixed and confirmed. You'll be notified!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA SECTION ============ -->
+  <section class="cta-section" id="cta">
+    <div class="cta-bg-animated">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+    </div>
+    <div class="container cta-content reveal">
+      <h2 data-i18n="cta.title">Having a Technical Issue?</h2>
+      <p data-i18n="cta.subtitle">Don't let technical problems slow you down. Submit a report and our team will handle it.</p>
+      <a href="report.html" class="btn btn-primary btn-lg ripple" data-i18n="cta.btn">Report Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    /* ==============================
+       INDEX PAGE — Dynamic Rendering
+       ============================== */
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTeam();
+      renderUniversities();
+      renderGallery();
+      renderFaculties();
+      initHeroCounters();
+    });
+
+    // Re-render on language change
+    window.addEventListener('languageChanged', () => {
+      renderTeam();
+      renderUniversities();
+      renderFaculties();
+    });
+
+    /* === Team Section === */
+    function renderTeam() {
+      const grid = document.getElementById('team-grid');
+      if (!grid) return;
+
+      grid.innerHTML = CTU_DATA.teamMembers.map((member, i) => `
+        <div class="team-card reveal stagger-${i + 1}">
+          <div class="team-card-avatar">
+            <img src="${member.image}" alt="${getLocalized(member, 'name')}" loading="lazy">
+          </div>
+          <h4>${getLocalized(member, 'name')}</h4>
+          <span class="role">${getLocalized(member, 'role')}</span>
+          <p class="text-muted mt-1" style="font-size:0.85rem">${getLocalized(member, 'department')}</p>
+        </div>
+      `).join('');
+
+      // Re-observe new elements for scroll reveal
+      initScrollReveal();
+    }
+
+    /* === Universities Section === */
+    function renderUniversities() {
+      const ctuName = document.getElementById('ctu-name');
+      const ctuDesc = document.getElementById('ctu-desc');
+      const batuName = document.getElementById('batu-name');
+      const batuDesc = document.getElementById('batu-desc');
+
+      if (ctuName) ctuName.textContent = getLocalized(CTU_DATA.universities.ctu, 'name');
+      if (ctuDesc) ctuDesc.textContent = getLocalized(CTU_DATA.universities.ctu, 'description');
+      if (batuName) batuName.textContent = getLocalized(CTU_DATA.universities.batu, 'name');
+      if (batuDesc) batuDesc.textContent = getLocalized(CTU_DATA.universities.batu, 'description');
+    }
+
+    /* === Gallery Section === */
+    function renderGallery() {
+      const gallery = document.getElementById('campus-gallery');
+      if (!gallery) return;
+
+      const galleryImages = [
+        { color: '4F46E5', label: 'Main Building' },
+        { color: '7C3AED', label: 'Computer Lab' },
+        { color: '14B8A6', label: 'Library' },
+        { color: '6366F1', label: 'Workshop' },
+        { color: '8B5CF6', label: 'Lecture Hall' },
+        { color: '0D9488', label: 'Campus View' }
+      ];
+
+      gallery.innerHTML = galleryImages.map(img => `
+        <div class="gallery-item img-zoom">
+          <img src="https://ui-avatars.com/api/?name=${img.label.replace(' ', '+')}&size=400&background=${img.color}&color=fff&bold=true&format=svg" 
+               alt="${img.label}" loading="lazy">
+        </div>
+      `).join('');
+    }
+
+    /* === Faculties Section === */
+    function renderFaculties() {
+      const grid = document.getElementById('faculties-grid');
+      if (!grid) return;
+
+      grid.innerHTML = CTU_DATA.faculties.map((fac, i) => `
+        <div class="feature-card reveal stagger-${i + 1}">
+          <div class="feature-card-icon">
+            <i class="${fac.icon}"></i>
+          </div>
+          <h3>${getLocalized(fac, 'name')}</h3>
+          <p>${getLocalized(fac, 'description')}</p>
+        </div>
+      `).join('');
+
+      initScrollReveal();
+    }
+
+    /* === Hero Counter Animation === */
+    function initHeroCounters() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.textContent) || 0;
+            if (target > 0) {
+              animateCounter(el, target, 1500);
+            }
+            observer.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      document.querySelectorAll('.hero-stat-number').forEach(el => {
+        const num = parseInt(el.textContent);
+        if (!isNaN(num)) {
+          observer.observe(el);
+        }
+      });
+    }
+  </script>
+
+  <style>
+    /* === Hero Section Styles === */
+    .hero {
+      min-height: calc(100vh - var(--navbar-height));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      background: var(--bg-primary);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .hero {
+      background: var(--bg-primary);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-500);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+      line-height: 1.1;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: inline-flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.25rem 2.5rem;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-number {
+      display: block;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--primary-500);
+      line-height: 1.2;
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    .hero-stat-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--border-default);
+    }
+
+    @media (max-width: 640px) {
+      .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+      }
+
+      .hero-stat-divider {
+        width: 60px;
+        height: 1px;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+    }
+
+    /* === Section Alt Background === */
+    .section-alt {
+      background: var(--bg-secondary);
+    }
+
+    /* === University Blocks === */
+    .uni-content {
+      margin-bottom: 3rem;
+    }
+
+    .uni-block {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      padding: 2rem 0;
+    }
+
+    .uni-block.reverse {
+      flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .uni-block.reverse {
+      flex-direction: row;
+    }
+
+    .uni-text {
+      flex: 1;
+    }
+
+    .uni-text h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .uni-text p {
+      line-height: 1.8;
+    }
+
+    .uni-icon-block {
+      flex-shrink: 0;
+    }
+
+    .uni-icon-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--primary-500);
+    }
+
+    .uni-icon-circle.batu {
+      background: rgba(20, 184, 166, 0.1);
+      color: var(--secondary-500);
+    }
+
+    @media (max-width: 768px) {
+      .uni-block,
+      .uni-block.reverse {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .uni-icon-circle {
+        width: 90px;
+        height: 90px;
+        font-size: 2rem;
+      }
+    }
+
+    /* === Gallery Section === */
+    .gallery-section {
+      margin-top: 2rem;
+    }
+
+    /* === CTA Section === */
+    .cta-section {
+      position: relative;
+      padding: 5rem 0;
+      background: var(--gradient-hero);
+      overflow: hidden;
+    }
+
+    .cta-bg-animated {
+      position: absolute;
+      inset: 0;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .cta-content h2 {
+      color: white;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      max-width: 550px;
+      margin: 0 auto 2rem;
+    }
+  </style>
+</body>
+</html>

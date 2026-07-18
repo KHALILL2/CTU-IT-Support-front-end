@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics — CTU Support Admin</title>
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <script>
+    if (!localStorage.getItem('ctu_auth_token')) {
+      window.location.href = '../login.html';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen"><div class="loading-spinner"></div><p data-i18n="common.loading">Loading...</p></div>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header"><div class="sidebar-logo" style="background:linear-gradient(135deg,#DC2626,#F59E0B)">A</div><div><h4 data-i18n="nav.brand">CTU Support</h4><span>Admin Panel</span></div></div>
+      <nav class="sidebar-nav"><div class="sidebar-nav-section"><div class="sidebar-nav-section-title" data-i18n="dash.sidebar.management">Management</div>
+        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i><span data-i18n="dash.sidebar.dashboard">Dashboard</span></a>
+        <a href="students.html" class="sidebar-link"><i class="fas fa-users"></i><span data-i18n="dash.sidebar.students">Students</span></a>
+        <a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i><span data-i18n="dash.sidebar.attendance">Attendance</span></a>
+        <a href="information.html" class="sidebar-link active"><i class="fas fa-chart-bar"></i><span data-i18n="dash.sidebar.information">Information</span></a>
+      </div></nav>
+      <div class="sidebar-footer">
+        <a href="../index.html" class="sidebar-link" style="color:var(--danger-500)" onclick="localStorage.removeItem('ctu_auth_token')"><i class="fas fa-right-from-bracket"></i><span data-i18n="dash.sidebar.logout">Logout</span></a>
+        <div class="sidebar-user"><div class="sidebar-user-avatar"><img src="" alt="" id="sidebar-avatar"></div><div class="sidebar-user-info"><h5 id="sidebar-name"></h5><span id="sidebar-role"></span></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+          <h2 data-i18n="ainfo.title">Global Analytics</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn btn-sm btn-secondary" onclick="showToast('Export feature coming soon!')"><i class="fas fa-download"></i> <span data-i18n="ainfo.export">Export Data</span></button>
+          <button class="btn-icon navbar-action-btn" id="lang-toggle"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        <!-- KPI Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon success"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-card-info"><h3 id="kpi-resolution">0%</h3><p data-i18n="ainfo.resolution">Resolution Rate</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon primary"><i class="fas fa-clock"></i></div>
+            <div class="stat-card-info"><h3 id="kpi-response">~2h</h3><p data-i18n="ainfo.response">Avg Response Time</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon teal"><i class="fas fa-face-smile"></i></div>
+            <div class="stat-card-info"><h3 id="kpi-satisfaction">0%</h3><p data-i18n="ainfo.satisfaction">Satisfaction</p></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon warning"><i class="fas fa-users"></i></div>
+            <div class="stat-card-info"><h3 id="kpi-students">0</h3><p data-i18n="dash.sidebar.students">Students</p></div>
+          </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="charts-grid">
+          <div class="chart-card reveal">
+            <h4 data-i18n="ainfo.chart.category">Reports by Location</h4>
+            <canvas id="chart-location"></canvas>
+          </div>
+          <div class="chart-card reveal">
+            <h4 data-i18n="ainfo.chart.engineer">Reports per Engineer</h4>
+            <canvas id="chart-engineer"></canvas>
+          </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="charts-grid">
+          <div class="chart-card reveal">
+            <h4 data-i18n="ainfo.chart.trend">Reports Over Time</h4>
+            <canvas id="chart-trend"></canvas>
+          </div>
+          <div class="chart-card reveal">
+            <h4 data-i18n="ainfo.chart.health">System Health</h4>
+            <canvas id="chart-health"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script>
+    let charts = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSidebar();
+      document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+      document.getElementById('lang-toggle')?.addEventListener('click', toggleLanguage);
+      loadAdminInfo();
+      renderKPIs();
+      renderCharts();
+    });
+
+    window.addEventListener('themeChanged', renderCharts);
+    window.addEventListener('languageChanged', () => { loadAdminInfo(); renderCharts(); });
+
+    function loadAdminInfo() {
+      const admin = CTU_DATA.currentAdmin;
+      document.getElementById('sidebar-avatar').src = admin.image;
+      document.getElementById('sidebar-name').textContent = getLocalized(admin, 'name');
+      document.getElementById('sidebar-role').textContent = getLocalized(admin, 'role');
+    }
+
+    function renderKPIs() {
+      const reports = CTU_DATA.reports;
+      const resolved = reports.filter(r => r.status === 'done').length;
+      const total = reports.length;
+      const rate = Math.round((resolved / total) * 100);
+
+      // Animate KPIs
+      const rateEl = document.getElementById('kpi-resolution');
+      const satEl = document.getElementById('kpi-satisfaction');
+      const studentsEl = document.getElementById('kpi-students');
+
+      let start = performance.now();
+      function animateKPI(el, target, suffix = '%', duration = 1200) {
+        const s = performance.now();
+        function update(t) {
+          const p = Math.min((t - s) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.floor(eased * target) + suffix;
+          if (p < 1) requestAnimationFrame(update);
+          else el.textContent = target + suffix;
+        }
+        requestAnimationFrame(update);
+      }
+
+      animateKPI(rateEl, rate);
+      animateKPI(satEl, 94);
+      animateCounter(studentsEl, CTU_DATA.students.length, 800);
+    }
+
+    function getChartColors() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      return {
+        text: isDark ? '#D1D5DB' : '#4B5563',
+        grid: isDark ? '#374151' : '#E5E7EB'
+      };
+    }
+
+    function renderCharts() {
+      charts.forEach(c => c.destroy());
+      charts = [];
+      const colors = getChartColors();
+      Chart.defaults.color = colors.text;
+
+      const reports = CTU_DATA.reports;
+
+      // Pie — Reports by Location
+      const locationCounts = {};
+      reports.forEach(r => {
+        const loc = r.location.split(' - ')[0]; // Simplify
+        locationCounts[loc] = (locationCounts[loc] || 0) + 1;
+      });
+      
+      charts.push(new Chart(document.getElementById('chart-location'), {
+        type: 'pie',
+        data: {
+          labels: Object.keys(locationCounts),
+          datasets: [{
+            data: Object.values(locationCounts),
+            backgroundColor: ['#6366F1', '#8B5CF6', '#A78BFA', '#14B8A6', '#22C55E', '#F59E0B', '#EF4444', '#EC4899', '#06B6D4'],
+            borderWidth: 2,
+            borderColor: colors.text === '#D1D5DB' ? '#1F2937' : '#FFFFFF'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'right', labels: { padding: 12, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } } }
+          }
+        }
+      }));
+
+      // Bar — Reports per Engineer (who confirmed)
+      const engineerCounts = {};
+      reports.filter(r => r.confirmedBy).forEach(r => {
+        engineerCounts[r.confirmedBy] = (engineerCounts[r.confirmedBy] || 0) + 1;
+      });
+
+      charts.push(new Chart(document.getElementById('chart-engineer'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(engineerCounts),
+          datasets: [{
+            label: t('admin.resolved'),
+            data: Object.values(engineerCounts),
+            backgroundColor: ['#6366F1', '#8B5CF6', '#14B8A6', '#22C55E', '#F59E0B', '#EC4899'],
+            borderRadius: 8,
+            borderSkipped: false,
+            barThickness: 32
+          }]
+        },
+        options: {
+          responsive: true,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, grid: { color: colors.grid }, ticks: { stepSize: 1 } },
+            y: { grid: { display: false } }
+          }
+        }
+      }));
+
+      // Line — Reports Over Time
+      const dateCounts = {};
+      reports.forEach(r => {
+        dateCounts[r.date] = (dateCounts[r.date] || 0) + 1;
+      });
+      const sortedDates = Object.keys(dateCounts).sort();
+
+      charts.push(new Chart(document.getElementById('chart-trend'), {
+        type: 'line',
+        data: {
+          labels: sortedDates.map(d => {
+            const dt = new Date(d);
+            return `${dt.getMonth()+1}/${dt.getDate()}`;
+          }),
+          datasets: [{
+            label: t('admin.total'),
+            data: sortedDates.map(d => dateCounts[d]),
+            borderColor: '#6366F1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#6366F1'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: colors.grid }, ticks: { stepSize: 1 } },
+            x: { grid: { display: false } }
+          }
+        }
+      }));
+
+      // Radar — System Health
+      charts.push(new Chart(document.getElementById('chart-health'), {
+        type: 'radar',
+        data: {
+          labels: ['Network', 'Hardware', 'Software', 'Security', 'Printing', 'AV Equipment'],
+          datasets: [{
+            label: 'Health Score',
+            data: [85, 78, 92, 88, 70, 82],
+            backgroundColor: 'rgba(99, 102, 241, 0.15)',
+            borderColor: '#6366F1',
+            borderWidth: 2,
+            pointBackgroundColor: '#6366F1',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: colors.grid },
+              angleLines: { color: colors.grid },
+              pointLabels: { font: { size: 11 } },
+              ticks: { stepSize: 20, display: false }
+            }
+          }
+        }
+      }));
+    }
+  </script>
+</body>
+</html>
