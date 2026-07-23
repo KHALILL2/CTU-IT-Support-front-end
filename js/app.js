@@ -356,3 +356,9 @@ function initSidebar() {
     }
   });
 }
+
+// Ensure toggle functions are available globally for inline handlers and module scripts
+window.toggleTheme = toggleTheme;
+if (typeof toggleLanguage !== 'undefined') {
+  window.toggleLanguage = toggleLanguage;
+}

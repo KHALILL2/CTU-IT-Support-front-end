@@ -46,9 +46,5 @@ export async function withSkeleton(container, count, promise) {
   for (let i = 0; i < count; i++) {
     container.appendChild(createSkeleton('row', { rows: 2 }));
   }
-  try {
-    return await promise;
-  } finally {
-    container.innerHTML = original;
-  }
+  return await promise;
 }

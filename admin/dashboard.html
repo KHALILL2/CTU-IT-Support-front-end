@@ -117,11 +117,8 @@
     registerRoutes({
       'overview': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.dashboard') : 'Dashboard';
-        container.innerHTML = `
-          <div style="padding:2rem; text-align:center; color:var(--text-tertiary);">
-            <i class="fas fa-hammer" style="font-size:3rem; margin-bottom:1rem;"></i>
-            <h3>Overview View Under Construction</h3>
-          </div>`;
+        const module = await import('../js/views/admin/overview.js');
+        return await module.render(container);
       },
       'students': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.students') : 'Students';
@@ -135,7 +132,8 @@
       },
       'information': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.information') : 'Information';
-        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Information View Under Construction</h3></div>`;
+        const module = await import('../js/views/admin/information.js');
+        return await module.render(container);
       },
       'meetings': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.meetings') || 'Meetings' : 'Meetings';
@@ -146,6 +144,17 @@
 
     const viewContainer = document.getElementById('view');
     initRouter(viewContainer);
+    
+    // 5. Setup Theme and Language toggles
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn && window.toggleTheme) {
+      themeBtn.addEventListener('click', window.toggleTheme);
+    }
+    
+    const langBtn = document.getElementById('lang-toggle');
+    if (langBtn && window.toggleLanguage) {
+      langBtn.addEventListener('click', window.toggleLanguage);
+    }
   </script>
 </body>
 </html>

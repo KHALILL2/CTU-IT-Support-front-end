@@ -34,8 +34,10 @@ const DASHBOARD_BY_ROLE = {
 export function dashboardPath(role) {
   const relative = DASHBOARD_BY_ROLE[role] ?? DASHBOARD_BY_ROLE.student;
   // If we're in a subdirectory (e.g. /student/, /admin/), prepend ../
-  const depth = window.location.pathname.split('/').filter(Boolean).length;
-  return depth > 1 ? `../${relative}` : relative;
+  const pathParts = window.location.pathname.split('/');
+  const currentFolder = pathParts[pathParts.length - 2];
+  const isSubdir = currentFolder === 'admin' || currentFolder === 'student';
+  return isSubdir ? `../${relative}` : relative;
 }
 
 // ─── Mock JWT Factory ─────────────────────────────────────────────────────────

@@ -100,8 +100,7 @@
 }
 
 /* === Dark Theme === */
-@media (prefers-color-scheme: dark) {
-  :root {
+[data-theme="dark"] {
     --bg-primary: #0B0F19;
     --bg-secondary: #111827;
     --bg-tertiary: #1F2937;
@@ -125,9 +124,7 @@
     --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.25);
 
     --gradient-card: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
-  }
 }
-
 /* === Global Reset === */
 *, *::before, *::after {
   margin: 0;
@@ -212,7 +209,7 @@ a:hover {
   background-clip: text;
 }
 
-.text-muted { color: var(--text-tertiary); }
+.text-muted { color: var(--text-tertiary) !important; }
 
 /* === Glassmorphism === */
 .glass {

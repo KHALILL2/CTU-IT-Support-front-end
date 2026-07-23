@@ -8,10 +8,11 @@ import { dashboardPath } from '../api/auth.js';
  */
 export function requiresAuth() {
   if (!isAuthenticated()) {
-    // Determine the correct path depth to login.html
-    const depth = window.location.pathname.split('/').filter(Boolean).length;
-    const prefix = depth > 1 ? '../'.repeat(depth - 1) : '';
-    window.location.href = `${prefix}login.html`;
+    // Determine if we are in a subdirectory
+    const pathParts = window.location.pathname.split('/');
+    const currentFolder = pathParts[pathParts.length - 2];
+    const isSubdir = currentFolder === 'admin' || currentFolder === 'student';
+    window.location.href = isSubdir ? '../login.html' : 'login.html';
     throw new Error('Not authenticated, redirecting to login');
   }
 }
