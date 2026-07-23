@@ -4,18 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — CTU Support</title>
-  <meta name="description" content="Student dashboard for managing technical support reports.">
+  
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/animations.css">
-  <script>
-    if (!localStorage.getItem('ctu_auth_token')) {
-      window.location.href = '../login.html';
-    }
-  </script>
 </head>
 <body>
   <div class="loading-screen" id="loading-screen">
@@ -37,34 +32,30 @@
       <nav class="sidebar-nav">
         <div class="sidebar-nav-section">
           <div class="sidebar-nav-section-title" data-i18n="dash.sidebar.general">General</div>
-          <a href="dashboard.html" class="sidebar-link active">
-            <i class="fas fa-th-large"></i>
-            <span data-i18n="dash.sidebar.dashboard">Dashboard</span>
+          <a href="#overview" class="sidebar-link active">
+            <i class="fas fa-th-large"></i><span data-i18n="dash.sidebar.dashboard">Dashboard</span>
           </a>
-          <a href="profile.html" class="sidebar-link">
-            <i class="fas fa-user"></i>
-            <span data-i18n="dash.sidebar.profile">Profile</span>
+          <a href="#profile" class="sidebar-link">
+            <i class="fas fa-user"></i><span data-i18n="dash.sidebar.profile">Profile</span>
           </a>
-          <a href="attendance.html" class="sidebar-link">
-            <i class="fas fa-calendar-check"></i>
-            <span data-i18n="dash.sidebar.attendance">Attendance</span>
+          <a href="#attendance" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span data-i18n="dash.sidebar.attendance">Attendance</span>
           </a>
-          <a href="information.html" class="sidebar-link">
-            <i class="fas fa-chart-pie"></i>
-            <span data-i18n="dash.sidebar.information">Information</span>
+          <a href="#information" class="sidebar-link">
+            <i class="fas fa-chart-pie"></i><span data-i18n="dash.sidebar.information">Information</span>
+          </a>
+          <a href="#meetings" class="sidebar-link">
+            <i class="fas fa-handshake"></i><span>Meetings</span>
           </a>
         </div>
       </nav>
 
       <div class="sidebar-footer">
-        <a href="../index.html" class="sidebar-link" style="color: var(--danger-500)" onclick="localStorage.removeItem('ctu_auth_token')">
-          <i class="fas fa-right-from-bracket"></i>
-          <span data-i18n="dash.sidebar.logout">Logout</span>
+        <a href="#" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span data-i18n="dash.sidebar.logout">Logout</span>
         </a>
         <div class="sidebar-user">
-          <div class="sidebar-user-avatar">
-            <img src="" alt="" id="sidebar-avatar">
-          </div>
+          <div class="sidebar-user-avatar"><img src="" alt="" id="sidebar-avatar"></div>
           <div class="sidebar-user-info">
             <h5 id="sidebar-name"></h5>
             <span id="sidebar-role"></span>
@@ -73,182 +64,84 @@
       </div>
     </aside>
 
-    <!-- Sidebar Overlay (mobile) -->
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <!-- Main Content -->
     <main class="dashboard-main">
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
-          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
-            <i class="fas fa-bars"></i>
-          </button>
-          <h2 data-i18n="sdash.title">My Reports</h2>
+          <button class="sidebar-toggle" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title" data-i18n="dash.sidebar.dashboard">Dashboard</h2>
         </div>
         <div class="dashboard-topbar-right">
-          <button class="btn-icon navbar-action-btn" id="lang-toggle" title="Toggle Language">
-            <i class="fas fa-globe"></i>
-          </button>
-          <button class="btn-icon navbar-action-btn" id="theme-toggle" title="Toggle Theme">
-            <i class="fas fa-moon"></i>
-          </button>
+          <button class="btn-icon navbar-action-btn" id="lang-toggle"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle"><i class="fas fa-moon"></i></button>
         </div>
       </header>
 
-      <div class="dashboard-content page-transition">
-        <!-- Stats -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-card-icon primary"><i class="fas fa-file-lines"></i></div>
-            <div class="stat-card-info">
-              <h3 id="total-reports">0</h3>
-              <p data-i18n="admin.total">Total Reports</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-icon warning"><i class="fas fa-clock"></i></div>
-            <div class="stat-card-info">
-              <h3 id="pending-reports">0</h3>
-              <p data-i18n="admin.pending">Pending</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-icon success"><i class="fas fa-check-circle"></i></div>
-            <div class="stat-card-info">
-              <h3 id="done-reports">0</h3>
-              <p data-i18n="admin.resolved">Resolved</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-icon teal"><i class="fas fa-spinner"></i></div>
-            <div class="stat-card-info">
-              <h3 id="progress-reports">0</h3>
-              <p data-i18n="sdash.status.progress">In Progress</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Reports Table -->
-        <div class="table-container">
-          <table class="data-table" id="reports-table">
-            <thead>
-              <tr>
-                <th data-i18n="sdash.col.id">#</th>
-                <th data-i18n="sdash.col.name">Name</th>
-                <th data-i18n="sdash.col.phone">Phone</th>
-                <th data-i18n="sdash.col.location">Location</th>
-                <th data-i18n="sdash.col.problem">Problem</th>
-                <th data-i18n="sdash.col.status">Status</th>
-                <th data-i18n="sdash.col.actions">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="reports-tbody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
+      <div class="dashboard-content page-transition" id="view">
+        <!-- Views will be rendered here by dashboardRouter -->
       </div>
     </main>
   </div>
 
+  <!-- Shared Global JS -->
   <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="../js/config.js"></script>
   <script src="../js/data.js"></script>
   <script src="../js/i18n.js"></script>
   <script src="../js/app.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      initSidebar();
-      initDashboardToggles();
-      loadUserInfo();
-      renderReports();
+  <script type="module">
+    import { requiresRole } from '../js/router/guard.js';
+    import { logout } from '../js/api/auth.js';
+    import { initRouter, registerRoutes } from '../js/router/dashboardRouter.js';
+    import { getUser } from '../js/utils/jwt.js';
+
+    // 1. Role Guard
+    requiresRole('student');
+
+    // 2. Populate user info
+    const user = getUser();
+    if (user) {
+      document.getElementById('sidebar-name').textContent = window.getLocalized ? window.getLocalized(user, 'name') : user.name;
+      document.getElementById('sidebar-role').textContent = window.getLocalized ? window.getLocalized(user, 'department') : (user.department || 'Student');
+    }
+
+    // 3. Setup Logout
+    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await logout();
+      window.location.href = '../login.html';
     });
 
-    window.addEventListener('languageChanged', () => {
-      renderReports();
-      loadUserInfo();
-    });
-
-    function initDashboardToggles() {
-      // Theme toggle
-      const themeBtn = document.getElementById('theme-toggle');
-      if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-
-      // Language toggle
-      const langBtn = document.getElementById('lang-toggle');
-      if (langBtn) langBtn.addEventListener('click', toggleLanguage);
-    }
-
-    function loadUserInfo() {
-      const user = CTU_DATA.currentUser;
-      const avatar = document.getElementById('sidebar-avatar');
-      const name = document.getElementById('sidebar-name');
-      const role = document.getElementById('sidebar-role');
-      
-      if (avatar) { avatar.src = user.image; avatar.alt = getLocalized(user, 'name'); }
-      if (name) name.textContent = getLocalized(user, 'name');
-      if (role) role.textContent = getLocalized(user, 'department');
-    }
-
-    // Use local copy of reports for mutation
-    let studentReports = JSON.parse(JSON.stringify(CTU_DATA.reports));
-
-    function renderReports() {
-      const tbody = document.getElementById('reports-tbody');
-      if (!tbody) return;
-
-      // Update stats
-      const total = studentReports.length;
-      const pending = studentReports.filter(r => r.status === 'pending').length;
-      const done = studentReports.filter(r => r.status === 'done').length;
-      const progress = studentReports.filter(r => r.status === 'in-progress').length;
-
-      animateCounter(document.getElementById('total-reports'), total, 800);
-      animateCounter(document.getElementById('pending-reports'), pending, 800);
-      animateCounter(document.getElementById('done-reports'), done, 800);
-      animateCounter(document.getElementById('progress-reports'), progress, 800);
-
-      tbody.innerHTML = studentReports.map((report, i) => {
-        const statusClass = report.status === 'done' ? 'badge-done' : 
-                          report.status === 'in-progress' ? 'badge-progress' : 'badge-pending';
-        const statusText = report.status === 'done' ? t('sdash.status.done') : 
-                          report.status === 'in-progress' ? t('sdash.status.progress') : t('sdash.status.pending');
-        const isDone = report.status === 'done';
-
-        return `
-          <tr>
-            <td>${i + 1}</td>
-            <td>${getLocalized(report, 'name')}</td>
-            <td>${report.phone}</td>
-            <td>${getLocalized(report, 'location')}</td>
-            <td style="max-width:250px; white-space:normal; word-break:break-word">${getLocalized(report, 'problem')}</td>
-            <td><span class="badge ${statusClass}">${statusText}</span></td>
-            <td>
-              <button class="btn btn-sm ${isDone ? 'btn-ghost' : 'btn-success'}" 
-                      onclick="toggleDone(${report.id})" 
-                      ${isDone ? '' : ''}>
-                <i class="fas ${isDone ? 'fa-undo' : 'fa-check'}"></i>
-                ${isDone ? t('sdash.btn.undone') : t('sdash.btn.done')}
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function toggleDone(reportId) {
-      const report = studentReports.find(r => r.id === reportId);
-      if (report) {
-        report.status = report.status === 'done' ? 'pending' : 'done';
-        if (report.status === 'done') {
-          report.confirmedBy = getLocalized(CTU_DATA.currentUser, 'name');
-        } else {
-          report.confirmedBy = null;
-        }
-        renderReports();
-        showToast(report.status === 'done' ? 'Report marked as done!' : 'Report status reverted.');
+    // 4. Setup Router
+    registerRoutes({
+      'overview': async (container) => {
+        document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.dashboard') : 'Dashboard';
+        const module = await import('../js/views/student/home.js');
+        return await module.render(container);
+      },
+      'profile': async (container) => {
+        document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.profile') : 'Profile';
+        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Profile View Under Construction</h3></div>`;
+      },
+      'attendance': async (container) => {
+        document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.attendance') : 'Attendance';
+        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Attendance View Under Construction</h3></div>`;
+      },
+      'information': async (container) => {
+        document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.information') : 'Information';
+        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Information View Under Construction</h3></div>`;
+      },
+      'meetings': async (container) => {
+        document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.meetings') || 'Meetings' : 'Meetings';
+        const module = await import('../js/views/student/meetings.js');
+        return await module.render(container);
       }
-    }
+    });
+
+    const viewContainer = document.getElementById('view');
+    initRouter(viewContainer);
   </script>
 </body>
 </html>

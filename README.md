@@ -46,3 +46,36 @@ This frontend is completely static and ready to be hosted on GitHub Pages or Inf
 3. Select the `main` branch as the source and click Save.
 
 *Designed & developed for Borg El Arab Technological University.*
+
+## 🔌 API Contract
+This frontend interacts with the backend via a REST API (base URL configured in `js/config.js`). The frontend expects the backend to implement the following endpoints:
+
+### Authentication
+- `POST /auth/login/` - Accepts `{ email, password }`, returns `{ access, refresh, user: { role, ... } }`.
+- `POST /auth/refresh/` - Accepts `{ refresh }`, returns new `{ access }`.
+- `POST /auth/logout/` - Blacklists the token.
+- `GET /auth/me/` - Returns the current authenticated user profile.
+
+### Attendance
+- `GET /attendance/` - Returns attendance records. Admin gets all, Student gets their own.
+- `POST /attendance/register/` - Student self-registration (sign attendance).
+- `POST /attendance/` - Admin creates a new attendance day.
+- `PATCH /attendance/{id}/` - Admin modifies a day.
+
+### Meetings
+- `GET /meetings/` - Returns upcoming meetings based on user role.
+- `POST /meetings/` - Admin creates a new meeting.
+- `PATCH /meetings/{id}/` - Admin updates meeting status (e.g., active/completed).
+- `DELETE /meetings/{id}/` - Admin deletes a meeting.
+
+### Availability
+- `GET /availability/` - Admin views all students' availability; Student views their own status.
+- `POST /availability/` - Student sets their current status (available/unavailable).
+
+### Reports/Tickets
+- `GET /reports/` - Admin gets all reports, Student gets their own.
+- `POST /reports/` - Student submits a new problem report.
+- `PATCH /reports/{id}/` - Admin updates report status.
+- `DELETE /reports/{id}/` - Admin deletes a report.
+
+All authenticated endpoints require an `Authorization: Bearer <access_token>` header. For a detailed JSON schema for requests/responses, consult the internal `.agents/rules/api-contract.md`.

@@ -1,0 +1,243 @@
+/* ============================================
+   CTU Support — Authentication Page Styles
+   Covers login.html and signup.html layouts.
+   Extracted from login.html inline <style> block.
+   ============================================ */
+
+/* ── Page Wrapper ─────────────────────────────────────────────────────────── */
+.auth-section {
+  min-height: calc(100vh - var(--navbar-height));
+  display: flex;
+  align-items: center;
+}
+
+.auth-container {
+  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+/* ── Visual / Decorative Side ─────────────────────────────────────────────── */
+.auth-visual {
+  flex: 1;
+  background: var(--gradient-hero);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-visual-content {
+  position: relative;
+  z-index: 1;
+  color: white;
+  max-width: 380px;
+}
+
+.auth-visual-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+}
+
+.auth-visual-orb.orb-1 {
+  width: 300px;
+  height: 300px;
+  background: var(--primary-500);
+  top: -50px;
+  right: -50px;
+  animation: orbFloat 15s ease-in-out infinite;
+}
+
+.auth-visual-orb.orb-2 {
+  width: 200px;
+  height: 200px;
+  background: var(--secondary-500);
+  bottom: -30px;
+  left: -30px;
+  animation: orbFloat 12s ease-in-out infinite reverse;
+}
+
+.auth-visual-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-visual h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.auth-visual p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.auth-visual-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.auth-feature i {
+  color: var(--secondary-400);
+}
+
+/* ── Form Side ────────────────────────────────────────────────────────────── */
+.auth-form-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg-primary);
+}
+
+.auth-form-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-form-header {
+  margin-bottom: 2rem;
+}
+
+.auth-form-header h2 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.auth-form-header p {
+  color: var(--text-tertiary);
+}
+
+/* ── Input with icon ──────────────────────────────────────────────────────── */
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.input-icon-wrapper:focus-within {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  background: var(--bg-primary);
+}
+
+.input-icon-wrapper > i {
+  padding-left: 1rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+[dir="rtl"] .input-icon-wrapper > i {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+.input-icon-wrapper .form-input {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding-left: 0.75rem;
+}
+
+.input-icon-wrapper .form-input:focus {
+  box-shadow: none;
+}
+
+.password-toggle {
+  background: none;
+  border: none;
+  padding: 0 1rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: color var(--transition-base);
+}
+
+.password-toggle:hover { color: var(--primary-500); }
+
+/* ── Input error state ────────────────────────────────────────────────────── */
+.input-icon-wrapper.is-error {
+  border-color: var(--danger-500);
+}
+
+/* ── Inline error banner ──────────────────────────────────────────────────── */
+.auth-error {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--danger-500);
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.auth-error.visible { display: flex; }
+
+/* ── Switch link (Login ↔ Signup) ─────────────────────────────────────────── */
+.auth-switch {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+}
+
+.auth-switch a {
+  font-weight: 600;
+  color: var(--primary-500);
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .auth-switch a {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .auth-visual {
+    padding: 2rem;
+    min-height: 250px;
+  }
+
+  .auth-visual-features { display: none; }
+}
