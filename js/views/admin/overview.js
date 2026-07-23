@@ -72,7 +72,7 @@ export async function render(container) {
           <a href="#meetings" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
             <i class="fas fa-plus"></i> New Meeting
           </a>
-          <a href="#students" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+          <a href="#students" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
             <i class="fas fa-users"></i> Manage Users
           </a>
         </div>

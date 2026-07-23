@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/animations.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div class="loading-screen" id="loading-screen">
@@ -123,15 +124,18 @@
       },
       'profile': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.profile') : 'Profile';
-        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Profile View Under Construction</h3></div>`;
+        const module = await import('../js/views/student/profile.js');
+        return await module.render(container);
       },
       'attendance': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.attendance') : 'Attendance';
-        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Attendance View Under Construction</h3></div>`;
+        const module = await import('../js/views/student/attendance.js');
+        return await module.render(container);
       },
       'information': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.information') : 'Information';
-        container.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-tertiary);"><h3>Information View Under Construction</h3></div>`;
+        const module = await import('../js/views/student/information.js');
+        return await module.render(container);
       },
       'meetings': async (container) => {
         document.getElementById('topbar-title').textContent = window.t ? window.t('dash.sidebar.meetings') || 'Meetings' : 'Meetings';
