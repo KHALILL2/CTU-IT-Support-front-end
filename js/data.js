@@ -3,7 +3,7 @@
    All mock JSON data for populating tables, charts, profiles
    ============================================ */
 
-const CTU_DATA = {
+const DEFAULT_CTU_DATA = {
   /* === Team Members === */
   teamMembers: [
     {
@@ -203,4 +203,10 @@ const CTU_DATA = {
     roleAr: "مهندس شبكات",
     image: "https://ui-avatars.com/api/?name=Ahmed+Hassan&size=200&background=4F46E5&color=fff&bold=true"
   }
+};
+
+window.CTU_DATA = JSON.parse(localStorage.getItem('CTU_MOCK_DATA')) || DEFAULT_CTU_DATA;
+
+window.saveMockData = function() {
+  localStorage.setItem('CTU_MOCK_DATA', JSON.stringify(window.CTU_DATA));
 };

@@ -2,8 +2,8 @@ import { apiGet, apiPost, apiPatch, apiDelete } from './client.js';
 
 // TODO: Mock data fallback when endpoints aren't live. Remove when backend is live.
 let mockMeetings = [
-  { id: 1, title: 'Weekly IT Sync', desc: 'Discussing network upgrades', status: 'active', time: '10:00 AM', link: 'https://meet.google.com/abc' },
-  { id: 2, title: 'Student Support Session', desc: 'Open Q&A for lab software', status: 'scheduled', time: '2:00 PM', link: '' }
+  { id: 1, title: 'Weekly IT Sync', desc: 'Discussing network upgrades', status: 'active', time: '10:00 AM', link: 'https://meet.google.com/abc', location: '', type: 'online' },
+  { id: 2, title: 'Lab Inspection', desc: 'Monthly lab equipment check', status: 'scheduled', time: '2:00 PM', link: '', location: 'Room 301 - Lab A', type: 'offline' }
 ];
 
 function isReal() {

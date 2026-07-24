@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — CTU Support</title>
+  <title>Staff Dashboard — CTU Support</title>
 
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
@@ -57,18 +57,21 @@
     import { getUser, getRole } from '../js/utils/jwt.js';
     import { createSidebar } from '../js/components/sidebar.js';
 
-    // 1. Role Guard
-    requiresRole('admin');
+    // 1. Role Guard — allow both staff roles
+    requiresRole(['lab_supervisor', 'it_support']);
 
-    // 2. Read user info
+    // 2. Read role and user info
     const role = getRole();
     const user = getUser();
 
-    // 3. Build and mount sidebar
+    // 3. Set role class on body for CSS-based visibility toggling
+    document.body.classList.add(role === 'lab_supervisor' ? 'role-lab' : 'role-it');
+
+    // 4. Build and mount sidebar
     const { el: sidebarEl } = createSidebar({
-      role: 'admin',
+      role,
       userName: window.getLocalized ? window.getLocalized(user, 'name') : (user?.name || ''),
-      userRoleLabel: ROLE_LABELS['admin'] || 'Administrator',
+      userRoleLabel: ROLE_LABELS[role] || role,
       avatarSrc: user?.avatar || '',
       onLogout: async () => {
         await logout();
@@ -96,54 +99,50 @@
       window.addEventListener('hashchange', closeSidebar);
     }
 
-    // 4. Register routes
-    registerRoutes({
+    // 5. Register routes — conditionally include role-specific routes
+    const routes = {
       'overview': async (container) => {
         document.getElementById('topbar-title').textContent = 'Dashboard';
-        const m = await import('../js/views/admin/overview.js');
-        return await m.render(container);
-      },
-      'users': async (container) => {
-        document.getElementById('topbar-title').textContent = 'Users';
-        const m = await import('../js/views/admin/users.js');
+        const m = await import('../js/views/staff/overview.js');
         return await m.render(container);
       },
       'attendance': async (container) => {
-        document.getElementById('topbar-title').textContent = 'Attendance & Meetings';
-        const m = await import('../js/views/admin/admin-attendance.js');
-        return await m.render(container);
-      },
-      'meetings': async (container) => {
-        document.getElementById('topbar-title').textContent = 'Meetings';
-        const m = await import('../js/views/admin/meetings.js');
-        return await m.render(container);
+        document.getElementById('topbar-title').textContent = 'Attendance';
+        const m = await import('../js/views/staff/attendance.js');
+        return await m.render(container, role);
       },
       'issues': async (container) => {
         document.getElementById('topbar-title').textContent = 'Issues';
-        const m = await import('../js/views/admin/admin-issues.js');
-        return await m.render(container);
+        const m = await import('../js/views/staff/issues.js');
+        return await m.render(container, role);
       },
       'custody': async (container) => {
         document.getElementById('topbar-title').textContent = 'Custody';
-        const m = await import('../js/views/admin/admin-custody.js');
+        const m = await import('../js/views/staff/custody.js');
+        return await m.render(container, role);
+      },
+      'profile': async (container) => {
+        document.getElementById('topbar-title').textContent = 'Profile';
+        const m = await import('../js/views/staff/profile.js');
         return await m.render(container);
       },
-      'reports': async (container) => {
+    };
+
+    // Lab Supervisor only: Daily Reports
+    if (role === 'lab_supervisor') {
+      routes['reports'] = async (container) => {
         document.getElementById('topbar-title').textContent = 'Daily Reports';
-        const m = await import('../js/views/admin/admin-reports.js');
+        const m = await import('../js/views/staff/reports.js');
         return await m.render(container);
-      },
-      'audit': async (container) => {
-        document.getElementById('topbar-title').textContent = 'Audit Log';
-        const m = await import('../js/views/admin/audit.js');
-        return await m.render(container);
-      },
-    });
+      };
+    }
+
+    registerRoutes(routes);
 
     const viewContainer = document.getElementById('view');
     initRouter(viewContainer);
 
-    // 5. Theme and Language toggles
+    // 6. Theme and Language toggles
     const themeBtn = document.getElementById('theme-toggle');
     if (themeBtn && window.toggleTheme) {
       themeBtn.addEventListener('click', window.toggleTheme);

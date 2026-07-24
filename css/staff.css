@@ -1,0 +1,339 @@
+/* ============================================
+   CTU Support — Staff Dashboard Styles
+   Role-based visibility, issue board, custody table
+   ============================================ */
+
+/* === Role-Based Visibility ================================================ */
+/* Hide IT-only elements when logged in as Lab Supervisor */
+.role-lab .it-only { display: none !important; }
+
+/* Hide Lab-only elements when logged in as IT Support */
+.role-it .lab-only { display: none !important; }
+
+/* === Issues Grid (Responsive Classic Layout) ============================== */
+.issues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .issues-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Issue Card */
+.issue-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  cursor: grab;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.issue-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.issue-card.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+  box-shadow: var(--shadow-xl);
+}
+
+.issue-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.issue-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+.issue-card-room {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.issue-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-default);
+}
+
+.issue-card-actions .btn {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+}
+
+/* Priority Indicators */
+.priority-urgent {
+  border-left: 3px solid var(--danger-500);
+}
+
+.priority-normal {
+  border-left: 3px solid var(--primary-500);
+}
+
+/* === Issue Filter Bar ===================================================== */
+.issue-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+  border-color: var(--primary-400);
+}
+
+.filter-chip.active {
+  background: var(--primary-500);
+  color: white;
+  border-color: var(--primary-500);
+}
+
+/* === Custody Table ======================================================== */
+.custody-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.custody-table th,
+.custody-table td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+
+[dir="rtl"] .custody-table th,
+[dir="rtl"] .custody-table td {
+  text-align: right;
+}
+
+.custody-table th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  background: var(--bg-secondary);
+}
+
+.custody-table th:first-child {
+  border-radius: var(--radius-md) 0 0 0;
+}
+
+.custody-table th:last-child {
+  border-radius: 0 var(--radius-md) 0 0;
+}
+
+.custody-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.custody-table tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Equipment Status Dot */
+.equip-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.equip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.equip-dot--good {
+  background: var(--success-500);
+}
+
+.equip-dot--maintenance {
+  background: var(--warning-500);
+}
+
+/* === Daily Report Form ==================================================== */
+.report-form-section {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.report-form-section h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+
+.report-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .report-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.report-form-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+/* === Report History Card ================================================== */
+.report-history-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: all var(--transition-fast);
+}
+
+.report-history-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.report-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.report-history-header span {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* === Geolocation Check-in ================================================= */
+.geo-checkin-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.geo-checkin-card .btn {
+  font-size: 1.1rem;
+  padding: 0.875rem 2.5rem;
+  margin-top: 1rem;
+}
+
+.geo-checkin-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.geo-checkin-status.checked-in {
+  color: var(--success-500);
+}
+
+.geo-checkin-status.not-checked-in {
+  color: var(--text-tertiary);
+}
+
+/* === Warnings Section ===================================================== */
+.warning-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  border-left: 3px solid var(--warning-500);
+}
+
+.warning-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.warning-item-content h5 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+}
+
+.warning-item-content p {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* === Undo Toast Enhancement =============================================== */
+.toast-undo-btn {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 0.75rem;
+  transition: all var(--transition-fast);
+}
+
+.toast-undo-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

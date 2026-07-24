@@ -398,11 +398,13 @@
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--transition-base);
 }
 
 .sidebar-overlay.active {
   opacity: 1;
+  pointer-events: auto;
 }
 
 @media (max-width: 1024px) {
@@ -424,6 +426,10 @@
 
   .dashboard-main {
     margin-left: 0;
+  }
+  
+  .dashboard-content {
+    padding: 1rem;
   }
 
   [dir="rtl"] .dashboard-main {

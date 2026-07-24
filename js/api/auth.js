@@ -2,14 +2,15 @@
  * js/api/auth.js
  * Authentication API module.
  *
- * Exports: login(), logout(), me(), getRole
+ * Exports: login(), logout(), me(), getRole, dashboardPath()
  *
  * When FEATURES.REAL_API = false (default), login() uses a mock JWT so
  * role-based routing can be tested without a live backend.
  *
  * Mock accounts (for testing):
- *   admin@ctu.edu.eg   / any password  → role: 'admin'
- *   anything else      / any password  → role: 'student'
+ *   *admin*         → role: 'admin'
+ *   *lab*           → role: 'lab_supervisor'
+ *   anything else   → role: 'it_support'
  */
 
 import { apiPost, apiGet, NotImplementedError } from './client.js';
@@ -21,32 +22,28 @@ export { _getRole as getRole };
 // ─── Routing Map ─────────────────────────────────────────────────────────────
 
 const DASHBOARD_BY_ROLE = {
-  admin:   'admin/dashboard.html',
-  student: 'student/dashboard.html',
+  admin:          'admin/dashboard.html',
+  lab_supervisor: 'staff/dashboard.html',
+  it_support:     'staff/dashboard.html',
 };
 
 /**
  * Resolve the correct dashboard path for a given role.
  * Prepends ../ if we are already one directory deep.
- * @param {'student'|'admin'} role
+ * @param {'admin'|'lab_supervisor'|'it_support'} role
  * @returns {string}
  */
 export function dashboardPath(role) {
-  const relative = DASHBOARD_BY_ROLE[role] ?? DASHBOARD_BY_ROLE.student;
-  // If we're in a subdirectory (e.g. /student/, /admin/), prepend ../
+  const relative = DASHBOARD_BY_ROLE[role] ?? DASHBOARD_BY_ROLE.it_support;
   const pathParts = window.location.pathname.split('/');
   const currentFolder = pathParts[pathParts.length - 2];
-  const isSubdir = currentFolder === 'admin' || currentFolder === 'student';
+  const isSubdir = ['admin', 'student', 'staff'].includes(currentFolder);
   return isSubdir ? `../${relative}` : relative;
 }
 
 // ─── Mock JWT Factory ─────────────────────────────────────────────────────────
 
-// TODO: Remove this function once the real Django backend is live.
-// Replace mock usage in login() with the real apiPost() call.
 function _buildMockJWT(role) {
-  // A real JWT has 3 base64url-encoded sections: header.payload.signature
-  // We fake all three so decodeJWT() in jwt.js can read the payload.
   const encode = (obj) =>
     btoa(JSON.stringify(obj))
       .replace(/=/g, '')
@@ -61,19 +58,36 @@ function _buildMockJWT(role) {
   return `${header}.${payload}.${sig}`;
 }
 
+/** Determine mock role from email pattern. */
+function _resolveRole(email) {
+  const lower = email.toLowerCase();
+  if (lower.includes('admin')) return 'admin';
+  if (lower.includes('lab'))   return 'lab_supervisor';
+  return 'it_support';
+}
+
+/** Role display labels. */
+const ROLE_LABELS = {
+  admin:          'Administrator',
+  lab_supervisor: 'Lab Supervisor',
+  it_support:     'IT Support',
+};
+
 /** Build the full mock token payload for saveTokens(). */
 function _mockPayload(email) {
-  const role = email.toLowerCase().includes('admin') ? 'admin' : 'student';
+  const role = _resolveRole(email);
 
-  const mockUser = role === 'admin'
-    ? { id: 1, name: 'Ahmed Hassan',  nameAr: 'أحمد حسن',   email, role }
-    : { id: 1, name: 'Ali Mostafa',   nameAr: 'علي مصطفى',  email, role };
+  const mockUsers = {
+    admin:          { id: 1, name: 'Ahmed Hassan',   nameAr: 'أحمد حسن',    email, role, department: 'IT Administration' },
+    lab_supervisor: { id: 2, name: 'Sara Mohamed',   nameAr: 'سارة محمد',   email, role, department: 'Lab Operations' },
+    it_support:     { id: 3, name: 'Ali Mostafa',    nameAr: 'علي مصطفى',   email, role, department: 'Technical Support' },
+  };
 
   return {
     access:  _buildMockJWT(role),
     refresh: _buildMockJWT(role),
     role,
-    user:    mockUser,
+    user:    mockUsers[role],
   };
 }
 
@@ -81,9 +95,6 @@ function _mockPayload(email) {
 
 /**
  * Log in with email and password.
- *
- * - In mock mode (FEATURES.REAL_API = false): builds a fake JWT and saves it.
- * - In real mode: calls POST /auth/login/ and saves the returned tokens.
  *
  * @param {string} email
  * @param {string} password
@@ -94,7 +105,6 @@ export async function login(email, password) {
   let payload;
 
   try {
-    // ── Real API path ──────────────────────────────────────────────────────
     const data = await apiPost('/auth/login/', { email, password });
 
     payload = {
@@ -106,11 +116,10 @@ export async function login(email, password) {
 
   } catch (err) {
     if (err instanceof NotImplementedError) {
-      // ── TODO: Mock path — remove when backend is live ────────────────────
-      await new Promise((r) => setTimeout(r, 800)); // simulate network delay
+      await new Promise((r) => setTimeout(r, 800));
       payload = _mockPayload(email);
     } else {
-      throw err; // Real API error — re-throw so the UI can display it
+      throw err;
     }
   }
 
@@ -120,17 +129,13 @@ export async function login(email, password) {
 
 /**
  * Log out the current user.
- *
- * - Calls POST /auth/logout/ in real mode (blacklists the refresh token).
- * - Always clears localStorage tokens regardless of API response.
- *
  * @returns {Promise<void>}
  */
 export async function logout() {
   try {
     await apiPost('/auth/logout/', {});
   } catch {
-    // Silently ignore — token blacklisting failure should not block local logout
+    // Silently ignore
   } finally {
     clearTokens();
   }
@@ -138,8 +143,6 @@ export async function logout() {
 
 /**
  * Fetch the currently authenticated user's profile.
- * Falls back to the user stored in the JWT payload when API is in mock mode.
- *
  * @returns {Promise<object>} User object.
  */
 export async function me() {
@@ -147,10 +150,12 @@ export async function me() {
     return await apiGet('/auth/me/');
   } catch (err) {
     if (err instanceof NotImplementedError) {
-      // TODO: Return cached user from token until backend is live
       const stored = JSON.parse(localStorage.getItem('ctu_token') ?? 'null');
       return stored?.user ?? null;
     }
     throw err;
   }
 }
+
+/** Export role labels for UI display. */
+export { ROLE_LABELS };

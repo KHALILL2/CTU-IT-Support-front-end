@@ -46,3 +46,23 @@ export async function getByDate(date) {
   }
   return await apiGet(`/attendance/reports?date=${date}`);
 }
+
+/**
+ * Geolocation-based attendance check-in.
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude
+ * @returns {Promise<object>}
+ */
+export async function geoCheckIn(lat, lng) {
+  if (!isReal()) {
+    if (mockTodaySigned) {
+      const err = new Error('Already checked in');
+      err.status = 409;
+      throw err;
+    }
+    mockTodaySigned = true;
+    return { success: true, time: new Date().toLocaleTimeString(), location: { lat, lng } };
+  }
+  return await apiPost('/attendance/checkin/', { latitude: lat, longitude: lng });
+}
+

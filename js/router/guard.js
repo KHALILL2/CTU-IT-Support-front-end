@@ -8,27 +8,28 @@ import { dashboardPath } from '../api/auth.js';
  */
 export function requiresAuth() {
   if (!isAuthenticated()) {
-    // Determine if we are in a subdirectory
     const pathParts = window.location.pathname.split('/');
     const currentFolder = pathParts[pathParts.length - 2];
-    const isSubdir = currentFolder === 'admin' || currentFolder === 'student';
+    const isSubdir = ['admin', 'student', 'staff'].includes(currentFolder);
     window.location.href = isSubdir ? '../login.html' : 'login.html';
     throw new Error('Not authenticated, redirecting to login');
   }
 }
 
 /**
- * Ensures the user has a specific role.
+ * Ensures the user has one of the expected roles.
  * Redirects to the correct dashboard if there is a role mismatch.
- * @param {'student'|'admin'} expectedRole 
+ * @param {string|string[]} expectedRoles - A single role string or array of allowed roles.
  * @throws {Error} If role mismatch.
  */
-export function requiresRole(expectedRole) {
+export function requiresRole(expectedRoles) {
   requiresAuth();
-  
+
+  const allowed = Array.isArray(expectedRoles) ? expectedRoles : [expectedRoles];
   const currentRole = getRole();
-  if (currentRole !== expectedRole) {
+
+  if (!allowed.includes(currentRole)) {
     window.location.href = dashboardPath(currentRole);
-    throw new Error(`Role mismatch. Expected ${expectedRole}, got ${currentRole}. Redirecting.`);
+    throw new Error(`Role mismatch. Expected one of [${allowed.join(', ')}], got ${currentRole}. Redirecting.`);
   }
 }

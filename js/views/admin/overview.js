@@ -1,79 +1,94 @@
-import { getAllStudents } from '../../api/availability.js';
+/**
+ * js/views/admin/overview.js
+ * Admin dashboard overview — shows high-level system metrics.
+ */
+import { apiGet, NotImplementedError } from '../../api/client.js';
 import { getMeetings } from '../../api/meetings.js';
+import { getIssues } from '../../api/issues.js';
 import { withSkeleton } from '../../components/skeleton.js';
+import { showToast } from '../../components/toast.js';
+
+async function fetchUsers() {
+  try { return await apiGet('/users/'); }
+  catch (e) {
+    if (e instanceof NotImplementedError) {
+      return [
+        { role: 'lab_supervisor', available: true },
+        { role: 'it_support', available: false },
+        { role: 'it_support', available: true },
+      ];
+    }
+    throw e;
+  }
+}
 
 export async function render(container) {
-  container.innerHTML = `
-    <div class="mb-4">
-      <h3 style="margin-bottom: 0.5rem;">System Overview</h3>
-      <p class="text-muted">High-level view of system metrics and active sessions.</p>
-    </div>
-    
-    <div id="overview-content"></div>
-  `;
-
-  const content = container.querySelector('#overview-content');
+  container.innerHTML = '';
+  const content = document.createElement('div');
+  container.appendChild(content);
 
   const fetchAndRender = async () => {
-    let students = [];
+    let users = [];
     let meetings = [];
+    let issues = [];
+
     try {
-      students = await getAllStudents();
+      users = await fetchUsers();
       meetings = await getMeetings();
+      issues = await getIssues();
     } catch (e) {
-      console.error("Failed to load overview data:", e);
+      // Allow partial failure
     }
 
-    const availableStudents = students.filter(s => s.available).length;
-    const totalStudents = students.length;
-    
+    const availableIT = users.filter(u => u.role === 'it_support' && u.available).length;
+    const totalIT = users.filter(u => u.role === 'it_support').length;
+    const openIssues = issues.filter(i => (i.status || 'open') === 'open' || i.status === 'in_progress').length;
     const activeMeetings = meetings.filter(m => m.status === 'active').length;
-    const scheduledMeetings = meetings.filter(m => m.status === 'scheduled').length;
 
     content.innerHTML = `
       <div class="grid grid-3 mb-4">
-        <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="text-muted" style="font-weight: 500;">Available Engineers</span>
-            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(16, 185, 129, 0.1); color: var(--success-500); display: flex; align-items: center; justify-content: center;">
-              <i class="fas fa-users"></i>
-            </div>
+        <div class="stat-card">
+          <div class="stat-card-icon success">
+            <i class="fas fa-headset"></i>
           </div>
-          <h2 style="font-size: 2.5rem; margin: 0; color: var(--text-primary);">${availableStudents} / ${totalStudents}</h2>
-          <span style="font-size: 0.85rem; color: var(--success-500);"><i class="fas fa-arrow-up"></i> Online currently</span>
+          <div class="stat-card-info">
+            <h3>${availableIT} / ${totalIT}</h3>
+            <p>IT Support Online</p>
+          </div>
         </div>
 
-        <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="text-muted" style="font-weight: 500;">Active Meetings</span>
-            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(59, 130, 246, 0.1); color: var(--primary-500); display: flex; align-items: center; justify-content: center;">
-              <i class="fas fa-video"></i>
-            </div>
+        <div class="stat-card">
+          <div class="stat-card-icon warning">
+            <i class="fas fa-exclamation-triangle"></i>
           </div>
-          <h2 style="font-size: 2.5rem; margin: 0; color: var(--text-primary);">${activeMeetings}</h2>
-          <span style="font-size: 0.85rem; color: var(--text-muted);">In progress</span>
+          <div class="stat-card-info">
+            <h3>${openIssues}</h3>
+            <p>Open Issues</p>
+          </div>
         </div>
 
-        <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="text-muted" style="font-weight: 500;">Scheduled Meetings</span>
-            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(245, 158, 11, 0.1); color: var(--warning-500); display: flex; align-items: center; justify-content: center;">
-              <i class="fas fa-calendar-alt"></i>
-            </div>
+        <div class="stat-card">
+          <div class="stat-card-icon primary">
+            <i class="fas fa-video"></i>
           </div>
-          <h2 style="font-size: 2.5rem; margin: 0; color: var(--text-primary);">${scheduledMeetings}</h2>
-          <span style="font-size: 0.85rem; color: var(--text-muted);">Upcoming sessions</span>
+          <div class="stat-card-info">
+            <h3>${activeMeetings}</h3>
+            <p>Active Meetings</p>
+          </div>
         </div>
       </div>
       
       <div class="card" style="padding: 1.5rem;">
-        <h4 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Quick Actions</h4>
+        <h4 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Quick Actions</h4>
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-          <a href="#meetings" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fas fa-plus"></i> New Meeting
+          <a href="#users" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-user-plus"></i> Manage Users
           </a>
-          <a href="#students" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fas fa-users"></i> Manage Users
+          <a href="#issues" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-wrench"></i> Review Issues
+          </a>
+          <a href="#reports" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-file-alt"></i> Daily Reports
           </a>
         </div>
       </div>
@@ -81,4 +96,6 @@ export async function render(container) {
   };
 
   await withSkeleton(content, 3, fetchAndRender());
+
+  return () => {}; // Cleanup function
 }

@@ -43,7 +43,7 @@ export function getRefreshToken() {
 
 /**
  * Get the authenticated user's role.
- * @returns {'student'|'admin'|null}
+ * @returns {'admin'|'lab_supervisor'|'it_support'|null}
  */
 export function getRole() {
   return getTokenPayload()?.role ?? null;

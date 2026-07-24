@@ -18,24 +18,32 @@ const AUTH_TOKEN_LEGACY = 'ctu_auth_token'; // Legacy key used by existing inlin
 const POLL_REPORTS_MS    = 30_000;  // Refresh reports table every 30s
 const POLL_ATTENDANCE_MS = 15_000;  // Refresh attendance status every 15s
 const POLL_MEETINGS_MS   = 60_000;  // Refresh meetings list every 60s
+const POLL_ISSUES_MS     = 30_000;  // Refresh issue board every 30s
+const POLL_CUSTODY_MS    = 60_000;  // Refresh custody list every 60s
 
 // ─── Roles ──────────────────────────────────────────────────────────────────────
 const ROLES = Object.freeze({
-  STUDENT: 'student',
-  ADMIN:   'admin',
+  ADMIN:          'admin',
+  LAB_SUPERVISOR: 'lab_supervisor',
+  IT_SUPPORT:     'it_support',
 });
 
 // ─── Route Maps ─────────────────────────────────────────────────────────────────
 const DASHBOARD_ROUTES = Object.freeze({
-  [ROLES.STUDENT]: 'student/dashboard.html',
-  [ROLES.ADMIN]:   'admin/dashboard.html',
+  [ROLES.ADMIN]:          'admin/dashboard.html',
+  [ROLES.LAB_SUPERVISOR]: 'staff/dashboard.html',
+  [ROLES.IT_SUPPORT]:     'staff/dashboard.html',
 });
 
 // ─── Feature Flags ──────────────────────────────────────────────────────────────
 const FEATURES = Object.freeze({
-  MEETINGS:     false,  // Enable when meetings endpoints are ready
-  AVAILABILITY: false,  // Enable when availability endpoints are ready
-  REAL_API:     false,  // false = use CTU_DATA mock; true = hit API_BASE_URL
+  MEETINGS:      false,  // Enable when meetings endpoints are ready
+  AVAILABILITY:  false,  // Enable when availability endpoints are ready
+  ISSUES:        false,  // Enable when issues endpoints are ready
+  CUSTODY:       false,  // Enable when custody endpoints are ready
+  DAILY_REPORTS: false,  // Enable when daily reports endpoints are ready
+  AUDIT_LOG:     false,  // Enable when audit log endpoints are ready
+  REAL_API:      false,  // false = use CTU_DATA mock; true = hit API_BASE_URL
 });
 
 // ─── Export for ES Modules ──────────────────────────────────────────────────────
@@ -49,6 +57,8 @@ if (typeof window !== 'undefined') {
     POLL_REPORTS_MS,
     POLL_ATTENDANCE_MS,
     POLL_MEETINGS_MS,
+    POLL_ISSUES_MS,
+    POLL_CUSTODY_MS,
     ROLES,
     DASHBOARD_ROUTES,
     FEATURES,

@@ -79,10 +79,9 @@ async function refreshAccessToken() {
 
 function handleAuthFailure() {
   clearTokens();
-  // Determine if we are in a subdirectory
   const pathParts = window.location.pathname.split('/');
   const currentFolder = pathParts[pathParts.length - 2];
-  const isSubdir = currentFolder === 'admin' || currentFolder === 'student';
+  const isSubdir = ['admin', 'student', 'staff'].includes(currentFolder);
   window.location.href = isSubdir ? '../login.html' : 'login.html';
 }
 
