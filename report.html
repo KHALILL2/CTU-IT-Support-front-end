@@ -35,6 +35,15 @@
               </div>
             </div>
 
+            <!-- PHP / Backend Success Alert (Unhidden automatically by JS when URL has ?success=1 after PHP redirect) -->
+            <div id="php-success-alert" class="alert d-none mb-4" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #065f46; border-radius: var(--radius-md); padding: 1.25rem; display: flex; align-items: flex-start; gap: 1rem;">
+              <i class="fas fa-check-circle fs-4" style="color: #10b981; margin-top: 2px;"></i>
+              <div>
+                <h5 class="mb-1" style="color: #065f46; font-weight: 700;" data-i18n="report.success.title">Report Submitted!</h5>
+                <p class="mb-0" style="font-size: 0.95rem; color: #047857;" data-i18n="report.success.msg">Your report has been received successfully. Our team will review it shortly.</p>
+              </div>
+            </div>
+
             <form id="report-form" novalidate>
               <div class="form-group">
                 <label class="form-label" data-i18n="report.name">Full Name</label>
@@ -102,12 +111,26 @@
       populateLocations();
       renderEngineers();
       initReportForm();
+      checkBackendSuccess();
     });
 
     window.addEventListener('languageChanged', () => {
       populateLocations();
       renderEngineers();
     });
+
+    function checkBackendSuccess() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('success') === '1' || urlParams.get('status') === 'success' || urlParams.get('success') === 'true') {
+        const phpAlert = document.getElementById('php-success-alert');
+        if (phpAlert) {
+          phpAlert.classList.remove('d-none');
+          phpAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        // Also trigger the modal for maximum visibility
+        document.getElementById('success-modal')?.classList.add('active');
+      }
+    }
 
     function populateLocations() {
       const select = document.getElementById('report-location');
@@ -146,9 +169,7 @@
       if (!form) return;
 
       form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        // Validate
+        // Validate fields first
         const name = document.getElementById('report-name');
         const phone = document.getElementById('report-phone');
         const location = document.getElementById('report-location');
@@ -180,9 +201,21 @@
           }, 600);
         }
 
-        if (!valid) return;
+        if (!valid) {
+          e.preventDefault();
+          return;
+        }
 
-        // Show success modal
+        // Check if PHP / Backend is handling the form submission
+        const method = form.getAttribute('method')?.toLowerCase();
+        const action = form.getAttribute('action');
+        if (method === 'post' || (action && action !== '' && action !== '#')) {
+          // Let the browser naturally submit the POST request to PHP! Do NOT call preventDefault!
+          return;
+        }
+
+        // Frontend Demo Mode (No backend POST configured)
+        e.preventDefault();
         document.getElementById('success-modal').classList.add('active');
         form.reset();
       });
