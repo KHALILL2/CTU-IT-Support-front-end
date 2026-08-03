@@ -37,3 +37,16 @@ lerna-debug.log*
 .stylelintcache
 coverage/
 .nyc_output/
+
+# IDE and Editor files
+.idea/
+*.swp
+*~
+*.bak
+*.tmp
+*.temp
+
+# Gemini / Agent artifacts
+.agents/
+brain/
+.gemini/

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance — Student Dashboard</title>
+  
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .attendance-table-wrap {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .attendance-table th, .attendance-table td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-glass);
+    }
+    .attendance-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .attendance-table tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--primary-500)">S</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Student Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">General</div>
+          <a href="overview.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="profile.html" class="sidebar-link">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+          <a href="attendance.html" class="sidebar-link active">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="information.html" class="sidebar-link">
+            <i class="fas fa-chart-pie"></i><span>Information</span>
+          </a>
+          <a href="meetings.html" class="sidebar-link">
+            <i class="fas fa-handshake"></i><span>Meetings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-3.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Ahmed Youssef</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Student</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Attendance Record</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="flex-between mb-4">
+          <div>
+            <h3>Your Attendance History</h3>
+            <p class="text-muted">Track your lab presence over the semester.</p>
+          </div>
+        </div>
+
+        <div class="attendance-table-wrap">
+          <table class="attendance-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Check-in Time</th>
+                <th>Check-out Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Oct 10, 2023</td>
+                <td>08:15 AM</td>
+                <td>02:30 PM</td>
+                <td><span class="badge badge-success">Present</span></td>
+              </tr>
+              <tr>
+                <td>Oct 09, 2023</td>
+                <td>08:45 AM</td>
+                <td>01:00 PM</td>
+                <td><span class="badge badge-warning">Late</span></td>
+              </tr>
+              <tr>
+                <td>Oct 08, 2023</td>
+                <td>--:--</td>
+                <td>--:--</td>
+                <td><span class="badge badge-danger">Absent</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Global JS -->
+  <script src="../js/app.js"></script>
+  <script>
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

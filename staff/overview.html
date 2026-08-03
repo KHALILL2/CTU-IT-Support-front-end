@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overview — Staff Dashboard</title>
+
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/staff.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--gradient-primary)">L</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Staff Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="overview.html" class="sidebar-link active">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="issues.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Issues</span>
+          </a>
+          <a href="custody.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Custody</span>
+          </a>
+          <a href="reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="profile.html" class="sidebar-link">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-2.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Eng. Sarah Ahmed</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Lab Supervisor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Overview</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        <!-- Static Overview Content -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon primary"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-card-info">
+              <h3>✅ Checked In</h3>
+              <p>Attendance</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon success"><i class="fas fa-video"></i></div>
+            <div class="stat-card-info">
+              <h3>2</h3>
+              <p>Active Meetings</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="stat-card-info">
+              <h3>3</h3>
+              <p>Open Issues</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon primary"><i class="fas fa-boxes-stacked"></i></div>
+            <div class="stat-card-info">
+              <h3>15</h3>
+              <p>Custody Items</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 1.5rem; margin-top: 1.5rem;">
+          <h4 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Quick Actions</h4>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="attendance.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;"><i class="fas fa-map-marker-alt"></i> Check In</a>
+            <a href="issues.html" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;"><i class="fas fa-plus"></i> Report Issue</a>
+            <a href="custody.html" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;"><i class="fas fa-boxes-stacked"></i> My Custody</a>
+            <a href="reports.html" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;"><i class="fas fa-file-alt"></i> Submit Report</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Global JS -->
+  <script src="../js/app.js"></script>
+  <script>
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

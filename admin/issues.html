@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issues — Admin Dashboard</title>
+
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/staff.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  
+  <style>
+    .issue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .issue-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .issue-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .issue-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .issue-meta {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+    }
+    .issue-body {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .issue-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .status-select {
+      padding: 0.4rem 2rem 0.4rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem top 50%;
+      background-size: 0.65rem auto;
+      cursor: pointer;
+    }
+    [data-theme="dark"] .status-select {
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    }
+    .status-select.new { border-color: var(--danger-300); color: var(--danger-500); }
+    .status-select.in_progress { border-color: var(--warning-300); color: var(--warning-600); }
+    .status-select.resolved { border-color: var(--success-300); color: var(--success-600); }
+    
+    @media (min-width: 768px) {
+      .issue-header { align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file.
+       If the user is not logged in or role !== 'admin', redirect them to login.php. -->
+       
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: linear-gradient(135deg, #DC2626, #F59E0B)">A</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="overview.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="users.html" class="sidebar-link">
+            <i class="fas fa-users"></i><span>Users</span>
+          </a>
+          <a href="attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="issues.html" class="sidebar-link active">
+            <i class="fas fa-exclamation-triangle"></i><span>Issues</span>
+          </a>
+          <a href="custody.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Custody</span>
+          </a>
+          <a href="reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="system.html" class="sidebar-link">
+            <i class="fas fa-shield-alt"></i><span>Audit Log</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/avatar-default.png" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">System Admin</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Administrator</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Issue Management</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="flex-between mb-3">
+          <div>
+            <h3>All Hardware Issues</h3>
+            <p class="text-muted">Oversee all reported issues across campus.</p>
+          </div>
+          <button class="btn btn-primary"><i class="fas fa-file-export"></i> Export</button>
+        </div>
+
+        <div class="issue-list">
+          
+          <!-- [BACKEND HINT]: Replace these static .issue-card elements with a PHP foreach loop.
+               The <select> dropdown below should be wrapped in a <form method="POST" action="update_issue.php">
+               so changing the status immediately updates the database. -->
+          
+          <!-- Issue 1 -->
+          <div class="issue-card">
+            <div class="issue-header">
+              <div>
+                <div class="issue-title">Projector not turning on</div>
+                <div class="issue-meta">Room 301 • Reported by Lab Sup • 2 hours ago</div>
+              </div>
+              <span class="badge badge-warning">Urgent</span>
+            </div>
+            <div class="issue-body">
+              The projector in Room 301 is completely unresponsive. I have checked the power cable and it seems fine. Needs immediate attention for the next lecture.
+            </div>
+            <div class="issue-actions">
+              <label for="status-1" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Status:</label>
+              <select id="status-1" class="status-select new">
+                <option value="new" selected>New</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+              <div class="ms-auto">
+                <select class="form-select" style="display: inline-block; width: auto; padding: 0.3rem 1.5rem 0.3rem 0.75rem; font-size: 0.85rem;">
+                  <option value="">Assign to...</option>
+                  <option value="1">Ali Mostafa (IT)</option>
+                  <option value="2">Omar Khaled (IT)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Issue 2 -->
+          <div class="issue-card">
+            <div class="issue-header">
+              <div>
+                <div class="issue-title">Network switch blinking red</div>
+                <div class="issue-meta">Lab 4B • Reported by IT Support • 1 day ago</div>
+              </div>
+              <span class="badge badge-primary">Normal</span>
+            </div>
+            <div class="issue-body">
+              The main network switch in Lab 4B is indicating a fault on port 12. Some PCs are losing connection intermittently.
+            </div>
+            <div class="issue-actions">
+              <label for="status-2" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Status:</label>
+              <select id="status-2" class="status-select in_progress">
+                <option value="new">New</option>
+                <option value="in_progress" selected>In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+              <div class="ms-auto" style="font-size: 0.85rem; color: var(--text-secondary);">
+                <i class="fas fa-user-check"></i> Assigned to Ali
+              </div>
+            </div>
+          </div>
+
+          <!-- Issue 3 -->
+          <div class="issue-card">
+            <div class="issue-header">
+              <div>
+                <div class="issue-title">Mouse scroll wheel broken</div>
+                <div class="issue-meta">Lab 2A, PC 14 • Reported by Lab Sup • 3 days ago</div>
+              </div>
+              <span class="badge badge-primary">Normal</span>
+            </div>
+            <div class="issue-body">
+              The scroll wheel on the mouse for PC 14 is loose and does not register scrolls.
+            </div>
+            <div class="issue-actions">
+              <label for="status-3" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Status:</label>
+              <select id="status-3" class="status-select resolved">
+                <option value="new">New</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved" selected>Resolved</option>
+              </select>
+              <div class="ms-auto" style="font-size: 0.85rem; color: var(--success-600);">
+                <i class="fas fa-check-circle"></i> Resolved by Omar
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Global JS -->
+  <script src="../js/app.js"></script>
+  <script>
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+
+      // Dropdown color change logic
+      document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', (e) => {
+          const val = e.target.value;
+          e.target.className = `status-select ${val}`;
+        });
+      });
+    });
+  </script>
+</body>
+</html>

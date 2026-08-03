@@ -17,7 +17,342 @@
     <p data-i18n="common.loading">Loading...</p>
   </div>
 
-  <div id="navbar-placeholder"></div>
+  <!-- CTU Support — Navbar Component -->
+<nav class="navbar" id="main-navbar">
+  <div class="navbar-container">
+    <!-- Brand -->
+    <a href="index.html" class="navbar-brand">
+      <div class="navbar-logo">
+        <i class="fas fa-headset"></i>
+      </div>
+      <div class="navbar-brand-text">
+        <span class="brand-name" data-i18n="nav.brand">CTU Support</span>
+        <span class="brand-sub">BATU</span>
+      </div>
+    </a>
+
+    <!-- Nav Links -->
+    <div class="nav-menu" id="nav-menu">
+      <a href="index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="report.html" class="nav-link active" data-i18n="nav.report">Report Problem</a>
+      
+      <!-- Mobile Auth Links -->
+      <div class="mobile-auth-links">
+        <a href="login.html" class="nav-link" data-i18n="nav.login">Login</a>
+        <!-- <a href="signup.html" class="nav-link nav-link-cta d-none" data-i18n="nav.signup">Sign Up</a> -->
+      </div>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="navbar-actions">
+      <!-- Desktop Auth Links -->
+      <div class="desktop-auth-links">
+        <a href="login.html" class="nav-link" data-i18n="nav.login">Login</a>
+        <!-- <a href="signup.html" class="nav-link nav-link-cta d-none" data-i18n="nav.signup">Sign Up</a> -->
+      </div>
+      
+      <div class="nav-divider desktop-only"></div>
+      <!-- Language Toggle -->
+      <button class="btn-icon navbar-action-btn" id="lang-toggle" title="Toggle Language" aria-label="Toggle Language">
+        <i class="fas fa-globe"></i>
+        <span class="lang-text">عربي</span>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button class="btn-icon navbar-action-btn" id="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+        <i class="fas fa-moon"></i>
+      </button>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* === Navbar Styles === */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--navbar-height);
+    z-index: 1000;
+    transition: all var(--transition-base);
+    border-bottom: 1px solid transparent;
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .navbar.scrolled {
+    border-bottom-color: var(--border-default);
+    box-shadow: var(--shadow-md);
+  }
+
+  .navbar-container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Brand */
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .navbar-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  }
+
+  .navbar-brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--primary-500);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Nav Links */
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* Increased gap for main links */
+  }
+
+  .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+
+  .nav-link.active {
+    color: var(--primary-500);
+    font-weight: 600;
+  }
+
+  .nav-link-cta {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  }
+
+  .nav-link-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  }
+
+  /* Actions */
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Increased gap between actions */
+    flex-shrink: 0;
+  }
+
+  .desktop-auth-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobile-auth-links {
+    display: none; /* Hidden on desktop */
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-default);
+    margin: 0 0.25rem;
+  }
+
+  .navbar-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    height: 38px;
+    width: auto;
+  }
+
+  .navbar-action-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--primary-500);
+    border-color: var(--primary-300);
+  }
+
+  .lang-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* Mobile Menu Toggle (Hamburger) */
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 8px;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-menu-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text-secondary);
+    border-radius: 2px;
+    transition: all var(--transition-base);
+  }
+
+  .mobile-menu-toggle.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .mobile-menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: var(--navbar-height);
+      left: 0;
+      right: 0;
+      background: var(--bg-glass-strong);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      flex-direction: column;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-default);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all var(--transition-base);
+      z-index: 999;
+      gap: 0.25rem;
+      pointer-events: none;
+    }
+
+    .nav-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .nav-link {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+
+    .desktop-auth-links, .desktop-only {
+      display: none;
+    }
+
+    .mobile-auth-links {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-glass);
+    }
+
+    .nav-link-cta {
+      margin-top: 0.25rem;
+    }
+
+    .navbar-action-btn .lang-text {
+      display: none;
+    }
+
+    .navbar-action-btn {
+      width: 38px;
+      padding: 0.5rem;
+      justify-content: center;
+    }
+  }
+
+  /* Spacer for fixed navbar */
+  body {
+    padding-top: var(--navbar-height);
+  }
+</style>
 
   <section class="section page-transition">
     <div class="container">
@@ -44,6 +379,10 @@
               </div>
             </div>
 
+            <!-- [BACKEND HINT]: To process this form in PHP:
+                 1. Add method="POST" action="process_report.php" to this <form>
+                 2. Add name="fullname" to the Name input, name="phone" to Phone, etc.
+                 3. Upon successful DB insert, redirect back here with ?success=1 -->
             <form id="report-form" novalidate>
               <div class="form-group">
                 <label class="form-label" data-i18n="report.name">Full Name</label>
@@ -74,12 +413,46 @@
           </div>
         </div>
 
-        <!-- Engineers Sidebar -->
         <div class="engineers-sidebar reveal-right">
           <h3 data-i18n="report.engineers.title">Available Engineers</h3>
           <p class="text-muted mb-3" data-i18n="report.engineers.subtitle" style="font-size:0.9rem">Contact our support team directly if needed.</p>
           <div class="engineers-list" id="engineers-list">
-            <!-- Populated by JS -->
+            
+            <!-- [BACKEND HINT]: Replace these static cards with a PHP foreach loop
+                 fetching active IT Support engineers from the database. -->
+            <div class="engineer-card">
+              <img src="images/team-1.jpg" alt="Eng. Ali Mostafa" loading="lazy">
+              <div class="engineer-card-info">
+                <h5 data-i18n="report.eng1.name">Eng. Ali Mostafa</h5>
+                <span>01012345678</span>
+              </div>
+              <button class="copy-btn" onclick="copyToClipboard('01012345678', this)" data-i18n="report.copy">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+
+            <div class="engineer-card">
+              <img src="images/team-2.jpg" alt="Eng. Sarah Ahmed" loading="lazy">
+              <div class="engineer-card-info">
+                <h5 data-i18n="report.eng2.name">Eng. Sarah Ahmed</h5>
+                <span>01123456789</span>
+              </div>
+              <button class="copy-btn" onclick="copyToClipboard('01123456789', this)" data-i18n="report.copy">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+
+            <div class="engineer-card">
+              <img src="images/team-3.jpg" alt="Eng. Omar Khaled" loading="lazy">
+              <div class="engineer-card-info">
+                <h5 data-i18n="report.eng3.name">Eng. Omar Khaled</h5>
+                <span>01234567890</span>
+              </div>
+              <button class="copy-btn" onclick="copyToClipboard('01234567890', this)" data-i18n="report.copy">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -109,14 +482,21 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       populateLocations();
-      renderEngineers();
       initReportForm();
+
+      // Check for success parameter from PHP backend redirect
+      if (window.location.search.includes('success=1')) {
+        document.getElementById('success-modal').classList.add('active');
+        // Optional: remove parameter from URL without reloading
+        const url = new URL(window.location);
+        url.searchParams.delete('success');
+        window.history.replaceState({}, '', url);
+      }
       checkBackendSuccess();
     });
 
     window.addEventListener('languageChanged', () => {
       populateLocations();
-      renderEngineers();
     });
 
     function checkBackendSuccess() {
@@ -147,22 +527,7 @@
       if (currentVal) select.value = currentVal;
     }
 
-    function renderEngineers() {
-      const list = document.getElementById('engineers-list');
-      if (!list) return;
-      list.innerHTML = CTU_DATA.teamMembers.map(member => `
-        <div class="engineer-card">
-          <img src="${member.image}" alt="${getLocalized(member, 'name')}" loading="lazy">
-          <div class="engineer-card-info">
-            <h5>${getLocalized(member, 'name')}</h5>
-            <span>${member.phone}</span>
-          </div>
-          <button class="copy-btn" onclick="copyToClipboard('${member.phone}', this)" data-i18n="report.copy">
-            <i class="fas fa-copy"></i> ${t('report.copy')}
-          </button>
-        </div>
-      `).join('');
-    }
+
 
     function initReportForm() {
       const form = document.getElementById('report-form');
@@ -294,5 +659,231 @@
       }
     }
   </style>
+<!-- CTU Support — Footer Component -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand & Description -->
+      <div class="footer-col footer-brand-col">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <i class="fas fa-headset"></i>
+          </div>
+          <div>
+            <h4 data-i18n="nav.brand">CTU Support</h4>
+            <span class="footer-brand-sub">BATU</span>
+          </div>
+        </div>
+        <p class="footer-desc" data-i18n="hero.subtitle">Professional IT support for Children's Technological University.</p>
+        <div class="footer-social">
+          <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-col">
+        <h5 data-i18n="footer.links">Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+          <li><a href="report.html" data-i18n="nav.report">Report Problem</a></li>
+          <li><a href="login.html" data-i18n="nav.login">Login</a></li>
+          <li><a href="signup.html" data-i18n="nav.signup">Sign Up</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-col">
+        <h5 data-i18n="footer.contact">Contact Us</h5>
+        <ul class="footer-contact-list">
+          <li>
+            <i class="fas fa-envelope"></i>
+            <span data-i18n="footer.email">support@ctu.batu.edu.eg</span>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <span data-i18n="footer.phone">+20 3 459 0000</span>
+          </li>
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <span data-i18n="footer.address">New Borg El Arab City, Alexandria, Egypt</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <p data-i18n="footer.copyright">© 2026 CTU Support Team. All rights reserved.</p>
+      <p class="footer-powered" data-i18n="footer.powered">Powered by Borg El Arab Technological University</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-default);
+    padding: 3rem 0 0;
+    margin-top: 4rem;
+    transition: background-color var(--transition-theme);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .footer-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .footer-brand h4 {
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+
+  .footer-brand-sub {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--primary-500);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .footer-desc {
+    font-size: 0.9rem;
+    color: var(--text-tertiary);
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+    max-width: 340px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .social-link {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .social-link:hover {
+    background: var(--primary-500);
+    color: white;
+    border-color: var(--primary-500);
+    transform: translateY(-2px);
+  }
+
+  .footer-col h5 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-links li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-links a {
+    font-size: 0.9rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--primary-500);
+  }
+
+  .footer-contact-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-tertiary);
+  }
+
+  .footer-contact-list i {
+    color: var(--primary-500);
+    margin-top: 3px;
+    width: 16px;
+    flex-shrink: 0;
+  }
+
+  .footer-bottom {
+    margin-top: 2.5rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer-bottom p {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .footer-powered {
+    font-size: 0.75rem !important;
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
 </body>
 </html>

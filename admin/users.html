@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users — Admin Dashboard</title>
+
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/staff.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .user-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.5rem;
+    }
+    .user-name {
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .user-role {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .user-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .status-dot.online { background: var(--success-500); }
+    .status-dot.offline { background: var(--danger-500); }
+    .user-actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    .user-actions button {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: linear-gradient(135deg, #DC2626, #F59E0B)">A</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="overview.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="users.html" class="sidebar-link active">
+            <i class="fas fa-users"></i><span>Users</span>
+          </a>
+          <a href="attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="issues.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Issues</span>
+          </a>
+          <a href="custody.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Custody</span>
+          </a>
+          <a href="reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="system.html" class="sidebar-link">
+            <i class="fas fa-shield-alt"></i><span>Audit Log</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/avatar-default.png" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">System Admin</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Administrator</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">User Management</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="flex-between mb-3">
+          <div>
+            <h3>User Management</h3>
+            <p class="text-muted">Manage staff accounts and availability</p>
+          </div>
+          <button class="btn btn-primary"><i class="fas fa-plus"></i> Add User</button>
+        </div>
+
+        <div class="search-bar mb-4">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search users...">
+        </div>
+
+        <div class="users-grid">
+          
+          <!-- User 1 -->
+          <div class="user-card">
+            <img src="../images/team-1.jpg" alt="Sara Mohamed" class="user-avatar" onerror="this.src='../images/avatar-default.png'">
+            <h5 class="user-name">Sara Mohamed</h5>
+            <span class="user-role">Lab Supervisor</span>
+            <div class="user-status">
+              <span class="status-dot online"></span>
+              <span class="text-success-600">Online</span>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+
+          <!-- User 2 -->
+          <div class="user-card">
+            <img src="../images/team-2.jpg" alt="Ali Mostafa" class="user-avatar" onerror="this.src='../images/avatar-default.png'">
+            <h5 class="user-name">Ali Mostafa</h5>
+            <span class="user-role">IT Support</span>
+            <div class="user-status">
+              <span class="status-dot offline"></span>
+              <span class="text-danger-500">Offline</span>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+
+          <!-- User 3 -->
+          <div class="user-card">
+            <img src="../images/team-3.jpg" alt="Omar Khaled" class="user-avatar" onerror="this.src='../images/avatar-default.png'">
+            <h5 class="user-name">Omar Khaled</h5>
+            <span class="user-role">IT Support</span>
+            <div class="user-status">
+              <span class="status-dot online"></span>
+              <span class="text-success-600">Online</span>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Global JS -->
+  <script src="../js/app.js"></script>
+  <script>
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

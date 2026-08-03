@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — Staff Dashboard</title>
+
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/staff.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .profile-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 4px solid var(--bg-tertiary);
+    }
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .profile-role {
+      font-size: 1rem;
+      color: var(--primary-500);
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+    .profile-details {
+      text-align: left;
+      display: grid;
+      gap: 1.5rem;
+    }
+    .profile-detail-group {
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 1rem;
+    }
+    .profile-detail-label {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+    .profile-detail-value {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--gradient-primary)">L</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Staff Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="overview.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="issues.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Issues</span>
+          </a>
+          <a href="custody.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Custody</span>
+          </a>
+          <a href="reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="profile.html" class="sidebar-link active">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-2.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Eng. Sarah Ahmed</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Lab Supervisor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">My Profile</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="profile-card">
+          <img src="../images/team-2.jpg" alt="Profile" class="profile-avatar">
+          <h3 class="profile-name">Eng. Sarah Ahmed</h3>
+          <div class="profile-role">Lab Supervisor</div>
+
+          <div class="profile-details">
+            <div class="profile-detail-group">
+              <div class="profile-detail-label">Email Address</div>
+              <div class="profile-detail-value">sarah.ahmed@ctu.edu.eg</div>
+            </div>
+            
+            <div class="profile-detail-group">
+              <div class="profile-detail-label">Phone Number</div>
+              <div class="profile-detail-value">+20 123 456 7890</div>
+            </div>
+
+            <div class="profile-detail-group">
+              <div class="profile-detail-label">Department</div>
+              <div class="profile-detail-value">Information Technology</div>
+            </div>
+
+            <div class="profile-detail-group" style="border: none;">
+              <div class="profile-detail-label">Employee ID</div>
+              <div class="profile-detail-value">#EMP-2023-45</div>
+            </div>
+          </div>
+          
+          <button class="btn btn-secondary mt-4" style="width: 100%;">
+            <i class="fas fa-key"></i> Change Password
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Global JS -->
+  <script src="../js/app.js"></script>
+  <script>
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

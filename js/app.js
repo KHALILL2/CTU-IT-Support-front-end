@@ -7,7 +7,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initLanguage();
-  loadComponents();
+  initLayout();
   initScrollReveal();
   hideLoadingScreen();
 });
@@ -63,7 +63,7 @@ function initLanguage() {
    COMPONENT LOADER
    ======================== */
 
-async function loadComponents() {
+async function initLayout() {
   // Determine path prefix based on page depth
   const path = window.location.pathname;
   let prefix = '';
@@ -72,37 +72,12 @@ async function loadComponents() {
     prefix = '../';
   }
 
-  // Load navbar
-  const navPlaceholder = document.getElementById('navbar-placeholder');
-  if (navPlaceholder) {
-    try {
-      const response = await fetch(prefix + 'components/navbar.html');
-      if (response.ok) {
-        const html = await response.text();
-        navPlaceholder.innerHTML = html;
-        initNavbar(prefix);
-        updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'light');
-        applyTranslations();
-      }
-    } catch (e) {
-      console.warn('Could not load navbar:', e);
-    }
-  }
-
-  // Load footer
-  const footerPlaceholder = document.getElementById('footer-placeholder');
-  if (footerPlaceholder) {
-    try {
-      const response = await fetch(prefix + 'components/footer.html');
-      if (response.ok) {
-        const html = await response.text();
-        footerPlaceholder.innerHTML = html;
-        applyTranslations();
-      }
-    } catch (e) {
-      console.warn('Could not load footer:', e);
-    }
-  }
+  // Initialize navbar interactions (mobile menu, theme toggle, lang toggle)
+  initNavbar(prefix);
+  updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'light');
+  
+  // Apply translations for the static HTML
+  applyTranslations();
 }
 
 /* ========================
