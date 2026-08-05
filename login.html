@@ -400,7 +400,14 @@
                1. Add method="POST" and action="process_login.php" to the <form> tag below.
                2. The inputs already have name="email" and name="password" configured.
                3. Remove the ID "login-form" if you are deleting the JS validation below. -->
-          <form id="login-form" method="POST" action="process_login.php" novalidate>
+          <form id="login-form" novalidate>
+            <div class="mb-4 p-3 rounded" style="background-color: var(--bg-secondary); font-size: 0.9rem;">
+              <strong>Demo Accounts:</strong><br>
+              Admin: admin@ctu.edu.eg<br>
+              Lab Supervisor: supervisor@ctu.edu.eg<br>
+              IT Support: support@ctu.edu.eg<br>
+              <em>(Password can be anything)</em>
+            </div>
             <div class="form-group">
               <label class="form-label" for="login-email" data-i18n="login.email">Email Address</label>
               <div class="input-icon-wrapper" id="email-wrapper">
@@ -474,9 +481,8 @@
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- ── Login Module ───────────────────────────────────────────────────── -->
-  <script type="module">
-    import { login, dashboardPath } from './js/api/auth.js';
+  <!-- ── Login Module (MOCK) ──────────────────────────────────────────────── -->
+  <script type="text/javascript">
 
     // ── DOM refs ────────────────────────────────────────────────────────────
     const form        = document.getElementById('login-form');
@@ -539,8 +545,25 @@
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (window.t?.('common.loading') ?? 'Loading...');
 
       try {
-        const { role } = await login(email, password);
-        window.location.href = dashboardPath(role);
+        // Mock authentication based on email
+        let role = '';
+        if (email === 'admin@ctu.edu.eg') {
+          role = 'admin';
+        } else if (email === 'supervisor@ctu.edu.eg') {
+          role = 'lab_supervisor';
+        } else if (email === 'support@ctu.edu.eg') {
+          role = 'it_support';
+        } else {
+          throw { status: 401 };
+        }
+        
+        const DASHBOARD_ROUTES = {
+          'admin': 'admin/admin-overview.html',
+          'lab_supervisor': 'lab-supervisor/lab-supervisor-dashboard.html',
+          'it_support': 'support/support-overview.html',
+        };
+
+        window.location.href = DASHBOARD_ROUTES[role];
 
       } catch (err) {
         // Restore button
