@@ -400,7 +400,7 @@
                1. Add method="POST" and action="process_login.php" to the <form> tag below.
                2. The inputs already have name="email" and name="password" configured.
                3. Remove the ID "login-form" if you are deleting the JS validation below. -->
-          <form id="login-form" novalidate>
+          <form id="login-form" method="POST" action="process_login.php" novalidate>
             <div class="form-group">
               <label class="form-label" for="login-email" data-i18n="login.email">Email Address</label>
               <div class="input-icon-wrapper" id="email-wrapper">

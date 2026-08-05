@@ -30,8 +30,8 @@ const ROLES = Object.freeze({
 
 // ─── Route Maps ─────────────────────────────────────────────────────────────────
 const DASHBOARD_ROUTES = Object.freeze({
-  [ROLES.ADMIN]:          'admin/dashboard.html',
-  [ROLES.LAB_SUPERVISOR]: 'support/support-overview.html',
+  [ROLES.ADMIN]:          'admin/admin-overview.html',
+  [ROLES.LAB_SUPERVISOR]: 'lab-supervisor/lab-supervisor-dashboard.html',
   [ROLES.IT_SUPPORT]:     'support/support-overview.html',
 });
 

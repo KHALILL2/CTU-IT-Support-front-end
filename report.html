@@ -381,12 +381,12 @@
 
             <!-- [BACKEND HINT]: To process this form in PHP:
                  1. Add method="POST" action="process_report.php" to this <form>
-                 2. Add name="fullname" to the Name input, name="phone" to Phone, etc.
-                 3. Upon successful DB insert, redirect back here with ?success=1 -->
-            <form id="report-form" novalidate>
+                 2. Ensure all inputs have `name` attributes matching database columns.
+            -->
+            <form id="report-form" method="POST" action="process_report.php" novalidate>
               <div class="form-group">
                 <label class="form-label" data-i18n="report.name">Full Name</label>
-                <input type="text" class="form-input" id="report-name" required aria-required="true" data-i18n-placeholder="report.name">
+                <input type="text" class="form-input" id="report-name" name="fullname" required aria-required="true" data-i18n-placeholder="report.name">
               </div>
 
               <div class="form-group">

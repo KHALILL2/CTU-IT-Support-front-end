@@ -67,8 +67,8 @@ async function initLayout() {
   // Determine path prefix based on page depth
   const path = window.location.pathname;
   let prefix = '';
-  if (path.includes('/student/') || path.includes('/admin/') || 
-      path.includes('\\student\\') || path.includes('\\admin\\')) {
+  if (path.includes('/lab-supervisor/') || path.includes('/admin/') || path.includes('/support/') ||
+      path.includes('\\lab-supervisor\\') || path.includes('\\admin\\') || path.includes('\\support\\')) {
     prefix = '../';
   }
 
