@@ -11,8 +11,9 @@ This project is a **Multi-Page Application (MPA)**. There is no Javascript-based
 The primary goal of this architecture is to be **Backend-Agnostic and PHP-Ready**. You do not need Node.js, Webpack, or a complex build process to edit this frontend.
 
 ### Directory Structure
-- **`/admin`**: Dashboard views exclusively for Administrators.
-- **`/staff`**: Dashboard views for Lab Supervisors and IT Support Engineers.
+- `admin/` - Administrator dashboard views
+- `lab-supervisor/` - Lab Supervisor dashboard views
+- `support/` - IT Support dashboard views
 - **`/student`**: Dashboard views for Students.
 - **`/css`**: Global stylesheets and component-specific styling.
 - **`/js`**: Purely presentation-layer Javascript (e.g., sidebar toggling, theme switching). No business logic resides here.
@@ -28,7 +29,7 @@ We do not use Tailwind or a heavy CSS framework. We use **Vanilla CSS** with a c
 1. **`main.css`**: The core stylesheet. It defines the CSS variables for colors, typography, spacing, and the dark/light mode (`data-theme="dark"`) color overrides. It also contains global resets and typography settings.
 2. **`components.css`**: Styles for reusable UI elements like Buttons (`.btn`), Forms (`.form-input`), Badges, Cards, and Modals.
 3. **`dashboard.css`**: Layout rules specifically for the internal dashboard screens (Sidebar, Topbar, Main Content grid).
-4. **`staff.css` / `admin.css`**: Specific overrides or custom components unique to those dashboard roles (e.g., the Kanban board styling or specific data tables).
+4. **`staff.css` / `admin.css`**: Specific overrides or custom components unique to those dashboard pages (e.g., `lab-supervisor-dashboard.html`) include the `sidebar` directly.
 5. **`animations.css`**: Keyframe animations (e.g., `.fade-in`, `.slide-up`) for smooth UI transitions.
 
 ### Dark & Light Mode

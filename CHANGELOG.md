@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-08-06
+
+### Added
+- **Mock Login System**: Replaced the broken ES Module auth system with an inline mock script in `login.html` to allow static hosting (e.g., GitHub Pages) navigation without a PHP backend.
+- Demo credentials block added directly to the login interface for easy access.
+
+### Changed
+- **Directory Restructuring**: Replaced the `staff` and `student` directories with `support` and `lab-supervisor` directories to better reflect the system roles.
+- **File Renaming**: Prefixed all dashboard HTML files with their respective roles (e.g., `admin-overview.html`, `support-users.html`, `lab-supervisor-dashboard.html`) to prevent naming collisions and improve backend routing clarity.
+- **Performance Optimization**: Removed the 600ms artificial delay in `app.js` and reduced the CSS loading screen transition to 0.15s, significantly speeding up perceived page loads.
+- Form methods in all dashboards standardized to `POST` in preparation for backend integration.
+
 ## [2.0.0] - 2026-08-03
 
 ### Added

@@ -90,10 +90,11 @@ exit();
 ---
 
 ## 5. Dynamic Data Loops
-Whenever you see a grid of cards or a table (e.g., the Engineers list in `report.html`, or the Issues table in `admin/issues.html`), the HTML provided is just static dummy data.
-
-### 🐘 PHP Implementation Hint:
-You need to delete the duplicate static rows and wrap a single HTML row/card in a PHP `while` or `foreach` loop fetching data from your MySQL database.
+Whenever you see a grid of cards or a table (e.g.,| URL Path | Action | Description |
+|---|---|---|
+| `login.html` | `POST /api/auth/login` | Authenticate user and return JWT + Role |
+| `support/support-issues.html` | `POST /api/issues/:id/status` | Update the status of a specific issue |
+| `lab-supervisor/lab-supervisor-reports.html` | `POST /api/reports/submit` | Submit a daily lab operation report |e the duplicate static rows and wrap a single HTML row/card in a PHP `while` or `foreach` loop fetching data from your MySQL database.
 
 **Example (Admin Issues Table):**
 ```php

@@ -187,9 +187,7 @@ function initScrollReveal() {
 function hideLoadingScreen() {
   const loadingScreen = document.getElementById('loading-screen');
   if (loadingScreen) {
-    setTimeout(() => {
-      loadingScreen.classList.add('hidden');
-    }, 600);
+    loadingScreen.classList.add('hidden');
   }
 }
 

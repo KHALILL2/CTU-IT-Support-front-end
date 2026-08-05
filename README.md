@@ -8,10 +8,9 @@ A highly responsive, multi-role Static HTML/CSS template built for the **CTU (Ch
 
 - **Public Portal**: Landing page, team showcase, and unified authentication screen.
 - **Three-Tier Role System Dashboard Templates**:
-  - **Lab Supervisor (`/staff`)**: Report hardware/software issues in labs, submit daily operation reports, and log attendance/meetings.
-  - **IT Support (`/staff`)**: Receive issue tickets, manage repairs via a touch-friendly mobile grid, update statuses, and escalate problems.
   - **Administrator (`/admin`)**: Global oversight, user directory management, audit logs, and master views for attendance, issues, and reports.
-  - **Student (`/student`)**: Student portal for viewing schedules, attendance, and profile.
+  - **Lab Supervisor (`/lab-supervisor`)**: Report hardware/software issues in labs, submit daily operation reports, and log attendance/meetings.
+  - **IT Support (`/support`)**: Receive issue tickets, manage repairs via a touch-friendly mobile grid, update statuses, and escalate problems.
 - **100% Mobile Responsive**: Designed specifically for touch devices. Native-feeling sidebars, touch-friendly UI components (44px min-height targets).
 - **CSS-Driven Theming & i18n**: Fully equipped with CSS variables for Light/Dark mode and LTR/RTL support (English/Arabic).
 
@@ -28,8 +27,8 @@ A highly responsive, multi-role Static HTML/CSS template built for the **CTU (Ch
 ```text
 /
 ├── admin/          # Administrator dashboard views
-├── staff/          # Staff (IT Support & Lab Supervisor) dashboard views
-├── student/        # Student dashboard views
+├── lab-supervisor/ # Lab Supervisor dashboard views
+├── support/        # IT Support dashboard views
 ├── css/            # Custom styles, animations, design system
 ├── docs/           # 📖 DEVELOPER DOCUMENTATION (Read this first!)
 ├── js/             # Lightweight UI scripts (sidebar toggles, theme switching)
