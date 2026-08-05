@@ -48,14 +48,16 @@ function updateThemeIcon(theme) {
    ======================== */
 
 function initLanguage() {
-  const lang = getCurrentLang();
+  const lang = typeof getCurrentLang === 'function' ? getCurrentLang() : 'en';
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('dir', dir);
   document.documentElement.setAttribute('lang', lang);
   
   // Apply translations after a tick to ensure DOM is ready
   setTimeout(() => {
-    applyTranslations();
+    if (typeof applyTranslations === 'function') {
+      applyTranslations();
+    }
   }, 100);
 }
 
@@ -77,7 +79,9 @@ async function initLayout() {
   updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'light');
   
   // Apply translations for the static HTML
-  applyTranslations();
+  if (typeof applyTranslations === 'function') {
+    applyTranslations();
+  }
 }
 
 /* ========================
@@ -131,11 +135,14 @@ function initNavbar(prefix) {
   // Language toggle
   const langBtn = document.getElementById('lang-toggle');
   if (langBtn) {
-    langBtn.addEventListener('click', toggleLanguage);
+    if (typeof toggleLanguage !== 'undefined') {
+      langBtn.addEventListener('click', toggleLanguage);
+    }
     // Set initial text
     const langText = langBtn.querySelector('.lang-text');
     if (langText) {
-      langText.textContent = getCurrentLang() === 'ar' ? 'EN' : 'عربي';
+      const currentLang = typeof getCurrentLang === 'function' ? getCurrentLang() : 'en';
+      langText.textContent = currentLang === 'ar' ? 'EN' : 'عربي';
     }
   }
 
@@ -231,7 +238,7 @@ async function copyToClipboard(text, btn) {
     await navigator.clipboard.writeText(text);
     if (btn) {
       const originalText = btn.textContent;
-      btn.textContent = t('report.copied');
+      btn.textContent = typeof t === 'function' ? t('report.copied') : 'Copied!';
       btn.classList.add('copied');
       setTimeout(() => {
         btn.textContent = originalText;
@@ -251,7 +258,7 @@ async function copyToClipboard(text, btn) {
     
     if (btn) {
       const originalText = btn.textContent;
-      btn.textContent = t('report.copied');
+      btn.textContent = typeof t === 'function' ? t('report.copied') : 'Copied!';
       btn.classList.add('copied');
       setTimeout(() => {
         btn.textContent = originalText;
@@ -266,7 +273,8 @@ async function copyToClipboard(text, btn) {
  */
 function formatDate(dateStr) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString(getCurrentLang() === 'ar' ? 'ar-EG' : 'en-US', {
+  const currentLang = typeof getCurrentLang === 'function' ? getCurrentLang() : 'en';
+  return date.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric'

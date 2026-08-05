@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Report a Problem — CTU Support</title>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('ctu-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
   <meta name="description" content="Submit a technical support ticket to the CTU Support team.">
   <link rel="stylesheet" href="css/all.min.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">

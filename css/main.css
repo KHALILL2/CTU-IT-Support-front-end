@@ -331,18 +331,7 @@ a:hover {
 
 /* === Loading Screen === */
 .loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  transition: opacity 0.15s ease, visibility 0.15s ease;
+  display: none !important;
 }
 
 .loading-screen.hidden {
@@ -384,4 +373,26 @@ a:hover {
 
 .skip-link:focus {
   top: 0;
+}
+
+/* === Bootstrap Table Overrides for Theme Support === */
+.table {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+.table th,
+.table td,
+.table tr {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+  border-color: var(--border-default) !important;
+}
+
+[data-theme="dark"] .table,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td,
+[data-theme="dark"] .table tr {
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
 }

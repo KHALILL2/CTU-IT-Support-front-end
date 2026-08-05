@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2026-08-06
+
+### Fixed
+- **Dark Mode Flash (FOUC)**: Added a synchronous `<script>` block in the `<head>` of all HTML files to immediately apply the saved `data-theme` before CSS parsing, eliminating the bright flash on page transitions.
+- **Infinite Loading Screen**: Added `typeof` checks to `app.js` for i18n functions (`getCurrentLang`, `t`). This allows the layout script to degrade gracefully on pages where `i18n.js` is intentionally omitted, successfully bypassing the stuck loading state.
+- **Loading Overlay Blink**: Set `.loading-screen` to `display: none !important` globally in `main.css` since the static MPA architecture reloads the full page, causing the loading div to create a disruptive blink.
+- **Dark Mode Tables**: Added an override block in `main.css` to force Bootstrap's `.table` components to respect `[data-theme="dark"]` background and text colors, fixing the glaring white tables in dark mode.
+
 ## [2.1.0] - 2026-08-06
 
 ### Added
