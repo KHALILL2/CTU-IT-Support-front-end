@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — Supervisor Panel</title>
+  
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .period-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .period-title {
+      color: var(--primary-500);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file. -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--primary-500)">S</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Supervisor Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="lab-supervisor-dashboard.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="lab-supervisor-attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="lab-supervisor-warnings.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
+          <a href="lab-supervisor-equipment.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Equipment</span>
+          </a>
+          <a href="lab-supervisor-reports.html" class="sidebar-link active">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="lab-supervisor-profile.html" class="sidebar-link">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-3.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Ahmed Youssef</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Lab Supervisor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Daily Reports</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+
+        <!-- History Table -->
+        <div class="mb-3 flex-between">
+          <div>
+            <h3 style="margin-bottom: 0.25rem;">Past Reports</h3>
+            <p class="text-muted">A history of reports you have submitted.</p>
+          </div>
+        </div>
+        
+        <div class="card mb-5">
+          <div class="table-responsive">
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--border-default); text-align: left;">
+                  <th style="padding: 1rem;">Date</th>
+                  <th style="padding: 1rem;">Hall Number</th>
+                  <th style="padding: 1rem;">Lab Type</th>
+                  <th style="padding: 1rem;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- [BACKEND HINT]: Loop over past reports -->
+                <tr style="border-bottom: 1px solid var(--border-default);">
+                  <td style="padding: 1rem;">2026-10-18</td>
+                  <td style="padding: 1rem;">Hall 405</td>
+                  <td style="padding: 1rem;">Robotics</td>
+                  <td style="padding: 1rem;"><span class="badge badge-success">Submitted</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-default);">
+                  <td style="padding: 1rem;">2026-10-11</td>
+                  <td style="padding: 1rem;">Hall 405</td>
+                  <td style="padding: 1rem;">Robotics</td>
+                  <td style="padding: 1rem;"><span class="badge badge-success">Submitted</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Add New Report Form -->
+        <div class="mb-3">
+          <h3 style="margin-bottom: 0.25rem;">Submit New Report</h3>
+          <p class="text-muted">Fill out the daily operation report for your assigned lab.</p>
+        </div>
+
+        <div class="card p-4">
+          <!-- [BACKEND HINT]: Ensure method="POST". On success, redirect to supervisor-reports.html?success=1 -->
+          <form method="POST" action="submit_report.php">
+            
+            <h4 class="mb-3 text-primary">General Information</h4>
+            <div class="grid grid-2" style="gap: 1.5rem; margin-bottom: 2rem;">
+              <div class="form-group mb-0">
+                <label class="form-label" for="report_date">Date</label>
+                <input type="date" class="form-input" id="report_date" name="report_date" required>
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label" for="report_day">Day</label>
+                <select class="form-select" id="report_day" name="report_day" required>
+                  <option value="">Select Day...</option>
+                  <option value="Sunday">Sunday</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                </select>
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label" for="hall_number">Hall Number</label>
+                <input type="text" class="form-input" id="hall_number" name="hall_number" placeholder="e.g., 405" required>
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label" for="lab_type">Lab Type</label>
+                <input type="text" class="form-input" id="lab_type" name="lab_type" placeholder="e.g., Robotics, PC Lab" required>
+              </div>
+              <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                <label class="form-label" for="supervisor_name">Lab Supervisor Name</label>
+                <input type="text" class="form-input" id="supervisor_name" name="supervisor_name" value="Ahmed Youssef" readonly style="background: var(--bg-tertiary);">
+              </div>
+            </div>
+
+            <!-- PERIOD 1 -->
+            <div class="period-section">
+              <div class="period-title"><i class="fas fa-clock"></i> Period 1</div>
+              <div class="grid grid-2" style="gap: 1.5rem;">
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_start_time">Session Start Time</label>
+                  <input type="time" class="form-input" id="p1_start_time" name="p1_start_time">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_supervisor_count">Number of Student Supervisors</label>
+                  <input type="number" min="0" class="form-input" id="p1_supervisor_count" name="p1_supervisor_count">
+                </div>
+                <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                  <label class="form-label" for="p1_supervisor_names">Names of Student Supervisors</label>
+                  <input type="text" class="form-input" id="p1_supervisor_names" name="p1_supervisor_names" placeholder="Comma separated names">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_lecturer_name">Lecturer Name</label>
+                  <input type="text" class="form-input" id="p1_lecturer_name" name="p1_lecturer_name">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_session_name">Session Name</label>
+                  <input type="text" class="form-input" id="p1_session_name" name="p1_session_name">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_class">Class</label>
+                  <input type="text" class="form-input" id="p1_class" name="p1_class">
+                </div>
+                
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_rating_explanation">Explanation Rating (1-5)</label>
+                  <select class="form-select" id="p1_rating_explanation" name="p1_rating_explanation">
+                    <option value="">Select...</option>
+                    <option value="1">1 - Poor</option><option value="2">2</option><option value="3">3 - Average</option><option value="4">4</option><option value="5">5 - Excellent</option>
+                  </select>
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_rating_supervisors">Student Supervisors Rating (1-5)</label>
+                  <select class="form-select" id="p1_rating_supervisors" name="p1_rating_supervisors">
+                    <option value="">Select...</option>
+                    <option value="1">1 - Poor</option><option value="2">2</option><option value="3">3 - Average</option><option value="4">4</option><option value="5">5 - Excellent</option>
+                  </select>
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_rating_kids">Kids' Response Rating (1-5)</label>
+                  <select class="form-select" id="p1_rating_kids" name="p1_rating_kids">
+                    <option value="">Select...</option>
+                    <option value="1">1 - Poor</option><option value="2">2</option><option value="3">3 - Average</option><option value="4">4</option><option value="5">5 - Excellent</option>
+                  </select>
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p1_explanation_quality">Explanation Quality</label>
+                  <input type="text" class="form-input" id="p1_explanation_quality" name="p1_explanation_quality" placeholder="Brief comment on quality">
+                </div>
+                <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                  <label class="form-label" for="p1_notes">Notes</label>
+                  <textarea class="form-input" id="p1_notes" name="p1_notes" rows="2" style="resize: vertical;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- PERIOD 2 -->
+            <div class="period-section">
+              <div class="period-title"><i class="fas fa-clock"></i> Period 2</div>
+              <div class="grid grid-2" style="gap: 1.5rem;">
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_start_time">Session Start Time</label>
+                  <input type="time" class="form-input" id="p2_start_time" name="p2_start_time">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_supervisor_count">Number of Student Supervisors</label>
+                  <input type="number" min="0" class="form-input" id="p2_supervisor_count" name="p2_supervisor_count">
+                </div>
+                <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                  <label class="form-label" for="p2_supervisor_names">Names of Student Supervisors</label>
+                  <input type="text" class="form-input" id="p2_supervisor_names" name="p2_supervisor_names" placeholder="Comma separated names">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_lecturer_name">Lecturer Name</label>
+                  <input type="text" class="form-input" id="p2_lecturer_name" name="p2_lecturer_name">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_session_name">Session Name</label>
+                  <input type="text" class="form-input" id="p2_session_name" name="p2_session_name">
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_class">Class</label>
+                  <input type="text" class="form-input" id="p2_class" name="p2_class">
+                </div>
+                
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_rating_explanation">Explanation Rating (1-5)</label>
+                  <select class="form-select" id="p2_rating_explanation" name="p2_rating_explanation">
+                    <option value="">Select...</option>
+                    <option value="1">1 - Poor</option><option value="2">2</option><option value="3">3 - Average</option><option value="4">4</option><option value="5">5 - Excellent</option>
+                  </select>
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_rating_supervisors">Student Supervisors Rating (1-5)</label>
+                  <select class="form-select" id="p2_rating_supervisors" name="p2_rating_supervisors">
+                    <option value="">Select...</option>
+                    <option value="1">1 - Poor</option><option value="2">2</option><option value="3">3 - Average</option><option value="4">4</option><option value="5">5 - Excellent</option>
+                  </select>
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_rating_kids">Kids' Response Rating (1-5)</label>
+                  <select class="form-select" id="p2_rating_kids" name="p2_rating_kids">
+                    <option value="">Select...</option>
+                    <option value="1">1 - Poor</option><option value="2">2</option><option value="3">3 - Average</option><option value="4">4</option><option value="5">5 - Excellent</option>
+                  </select>
+                </div>
+                <div class="form-group mb-0">
+                  <label class="form-label" for="p2_explanation_quality">Explanation Quality</label>
+                  <input type="text" class="form-input" id="p2_explanation_quality" name="p2_explanation_quality" placeholder="Brief comment on quality">
+                </div>
+                <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                  <label class="form-label" for="p2_notes">Notes</label>
+                  <textarea class="form-input" id="p2_notes" name="p2_notes" rows="2" style="resize: vertical;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane"></i> Submit Report</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

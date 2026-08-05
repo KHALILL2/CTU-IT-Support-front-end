@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — Supervisor Panel</title>
+  
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file. -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--primary-500)">S</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Supervisor Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="lab-supervisor-dashboard.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="lab-supervisor-attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="lab-supervisor-warnings.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
+          <a href="lab-supervisor-equipment.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Equipment</span>
+          </a>
+          <a href="lab-supervisor-reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="lab-supervisor-profile.html" class="sidebar-link active">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-3.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Ahmed Youssef</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Lab Supervisor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Profile Settings</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="card p-4">
+          <h3 class="mb-4">Personal Information</h3>
+          
+          <!-- [BACKEND HINT]: Ensure method is POST. Populate values with <?php echo $user['name']; ?> etc. -->
+          <form method="POST" action="update_profile.php" enctype="multipart/form-data">
+            
+            <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 2rem;">
+              <img src="../images/team-3.jpg" alt="Profile Picture" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+              <div>
+                <label for="profile_pic" class="form-label">Update Profile Picture</label>
+                <input type="file" name="profile_pic" id="profile_pic" class="form-input" accept="image/*" style="padding: 0.35rem 0.5rem;">
+              </div>
+            </div>
+
+            <div class="grid grid-2" style="gap: 1.5rem;">
+              <div class="form-group mb-0">
+                <label class="form-label" for="full_name">Full Name</label>
+                <input type="text" class="form-input" id="full_name" name="full_name" value="Ahmed Youssef" required>
+              </div>
+
+              <div class="form-group mb-0">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" class="form-input" id="email" name="email" value="ahmed.youssef@student.ctu.edu.eg" required>
+              </div>
+
+              <div class="form-group mb-0">
+                <label class="form-label" for="academic_id">Academic ID</label>
+                <input type="text" class="form-input" id="academic_id" name="academic_id" value="20261050" required>
+              </div>
+
+              <div class="form-group mb-0">
+                <label class="form-label" for="phone">Phone Number</label>
+                <input type="tel" class="form-input" id="phone" name="phone" value="01012345678" required>
+              </div>
+
+              <div class="form-group mb-0">
+                <label class="form-label" for="class_name">Class (الفصل)</label>
+                <!-- [BACKEND HINT]: Read-only field. -->
+                <input type="text" class="form-input" id="class_name" name="class_name" value="Level 3 - IT" readonly style="background-color: var(--bg-tertiary); cursor: not-allowed;">
+              </div>
+
+              <div class="form-group mb-0">
+                <label class="form-label" for="password">Change Password</label>
+                <input type="password" class="form-input" id="password" name="password" placeholder="Leave blank to keep current">
+              </div>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary px-5"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

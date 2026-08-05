@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance — Supervisor Panel</title>
+  
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file. -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--primary-500)">S</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Supervisor Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="lab-supervisor-dashboard.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="lab-supervisor-attendance.html" class="sidebar-link active">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="lab-supervisor-warnings.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
+          <a href="lab-supervisor-equipment.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Equipment</span>
+          </a>
+          <a href="lab-supervisor-reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="lab-supervisor-profile.html" class="sidebar-link">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-3.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Ahmed Youssef</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Lab Supervisor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Attendance History</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="card p-4 mb-4">
+          <div class="flex-between" style="flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <!-- Filters (Dummy form for PHP) -->
+              <form method="POST" action="supervisor-attendance.html" style="display: flex; gap: 1rem; align-items: center;">
+                <div>
+                  <label for="filter-month" class="form-label" style="margin-bottom: 0.25rem;">Month</label>
+                  <select id="filter-month" name="month" class="form-select">
+                    <option value="all">All Months</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="10" selected>October</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="filter-status" class="form-label" style="margin-bottom: 0.25rem;">Status</label>
+                  <select id="filter-status" name="status" class="form-select">
+                    <option value="all">All Statuses</option>
+                    <option value="attended">Attended</option>
+                    <option value="absent">Absent</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;"><i class="fas fa-filter"></i> Filter</button>
+              </form>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+              <!-- Export Buttons -->
+              <button class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+              <button class="btn btn-secondary"><i class="fas fa-file-excel"></i> Export Excel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--border-default); text-align: left;">
+                  <th style="padding: 1rem;">Date</th>
+                  <th style="padding: 1rem;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- [BACKEND HINT]: Loop over attendance records in PHP -->
+                <tr style="border-bottom: 1px solid var(--border-default);">
+                  <td style="padding: 1rem;">2026-10-15</td>
+                  <td style="padding: 1rem;"><span class="badge badge-success">Attended</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-default);">
+                  <td style="padding: 1rem;">2026-10-16</td>
+                  <td style="padding: 1rem;"><span class="badge badge-success">Attended</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-default);">
+                  <td style="padding: 1rem;">2026-10-17</td>
+                  <td style="padding: 1rem;"><span class="badge badge-danger">Absent</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-default);">
+                  <td style="padding: 1rem;">2026-10-18</td>
+                  <td style="padding: 1rem;"><span class="badge badge-success">Attended</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

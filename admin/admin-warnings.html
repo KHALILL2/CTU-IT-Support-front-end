@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Issues — Admin Dashboard</title>
+  <title>Warnings — Admin Dashboard</title>
 
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/dashboard.css">
-  <link rel="stylesheet" href="../css/staff.css">
+  <link rel="stylesheet" href="../css/support.css">
   <link rel="stylesheet" href="../css/animations.css">
   
   <style>
@@ -74,8 +74,7 @@
     [data-theme="dark"] .status-select {
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
     }
-    .status-select.new { border-color: var(--danger-300); color: var(--danger-500); }
-    .status-select.in_progress { border-color: var(--warning-300); color: var(--warning-600); }
+    .status-select.active_warning { border-color: var(--danger-300); color: var(--danger-500); }
     .status-select.resolved { border-color: var(--success-300); color: var(--success-600); }
     
     @media (min-width: 768px) {
@@ -116,14 +115,20 @@
           <a href="attendance.html" class="sidebar-link">
             <i class="fas fa-calendar-check"></i><span>Attendance</span>
           </a>
-          <a href="issues.html" class="sidebar-link active">
-            <i class="fas fa-exclamation-triangle"></i><span>Issues</span>
+          <a href="warnings.html" class="sidebar-link active">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
+          <a href="issues.html" class="sidebar-link">
+            <i class="fas fa-ticket-alt"></i><span>Issues</span>
           </a>
           <a href="custody.html" class="sidebar-link">
             <i class="fas fa-boxes-stacked"></i><span>Custody</span>
           </a>
           <a href="reports.html" class="sidebar-link">
-            <i class="fas fa-file-alt"></i><span>Reports</span>
+            <i class="fas fa-file-alt"></i><span>Daily Reports</span>
+          </a>
+          <a href="trainings.html" class="sidebar-link">
+            <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
           </a>
           <a href="system.html" class="sidebar-link">
             <i class="fas fa-shield-alt"></i><span>Audit Log</span>
@@ -151,7 +156,7 @@
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
           <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-          <h2 id="topbar-title">Issue Management</h2>
+          <h2 id="topbar-title">Warnings</h2>
         </div>
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
@@ -163,93 +168,90 @@
         
         <div class="flex-between mb-3">
           <div>
-            <h3>All Hardware Issues</h3>
-            <p class="text-muted">Oversee all reported issues across campus.</p>
+            <h3>Global Warnings</h3>
+            <p class="text-muted">Issue and manage student warnings.</p>
           </div>
-          <button class="btn btn-primary"><i class="fas fa-file-export"></i> Export</button>
+        </div>
+
+        <!-- Assign New Warning Form -->
+        <div class="card mb-4" style="padding: 1.5rem;">
+          <h5 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Assign New Warning</h5>
+          <form method="POST" action="">
+            <!-- [BACKEND HINT]: Form submission handles warning creation -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Select Student</label>
+                <select class="form-select" name="student_id" required>
+                  <option value="">-- Choose a Student --</option>
+                  <option value="1">Sara Mohamed (STU-2026-001)</option>
+                  <option value="2">Ali Mostafa (STU-2026-002)</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Warning Reason</label>
+                <input type="text" name="reason" class="form-control" placeholder="E.g., Repeated absences, misconduct" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-exclamation-triangle"></i> Issue Warning</button>
+          </form>
         </div>
 
         <div class="issue-list">
           
-          <!-- [BACKEND HINT]: Replace these static .issue-card elements with a PHP foreach loop.
-               The <select> dropdown below should be wrapped in a <form method="POST" action="update_issue.php">
-               so changing the status immediately updates the database. -->
+          <!-- [BACKEND HINT]: Loop over warnings from database -->
           
-          <!-- Issue 1 -->
+          <!-- Warning 1 -->
           <div class="issue-card">
             <div class="issue-header">
               <div>
-                <div class="issue-title">Projector not turning on</div>
-                <div class="issue-meta">Room 301 • Reported by Lab Sup • 2 hours ago</div>
+                <div class="issue-title">Repeated Absences</div>
+                <div class="issue-meta">Student: Ali Mostafa (STU-2026-002) • Issued on 2026-08-01</div>
               </div>
-              <span class="badge badge-warning">Urgent</span>
+              <span class="badge" style="background: var(--danger-100); color: var(--danger-600);">Level 2</span>
             </div>
             <div class="issue-body">
-              The projector in Room 301 is completely unresponsive. I have checked the power cable and it seems fine. Needs immediate attention for the next lecture.
+              Student has accumulated 3 unexcused absences during the current semester. Final warning before suspension.
             </div>
             <div class="issue-actions">
               <label for="status-1" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Status:</label>
-              <select id="status-1" class="status-select new">
-                <option value="new" selected>New</option>
-                <option value="in_progress">In Progress</option>
-                <option value="resolved">Resolved</option>
-              </select>
-              <div class="ms-auto">
-                <select class="form-select" style="display: inline-block; width: auto; padding: 0.3rem 1.5rem 0.3rem 0.75rem; font-size: 0.85rem;">
-                  <option value="">Assign to...</option>
-                  <option value="1">Ali Mostafa (IT)</option>
-                  <option value="2">Omar Khaled (IT)</option>
+              <form method="POST" action="" style="margin: 0; padding: 0; display: inline;">
+                <input type="hidden" name="warning_id" value="1">
+                <select id="status-1" name="status" class="status-select active_warning" onchange="this.form.submit()">
+                  <option value="active" selected>Active</option>
+                  <option value="resolved">Resolved</option>
                 </select>
+              </form>
+              <div class="ms-auto" style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);"><i class="fas fa-trash"></i> Delete</button>
               </div>
             </div>
           </div>
 
-          <!-- Issue 2 -->
+          <!-- Warning 2 -->
           <div class="issue-card">
             <div class="issue-header">
               <div>
-                <div class="issue-title">Network switch blinking red</div>
-                <div class="issue-meta">Lab 4B • Reported by IT Support • 1 day ago</div>
+                <div class="issue-title">Equipment Misuse</div>
+                <div class="issue-meta">Student: Sara Mohamed (STU-2026-001) • Issued on 2026-07-28</div>
               </div>
-              <span class="badge badge-primary">Normal</span>
+              <span class="badge" style="background: var(--warning-100); color: var(--warning-600);">Level 1</span>
             </div>
             <div class="issue-body">
-              The main network switch in Lab 4B is indicating a fault on port 12. Some PCs are losing connection intermittently.
+              Mishandling lab equipment without authorization.
             </div>
             <div class="issue-actions">
               <label for="status-2" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Status:</label>
-              <select id="status-2" class="status-select in_progress">
-                <option value="new">New</option>
-                <option value="in_progress" selected>In Progress</option>
-                <option value="resolved">Resolved</option>
-              </select>
-              <div class="ms-auto" style="font-size: 0.85rem; color: var(--text-secondary);">
-                <i class="fas fa-user-check"></i> Assigned to Ali
-              </div>
-            </div>
-          </div>
-
-          <!-- Issue 3 -->
-          <div class="issue-card">
-            <div class="issue-header">
-              <div>
-                <div class="issue-title">Mouse scroll wheel broken</div>
-                <div class="issue-meta">Lab 2A, PC 14 • Reported by Lab Sup • 3 days ago</div>
-              </div>
-              <span class="badge badge-primary">Normal</span>
-            </div>
-            <div class="issue-body">
-              The scroll wheel on the mouse for PC 14 is loose and does not register scrolls.
-            </div>
-            <div class="issue-actions">
-              <label for="status-3" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Status:</label>
-              <select id="status-3" class="status-select resolved">
-                <option value="new">New</option>
-                <option value="in_progress">In Progress</option>
-                <option value="resolved" selected>Resolved</option>
-              </select>
-              <div class="ms-auto" style="font-size: 0.85rem; color: var(--success-600);">
-                <i class="fas fa-check-circle"></i> Resolved by Omar
+              <form method="POST" action="" style="margin: 0; padding: 0; display: inline;">
+                <input type="hidden" name="warning_id" value="2">
+                <select id="status-2" name="status" class="status-select resolved" onchange="this.form.submit()">
+                  <option value="active">Active</option>
+                  <option value="resolved" selected>Resolved</option>
+                </select>
+              </form>
+              <div class="ms-auto" style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);"><i class="fas fa-trash"></i> Delete</button>
               </div>
             </div>
           </div>
@@ -281,14 +283,6 @@
         sidebarToggle.addEventListener('click', toggleSidebar);
         sidebarOverlay.addEventListener('click', closeSidebar);
       }
-
-      // Dropdown color change logic
-      document.querySelectorAll('.status-select').forEach(select => {
-        select.addEventListener('change', (e) => {
-          const val = e.target.value;
-          e.target.className = `status-select ${val}`;
-        });
-      });
     });
   </script>
 </body>

@@ -31,8 +31,8 @@ const ROLES = Object.freeze({
 // ─── Route Maps ─────────────────────────────────────────────────────────────────
 const DASHBOARD_ROUTES = Object.freeze({
   [ROLES.ADMIN]:          'admin/dashboard.html',
-  [ROLES.LAB_SUPERVISOR]: 'staff/dashboard.html',
-  [ROLES.IT_SUPPORT]:     'staff/dashboard.html',
+  [ROLES.LAB_SUPERVISOR]: 'support/support-overview.html',
+  [ROLES.IT_SUPPORT]:     'support/support-overview.html',
 });
 
 // ─── Feature Flags ──────────────────────────────────────────────────────────────

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warnings — Supervisor Panel</title>
+  
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file. -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: var(--primary-500)">S</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Supervisor Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="lab-supervisor-dashboard.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="lab-supervisor-attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="lab-supervisor-warnings.html" class="sidebar-link active">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
+          <a href="lab-supervisor-equipment.html" class="sidebar-link">
+            <i class="fas fa-boxes-stacked"></i><span>Equipment</span>
+          </a>
+          <a href="lab-supervisor-reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Reports</span>
+          </a>
+          <a href="lab-supervisor-profile.html" class="sidebar-link">
+            <i class="fas fa-user"></i><span>Profile</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/team-3.jpg" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">Ahmed Youssef</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Lab Supervisor</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Warnings Tracker</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+
+        <div class="card p-4 mb-4">
+          <h4 style="margin-bottom: 1rem;"><i class="fas fa-info-circle text-primary"></i> Attendance Rules</h4>
+          <p class="text-muted mb-3">Please keep track of your attendance to avoid warnings.</p>
+          
+          <div class="grid grid-3">
+            <div style="border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 1rem; text-align: center;">
+              <h5 class="text-success"><i class="fas fa-check-circle"></i> Attendance</h5>
+              <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Present during scheduled sessions</p>
+            </div>
+            
+            <div style="border: 1px solid var(--warning-300); background: rgba(245, 158, 11, 0.05); border-radius: var(--radius-sm); padding: 1rem; text-align: center;">
+              <h5 class="text-warning"><i class="fas fa-envelope-open-text"></i> Excuse (Max 2)</h5>
+              <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Accepted official excuses allowed</p>
+            </div>
+            
+            <div style="border: 1px solid var(--danger-300); background: rgba(239, 68, 68, 0.05); border-radius: var(--radius-sm); padding: 1rem; text-align: center;">
+              <h5 class="text-danger"><i class="fas fa-times-circle"></i> Absence (Max 1)</h5>
+              <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Unexcused absences allowed</p>
+            </div>
+          </div>
+          
+          <div style="margin-top: 1.5rem; background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm);">
+            <strong>Warning Escalation:</strong>
+            <ul style="margin-top: 0.5rem; padding-inline-start: 1.5rem; font-size: 0.9rem;">
+              <li><span class="text-danger">1st Warning</span> issued after <strong>2 unexcused absences</strong>.</li>
+              <li><span class="text-danger">2nd Warning</span> issued after <strong>3 unexcused absences</strong> (Subject to disciplinary action).</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 style="margin-bottom: 1rem;">My Warnings</h3>
+
+        <!-- [BACKEND HINT]: If there are NO warnings in DB, show this empty state block. -->
+        <div class="card p-5" style="text-align: center; border-style: dashed; border-width: 2px;">
+          <div style="font-size: 3rem; color: var(--success-500); margin-bottom: 1rem;">
+            <i class="fas fa-shield-check"></i>
+          </div>
+          <h4 style="margin-bottom: 0.5rem;">لا يوجد إنذارات</h4>
+          <p class="text-muted">You have a clean record. Keep up the good attendance!</p>
+        </div>
+
+        <!-- [BACKEND HINT]: If there ARE warnings, loop through them and show cards like this one instead. -->
+        <!--
+        <div class="card p-4 mb-3" style="border-left: 4px solid var(--danger-500);">
+          <div class="flex-between">
+            <div>
+              <h4 class="text-danger mb-1"><i class="fas fa-exclamation-triangle"></i> First Warning</h4>
+              <p class="text-muted" style="font-size: 0.9rem;">Issued on: 2026-10-18</p>
+            </div>
+            <span class="badge badge-danger">Unexcused Absences: 2</span>
+          </div>
+          <hr style="margin: 1rem 0; border-top: 1px solid var(--border-default);">
+          <p>This is an automated warning due to exceeding the maximum allowed unexcused absences. Please contact your coordinator.</p>
+        </div>
+        -->
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>

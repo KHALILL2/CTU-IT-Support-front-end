@@ -3,20 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overview — Admin Dashboard</title>
+  <title>Attendance — Admin Dashboard</title>
 
   <link rel="stylesheet" href="../css/all.min.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/dashboard.css">
-  <link rel="stylesheet" href="../css/staff.css">
+  <link rel="stylesheet" href="../css/support.css">
   <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .attendance-table-wrap {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .attendance-table th, .attendance-table td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-glass);
+    }
+    .attendance-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .attendance-table tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file.
-       If the user is not logged in or role !== 'admin', redirect them to login.php. -->
-  
   <div class="loading-screen" id="loading-screen">
     <div class="loading-spinner"></div>
     <p data-i18n="common.loading">Loading...</p>
@@ -37,23 +62,29 @@
       <nav class="sidebar-nav">
         <div class="sidebar-nav-section">
           <div class="sidebar-nav-section-title">Navigation</div>
-          <a href="overview.html" class="sidebar-link active">
+          <a href="overview.html" class="sidebar-link">
             <i class="fas fa-th-large"></i><span>Dashboard</span>
           </a>
           <a href="users.html" class="sidebar-link">
             <i class="fas fa-users"></i><span>Users</span>
           </a>
-          <a href="attendance.html" class="sidebar-link">
+          <a href="attendance.html" class="sidebar-link active">
             <i class="fas fa-calendar-check"></i><span>Attendance</span>
           </a>
+          <a href="warnings.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
           <a href="issues.html" class="sidebar-link">
-            <i class="fas fa-exclamation-triangle"></i><span>Issues</span>
+            <i class="fas fa-ticket-alt"></i><span>Issues</span>
           </a>
           <a href="custody.html" class="sidebar-link">
             <i class="fas fa-boxes-stacked"></i><span>Custody</span>
           </a>
           <a href="reports.html" class="sidebar-link">
-            <i class="fas fa-file-alt"></i><span>Reports</span>
+            <i class="fas fa-file-alt"></i><span>Daily Reports</span>
+          </a>
+          <a href="trainings.html" class="sidebar-link">
+            <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
           </a>
           <a href="system.html" class="sidebar-link">
             <i class="fas fa-shield-alt"></i><span>Audit Log</span>
@@ -81,7 +112,7 @@
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
           <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-          <h2 id="topbar-title">Overview</h2>
+          <h2 id="topbar-title">Staff Attendance</h2>
         </div>
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
@@ -91,53 +122,49 @@
 
       <div class="dashboard-content page-transition">
         
-        <!-- [BACKEND HINT]: Query your database to get actual counts for these stat cards.
-             Replace the hardcoded numbers (e.g., '2 / 3', '24') with <?php echo $statCount; ?> -->
-        <div class="grid grid-3 mb-4">
-          <div class="stat-card">
-            <div class="stat-card-icon success">
-              <i class="fas fa-headset"></i>
-            </div>
-            <div class="stat-card-info">
-              <h3>2 / 3</h3>
-              <p>IT Support Online</p>
-            </div>
+        <div class="flex-between mb-4">
+          <div>
+            <h3>Today's Check-ins</h3>
+            <p class="text-muted">Monitor staff attendance and location.</p>
           </div>
-  
-          <div class="stat-card">
-            <div class="stat-card-icon warning">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="stat-card-info">
-              <h3>12</h3>
-              <p>Open Issues</p>
-            </div>
-          </div>
-  
-          <div class="stat-card">
-            <div class="stat-card-icon primary">
-              <i class="fas fa-video"></i>
-            </div>
-            <div class="stat-card-info">
-              <h3>4</h3>
-              <p>Active Meetings</p>
-            </div>
-          </div>
+          <button class="btn btn-secondary"><i class="fas fa-download"></i> Export CSV</button>
         </div>
-        
-        <div class="card" style="padding: 1.5rem;">
-          <h4 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Quick Actions</h4>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="users.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-user-plus"></i> Manage Users
-            </a>
-            <a href="issues.html" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-wrench"></i> Review Issues
-            </a>
-            <a href="reports.html" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-file-alt"></i> Daily Reports
-            </a>
-          </div>
+
+        <div class="attendance-table-wrap">
+          <table class="attendance-table">
+            <thead>
+              <tr>
+                <th>Staff Member</th>
+                <th>Role</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Sara Mohamed</strong></td>
+                <td>Lab Supervisor</td>
+                <td>07:55 AM</td>
+                <td><i class="fas fa-map-marker-alt text-muted"></i> Campus (Valid)</td>
+                <td><span class="badge badge-success">Present</span></td>
+              </tr>
+              <tr>
+                <td><strong>Omar Khaled</strong></td>
+                <td>IT Support</td>
+                <td>08:12 AM</td>
+                <td><i class="fas fa-map-marker-alt text-muted"></i> Campus (Valid)</td>
+                <td><span class="badge badge-warning">Late</span></td>
+              </tr>
+              <tr>
+                <td><strong>Ali Mostafa</strong></td>
+                <td>IT Support</td>
+                <td>--:--</td>
+                <td>--</td>
+                <td><span class="badge badge-danger">Absent</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
       </div>

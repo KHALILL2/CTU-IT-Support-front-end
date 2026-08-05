@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custody — Admin Dashboard</title>
+
+  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/support.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  
+  <style>
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .master-table th, .master-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .master-table th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .master-table tbody tr {
+      transition: background 0.2s;
+    }
+    .master-table tbody tr:hover {
+      background: var(--bg-secondary);
+    }
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file.
+       If the user is not logged in or role !== 'admin', redirect them to login.php. -->
+       
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <p data-i18n="common.loading">Loading...</p>
+  </div>
+
+  <div class="dashboard-layout" id="dashboard-layout">
+    
+    <!-- CTU Support — Sidebar Component -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo" style="background: linear-gradient(135deg, #DC2626, #F59E0B)">A</div>
+        <div>
+          <h4 data-i18n="nav.brand">CTU Support</h4>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-section-title">Navigation</div>
+          <a href="overview.html" class="sidebar-link">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+          </a>
+          <a href="users.html" class="sidebar-link">
+            <i class="fas fa-users"></i><span>Users</span>
+          </a>
+          <a href="attendance.html" class="sidebar-link">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+          </a>
+          <a href="warnings.html" class="sidebar-link">
+            <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
+          </a>
+          <a href="issues.html" class="sidebar-link">
+            <i class="fas fa-ticket-alt"></i><span>Issues</span>
+          </a>
+          <a href="custody.html" class="sidebar-link active">
+            <i class="fas fa-boxes-stacked"></i><span>Custody</span>
+          </a>
+          <a href="reports.html" class="sidebar-link">
+            <i class="fas fa-file-alt"></i><span>Daily Reports</span>
+          </a>
+          <a href="trainings.html" class="sidebar-link">
+            <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
+          </a>
+          <a href="system.html" class="sidebar-link">
+            <i class="fas fa-shield-alt"></i><span>Audit Log</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="../login.html" class="sidebar-link" id="logout-btn" style="color: var(--danger-500)">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </a>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar"><img src="../images/avatar-default.png" alt="User Avatar" id="sidebar-avatar"></div>
+          <div class="sidebar-user-info">
+            <p class="sidebar-user-name" id="sidebar-user-name">System Admin</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Administrator</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Custody Management</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="flex-between mb-3">
+          <div>
+            <h3>Global Equipment</h3>
+            <p class="text-muted">Manage equipment assigned to students.</p>
+          </div>
+        </div>
+
+        <!-- Assign New Equipment Form -->
+        <div class="card mb-4" style="padding: 1.5rem;">
+          <h5 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Assign Equipment</h5>
+          <form method="POST" action="">
+            <!-- [BACKEND HINT]: Form submission handles custody assignment -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Select Student</label>
+                <select class="form-select" name="student_id" required>
+                  <option value="">-- Choose a Student --</option>
+                  <option value="1">Sara Mohamed (STU-2026-001)</option>
+                  <option value="2">Ali Mostafa (STU-2026-002)</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Equipment Type</label>
+                <select class="form-select" name="equipment_type" required>
+                  <option value="">-- Type --</option>
+                  <option value="laptop">Laptop</option>
+                  <option value="mouse">Mouse</option>
+                  <option value="toolkit">Toolkit</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Quantity</label>
+                <input type="number" name="quantity" class="form-control" value="1" min="1" required>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Date Assigned</label>
+                <input type="date" name="assigned_date" class="form-control" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-boxes-stacked"></i> Assign Equipment</button>
+          </form>
+        </div>
+
+        <div class="search-bar mb-4">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search by student or equipment...">
+        </div>
+
+        <div class="table-responsive">
+          <table class="master-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Equipment</th>
+                <th>Qty</th>
+                <th>Date Assigned</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [BACKEND HINT]: Loop over custody records -->
+              <tr>
+                <td>Sara Mohamed</td>
+                <td>Lenovo ThinkPad T14</td>
+                <td>1</td>
+                <td>2026-01-15</td>
+                <td><span class="badge" style="background: var(--success-100); color: var(--success-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Assigned</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn btn-secondary btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);" title="Return"><i class="fas fa-undo"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Ali Mostafa</td>
+                <td>Networking Toolkit</td>
+                <td>1</td>
+                <td>2026-03-10</td>
+                <td><span class="badge" style="background: var(--warning-100); color: var(--warning-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Pending Return</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn btn-secondary btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);" title="Return"><i class="fas fa-undo"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Shared Global JS -->
+  <script src="../js/app.js"></script>
+  <script>
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebarEl = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebarToggle && sidebarOverlay && sidebarEl) {
+        const toggleSidebar = () => {
+          sidebarEl.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        };
+        const closeSidebar = () => {
+          sidebarEl.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        };
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+      }
+    });
+  </script>
+</body>
+</html>
