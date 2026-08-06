@@ -85,13 +85,28 @@
         </div>
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="mb-3">
+          <h3 style="margin-bottom: 0.25rem;">My Custody</h3>
+          <p class="text-muted">Equipment currently signed out under your name.</p>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+              <thead>
                 <tr style="border-bottom: 2px solid var(--border-default); text-align: left;">
                   <th style="padding: 1rem;">Item Type</th>
                   <th style="padding: 1rem;">Quantity</th>
                   <th style="padding: 1rem;">Date Assigned</th>
                 </tr>
               </thead>
-              <tbody id="equipment-table-body">
+              <tbody>
                 <!-- [BACKEND HINT]: Loop over assigned equipment from DB -->
                 <tr style="border-bottom: 1px solid var(--border-default);">
                   <td style="padding: 1rem;">
