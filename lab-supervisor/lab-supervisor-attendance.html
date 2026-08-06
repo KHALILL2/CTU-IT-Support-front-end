@@ -120,8 +120,10 @@
 
             <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
               <!-- Export Buttons -->
-              <button class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
-              <button class="btn btn-secondary"><i class="fas fa-file-excel"></i> Export Excel</button>
+              <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '.table', this)"><i class="fas fa-file-excel"></i> Excel</button>
+              <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '.table', this)"><i class="fas fa-file-csv"></i> CSV</button>
+              <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '.table', this)"><i class="fas fa-file-pdf"></i> PDF</button>
+              <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '.table', this)"><i class="fas fa-image"></i> PNG</button>
             </div>
           </div>
         </div>

@@ -16,20 +16,19 @@
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/dashboard.css">
-  <link rel="stylesheet" href="../css/support.css">
   <link rel="stylesheet" href="../css/animations.css">
-  <style>
+  
   <style>
     .day-group {
       margin-bottom: 1rem;
       border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
-      background: var(--bg-primary);
       overflow: hidden;
+      background: var(--bg-primary);
     }
     .day-header {
-      padding: 1rem 1.5rem;
       background: var(--bg-secondary);
+      padding: 1rem 1.5rem;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
@@ -202,6 +201,72 @@
 
       <div class="dashboard-content page-transition">
         
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+          <div class="search-bar">
+            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary);"></i>
+            <input type="text" placeholder="Search reports..." style="padding-left: 2.5rem; width: 300px;" class="form-control">
+          </div>
+          
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#reports-container', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#reports-container', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#reports-container', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#reports-container', this)"><i class="fas fa-file-image"></i> Export PNG</button>
+          </div>
+        </div>
+
+        <div id="reports-container">
+          <!-- Monday -->
+          <div class="day-group">
+            <div class="day-header" onclick="this.nextElementSibling.classList.toggle('active')">
+              <span>Monday, Aug 3, 2026</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="day-content active">
+              <div class="report-card">
+                <div class="report-header">
+                  <div>
+                    <div class="report-title">Hall 405 - Robotics</div>
+                    <div class="report-meta">Supervisor: Ahmed Youssef | Periods: 2</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> View Full</button>
+                </div>
+                <div class="report-body">
+                  All systems operational. Some minor issues with projectors that were resolved quickly.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tuesday -->
+          <div class="day-group">
+            <div class="day-header" onclick="this.nextElementSibling.classList.toggle('active')">
+              <span>Tuesday, Aug 4, 2026</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="day-content">
+              <div class="report-card">
+                <div class="report-header">
+                  <div>
+                    <div class="report-title">Hall 406 - PC Lab</div>
+                    <div class="report-meta">Supervisor: Sara Mohamed | Periods: 1</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> View Full</button>
+                </div>
+                <div class="report-body">
+                  Routine check completed. No major issues reported.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script>
     // Sidebar Toggle Logic
     document.addEventListener('DOMContentLoaded', () => {
       const sidebarEl = document.getElementById('sidebar');

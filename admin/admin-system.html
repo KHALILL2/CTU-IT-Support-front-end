@@ -126,8 +126,7 @@
         </div>
       </div>
     </aside>
-
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <main class="dashboard-main">
       <header class="dashboard-topbar">
@@ -142,6 +141,25 @@
       </header>
 
       <div class="dashboard-content page-transition">
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+          <div class="search-bar">
+            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary);"></i>
+            <input type="text" placeholder="Search audit logs..." style="padding-left: 2.5rem; width: 300px;" class="form-control">
+          </div>
+          
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#audit-table-body', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#audit-table-body', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#audit-table-body', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#audit-table-body', this)"><i class="fas fa-file-image"></i> Export PNG</button>
+          </div>
+        </div>
+
+        <div class="log-table-wrap">
+          <table class="log-table">
+            <thead>
+              <tr>
                 <th>Timestamp</th>
                 <th>User</th>
                 <th>Action</th>

@@ -114,6 +114,12 @@
             <h3 style="margin-bottom: 0.25rem;">Past Reports</h3>
             <p class="text-muted">A history of reports you have submitted.</p>
           </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="exportTableData('excel', '.table', this)"><i class="fas fa-file-excel"></i> Excel</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="exportTableData('csv', '.table', this)"><i class="fas fa-file-csv"></i> CSV</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="exportTableData('pdf', '.table', this)"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="exportTableData('png', '.table', this)"><i class="fas fa-image"></i> PNG</button>
+          </div>
         </div>
         
         <div class="card mb-5">

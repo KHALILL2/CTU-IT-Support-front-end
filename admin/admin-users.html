@@ -168,12 +168,85 @@
           <div class="sidebar-user-avatar"><img src="../images/avatar-default.png" alt="User Avatar" id="sidebar-avatar"></div>
           <div class="sidebar-user-info">
             <p class="sidebar-user-name" id="sidebar-user-name">System Admin</p>
+            <p class="sidebar-user-role" id="sidebar-user-role">Administrator</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <h2 id="topbar-title">Users Management</h2>
+        </div>
+        <div class="dashboard-topbar-right">
+          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
+          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+
+        <!-- Action Bar: Search, Add User, Export, Import -->
+        <div class="flex-between mb-4">
+          <div class="search-bar" style="max-width: 300px;">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search users by name or ID..." class="form-control">
+          </div>
+          
+          <div class="action-btns" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" onclick="simulateDataImport('csv', '#users-table-body', this)"><i class="fas fa-file-import"></i> Import Data</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#users-table-body', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#users-table-body', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#users-table-body', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#users-table-body', this)"><i class="fas fa-image"></i> Export PNG</button>
+            <button type="button" class="btn btn-primary" data-modal-target="#addStudentModal"><i class="fas fa-plus"></i> Add User</button>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-container" style="background: var(--bg-primary); border: 1px solid var(--border-default); border-radius: var(--radius-md); overflow-x: auto;">
+          <table class="table" style="width: 100%; min-width: 700px; text-align: left; border-collapse: collapse;">
+            <thead>
+              <tr style="background: var(--bg-secondary); border-bottom: 2px solid var(--border-default);">
+                <th style="padding: 1rem;">ID</th>
+                <th style="padding: 1rem;">Name</th>
+                <th style="padding: 1rem;">Role</th>
+                <th style="padding: 1rem;">Department</th>
+                <th style="padding: 1rem;">Status</th>
+                <th style="padding: 1rem;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr style="border-bottom: 1px solid var(--border-default); cursor: pointer;" onclick="document.getElementById('studentModal').classList.add('active'); document.body.style.overflow='hidden';">
+                <td style="padding: 1rem;">STU-2026-001</td>
+                <td style="padding: 1rem;"><strong>Sara Mohamed</strong></td>
+                <td style="padding: 1rem;">Student</td>
+                <td style="padding: 1rem;">Computer Science</td>
+                <td style="padding: 1rem;"><span class="badge" style="background: var(--success-100); color: var(--success-600);">Active</span></td>
+                <td style="padding: 1rem;">
+                  <div class="action-btns" style="display: flex; gap: 0.25rem;">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i></button>
                     <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i></button>
                   </div>
                 </td>
               </tr>
-            </tbody>
+              <tr style="border-bottom: 1px solid var(--border-default);">
+                <td style="padding: 1rem;">STF-2024-042</td>
+                <td style="padding: 1rem;"><strong>Ahmed Ali</strong></td>
+                <td style="padding: 1rem;">Lab Supervisor</td>
+                <td style="padding: 1rem;">Networking</td>
+                <td style="padding: 1rem;"><span class="badge" style="background: var(--success-100); color: var(--success-600);">Active</span></td>
+                <td style="padding: 1rem;">
+                  <div class="action-btns" style="display: flex; gap: 0.25rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
           </table>
         </div>
 
