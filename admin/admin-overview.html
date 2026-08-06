@@ -6,8 +6,14 @@
   <title>Overview — Admin Dashboard</title>
   <script>
     (function() {
-      const savedTheme = localStorage.getItem('ctu-theme') || 'light';
+      const savedTheme = localStorage.getItem('ctu-theme') || localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+      }
+      const savedLang = localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
+      document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', savedLang);
     })();
   </script>
 
@@ -22,8 +28,6 @@
 <body>
   <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file.
        If the user is not logged in or role !== 'admin', redirect them to login.php. -->
-  
-
 
   <div class="dashboard-layout" id="dashboard-layout">
     
@@ -52,9 +56,6 @@
           <a href="admin-warnings.html" class="sidebar-link">
             <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
           </a>
-          <a href="admin-issues.html" class="sidebar-link">
-            <i class="fas fa-ticket-alt"></i><span>Issues</span>
-          </a>
           <a href="admin-custody.html" class="sidebar-link">
             <i class="fas fa-boxes-stacked"></i><span>Custody</span>
           </a>
@@ -63,9 +64,6 @@
           </a>
           <a href="admin-trainings.html" class="sidebar-link">
             <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
-          </a>
-          <a href="admin-system.html" class="sidebar-link">
-            <i class="fas fa-shield-alt"></i><span>Audit Log</span>
           </a>
         </div>
       </nav>
@@ -89,12 +87,17 @@
     <main class="dashboard-main">
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
-          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
           <h2 id="topbar-title">Overview</h2>
         </div>
         <div class="dashboard-topbar-right">
-          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
-          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+          <button type="button" id="lang-toggle" class="topbar-toggle-btn" onclick="if(typeof toggleLanguage==='function')toggleLanguage()" aria-label="Toggle language" title="Toggle Language">
+            <svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" stroke="currentColor" stroke-width="2"/><path d="M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="lang-pill">عربي</span>
+          </button>
+          <button type="button" id="theme-toggle" class="topbar-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </header>
 

@@ -57,49 +57,136 @@ document.addEventListener('DOMContentLoaded', () => {
    THEME MANAGEMENT
    ======================== */
 
-function initTheme() {
-  const savedTheme = localStorage.getItem('ctu-theme') || 'light';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(savedTheme);
+const THEME_ICONS = {
+  dark: `<svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+    <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>`,
+  light: `<svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`
+};
+
+let _lastThemeToggleTime = 0;
+let _lastLangToggleTime = 0;
+
+function getCurrentTheme() {
+  return localStorage.getItem('ctu-theme') || localStorage.getItem('theme') || 'light';
 }
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('ctu-theme', next);
-  updateThemeIcon(next);
+function setTheme(theme) {
+  const isDark = theme === 'dark';
+  localStorage.setItem('ctu-theme', theme);
+  localStorage.setItem('theme', theme);
 
-  // Dispatch custom event for Chart.js theme updates
-  window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: next } }));
+  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.classList.toggle('dark-theme', isDark);
+  document.documentElement.classList.toggle('dark-mode', isDark);
+
+  if (document.body) {
+    document.body.setAttribute('data-theme', theme);
+    document.body.classList.toggle('dark-theme', isDark);
+    document.body.classList.toggle('dark-mode', isDark);
+  }
+
+  updateThemeIcon(theme);
+  window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
+}
+
+function initTheme() {
+  const savedTheme = getCurrentTheme();
+  setTheme(savedTheme);
+}
+
+function toggleTheme(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const now = Date.now();
+  if (now - _lastThemeToggleTime < 250) return;
+  _lastThemeToggleTime = now;
+
+  const current = getCurrentTheme();
+  const next = current === 'dark' ? 'light' : 'dark';
+  setTheme(next);
 }
 
 function updateThemeIcon(theme) {
   const themeBtn = document.getElementById('theme-toggle');
-  if (themeBtn) {
-    const icon = themeBtn.querySelector('i');
-    if (icon) {
-      icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    }
+  if (!themeBtn) return;
+  const isDark = theme === 'dark';
+
+  const icon = themeBtn.querySelector('i');
+  if (icon) {
+    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+  } else {
+    themeBtn.innerHTML = THEME_ICONS[isDark ? 'dark' : 'light'];
   }
+
+  themeBtn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+  themeBtn.setAttribute('title', isDark ? 'Light Mode' : 'Dark Mode');
 }
 
 /* ========================
    LANGUAGE MANAGEMENT
    ======================== */
 
-function initLanguage() {
-  const lang = typeof getCurrentLang === 'function' ? getCurrentLang() : 'en';
-  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+function getCurrentLang() {
+  return localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
+}
+
+function setLanguage(lang) {
+  const isAr = lang === 'ar';
+  localStorage.setItem('ctu-lang', lang);
+  localStorage.setItem('language', lang);
+
+  const dir = isAr ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('dir', dir);
   document.documentElement.setAttribute('lang', lang);
-  
-  // Apply translations after a tick to ensure DOM is ready
-  setTimeout(() => {
-    if (typeof applyTranslations === 'function') {
-      applyTranslations();
-    }
-  }, 100);
+
+  if (document.body) {
+    document.body.setAttribute('dir', dir);
+    document.body.setAttribute('lang', lang);
+  }
+
+  updateLangToggle(lang);
+
+  if (typeof applyTranslations === 'function') {
+    applyTranslations();
+  }
+
+  window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+}
+
+function initLanguage() {
+  const lang = getCurrentLang();
+  setLanguage(lang);
+}
+
+function toggleLanguage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const now = Date.now();
+  if (now - _lastLangToggleTime < 250) return;
+  _lastLangToggleTime = now;
+
+  const current = getCurrentLang();
+  const next = current === 'ar' ? 'en' : 'ar';
+  setLanguage(next);
+}
+
+function updateLangToggle(lang) {
+  const langBtn = document.getElementById('lang-toggle');
+  if (!langBtn) return;
+
+  const currentLang = lang || getCurrentLang();
+  const isAr = currentLang === 'ar';
+
+  const pill = langBtn.querySelector('.lang-pill') || langBtn.querySelector('.lang-text');
+  if (pill) {
+    pill.textContent = isAr ? 'EN' : 'عربي';
+  }
+
+  langBtn.setAttribute('title', isAr ? 'Switch to English' : 'التبديل إلى العربية');
+  langBtn.setAttribute('aria-label', isAr ? 'Switch to English' : 'التبديل إلى العربية');
+  langBtn.setAttribute('dir', 'ltr');
 }
 
 /* ========================
@@ -170,21 +257,20 @@ function initNavbar(prefix) {
   // Theme toggle
   const themeBtn = document.getElementById('theme-toggle');
   if (themeBtn) {
-    themeBtn.addEventListener('click', toggleTheme);
+    if (!themeBtn.dataset.listenerBound) {
+      themeBtn.dataset.listenerBound = 'true';
+      themeBtn.addEventListener('click', toggleTheme);
+    }
   }
 
   // Language toggle
   const langBtn = document.getElementById('lang-toggle');
   if (langBtn) {
-    if (typeof toggleLanguage !== 'undefined') {
+    if (!langBtn.dataset.listenerBound) {
+      langBtn.dataset.listenerBound = 'true';
       langBtn.addEventListener('click', toggleLanguage);
     }
-    // Set initial text
-    const langText = langBtn.querySelector('.lang-text');
-    if (langText) {
-      const currentLang = typeof getCurrentLang === 'function' ? getCurrentLang() : 'en';
-      langText.textContent = currentLang === 'ar' ? 'EN' : 'عربي';
-    }
+    updateLangToggle();
   }
 
   // Scroll effect — add shadow to navbar on scroll
@@ -380,10 +466,36 @@ function initSidebar() {
 }
 
 // Ensure toggle functions are available globally for inline handlers and module scripts
+window.getCurrentTheme = getCurrentTheme;
+window.setTheme = setTheme;
+window.initTheme = initTheme;
 window.toggleTheme = toggleTheme;
-if (typeof toggleLanguage !== 'undefined') {
-  window.toggleLanguage = toggleLanguage;
+window.updateThemeIcon = updateThemeIcon;
+
+window.getCurrentLang = getCurrentLang;
+window.setLanguage = setLanguage;
+window.initLanguage = initLanguage;
+window.toggleLanguage = toggleLanguage;
+window.updateLangToggle = updateLangToggle;
+
+/* ========================
+   LANGUAGE TOGGLE UI
+   ======================== */
+
+function updateLangToggle() {
+  const langBtn = document.getElementById('lang-toggle');
+  if (!langBtn) return;
+  const currentLang = typeof getCurrentLang === 'function' ? getCurrentLang() : 'en';
+  const isAr = currentLang === 'ar';
+  // Update pill display: show what language will switch TO
+  const pill = langBtn.querySelector('.lang-pill');
+  if (pill) {
+    pill.textContent = isAr ? 'EN' : 'عربي';
+  }
+  langBtn.setAttribute('title', isAr ? 'Switch to English' : 'التبديل إلى العربية');
+  langBtn.setAttribute('dir', 'ltr');
 }
+window.updateLangToggle = updateLangToggle;
 
 /* ========================
    DATA IMPORT SIMULATION
@@ -470,38 +582,95 @@ window.simulateDataImport = function(fileType, targetTableId, btn) {
    GLOBAL DATA EXPORT
    ======================== */
 
-/* [BACKEND HINT]:
-   The following frontend JS function simulates the export process.
-   For true Excel, CSV, and PDF exports, you MUST move this logic to the backend 
-   PHP server (e.g., using PhpSpreadsheet for Excel/CSV, and TCPDF/MPDF for PDF)
-   to ensure data security and handle large datasets securely.
-   The PNG export can remain partially on the frontend (e.g., using html2canvas) 
-   but is mocked here for the prototype.
-*/
-window.exportTableData = function(format, tableId, btn) {
+window.handleDataExport = function(exportFormat, dataContext, btn) {
   // Store original button text/icon to restore later
-  const originalText = btn.innerHTML;
-  
-  // Set loading state
-  btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Exporting...`;
-  btn.disabled = true;
+  let originalText = '';
+  if (btn) {
+    originalText = btn.innerHTML;
+    // Set loading state
+    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Exporting...`;
+    btn.disabled = true;
+  }
+
+  /* 
+  =========================================
+  [BACKEND HINT FOR PHP DEVELOPER]
+  The data below is STATIC dummy data used for frontend simulation.
+  To make this dynamic:
+  1. Delete the static JSON variable below.
+  2. Replace it with your dynamic PHP variable (e.g., echo json_encode($your_database_results);).
+  3. The rest of the export logic will handle the formatted data automatically.
+  =========================================
+  */
+  const dummyExportData = {
+    'users': [
+      { id: "STU-001", name: "Sara Mohamed", email: "sara@ctu.edu.eg", role: "Student" },
+      { id: "STU-002", name: "Ahmed Ali", email: "ahmed@ctu.edu.eg", role: "Student" }
+    ],
+    'reports': [
+      { id: "REP-101", date: "2026-08-01", status: "Resolved", issue: "Projector not working" },
+      { id: "REP-102", date: "2026-08-02", status: "Pending", issue: "Network down in Lab 3" }
+    ],
+    'attendance': [
+      { day: "Monday", date: "2026-08-03", present: 45, absent: 5 },
+      { day: "Tuesday", date: "2026-08-04", present: 48, absent: 2 }
+    ],
+    'equipment': [
+      { id: "EQ-001", name: "Dell OptiPlex", status: "Active" },
+      { id: "EQ-002", name: "Epson Projector", status: "Maintenance" }
+    ],
+    'trainings': [
+      { id: "TR-01", title: "Cybersecurity Basics", attendees: 20 },
+      { id: "TR-02", title: "Network Troubleshooting", attendees: 15 }
+    ]
+  };
+
+  const dataset = dummyExportData[dataContext] || [];
 
   // Simulate generation delay
   setTimeout(() => {
     let message = '';
     
-    if (format === 'png') {
-      // Simulate html2canvas snapshot
-      message = `Table snapshot captured! Saved as table_export.png`;
+    if (dataset.length > 0) {
+      let content, mimeType, extension;
+
+      if (exportFormat === 'csv' || exportFormat === 'excel') {
+        const headers = Object.keys(dataset[0]).join(',');
+        const rows = dataset.map(obj => Object.values(obj).join(',')).join('\n');
+        content = headers + '\n' + rows;
+        mimeType = 'text/csv;charset=utf-8;';
+        extension = exportFormat === 'excel' ? 'csv' : 'csv'; // Using csv for excel mock
+      } else if (exportFormat === 'pdf') {
+        content = 'Dummy PDF content for ' + dataContext;
+        mimeType = 'text/plain';
+        extension = 'pdf';
+      } else if (exportFormat === 'png') {
+        content = 'Dummy PNG content for ' + dataContext;
+        mimeType = 'text/plain';
+        extension = 'png';
+      }
+
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `${dataContext}_export.${extension}`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      message = `Successfully downloaded ${dataContext} as ${exportFormat.toUpperCase()}!`;
     } else {
-      // Simulate server-side generation
-      message = `Successfully exported table data as ${format.toUpperCase()}`;
+      message = `No data available for ${dataContext}`;
     }
     
     showToast(message, 'success');
 
     // Restore button state
-    btn.innerHTML = originalText;
-    btn.disabled = false;
+    if (btn) {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
   }, 1200); // 1.2s delay for simulation
 };

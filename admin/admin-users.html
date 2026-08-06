@@ -6,8 +6,14 @@
   <title>Users — Admin Dashboard</title>
   <script>
     (function() {
-      const savedTheme = localStorage.getItem('ctu-theme') || 'light';
+      const savedTheme = localStorage.getItem('ctu-theme') || localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+      }
+      const savedLang = localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
+      document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', savedLang);
     })();
   </script>
 
@@ -51,38 +57,7 @@
       gap: 0.5rem;
     }
     
-    /* Modal Styles */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay:target {
-      display: flex;
-    }
-    .modal-content {
-      background: var(--bg-primary);
-      padding: 2rem;
-      border-radius: var(--radius-lg);
-      width: 90%;
-      max-width: 600px;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-    }
-    .modal-close:hover {
-      color: var(--danger-500);
-    }
+
     .modal-header {
       border-bottom: 1px solid var(--border-default);
       margin-bottom: 1.5rem;
@@ -110,10 +85,6 @@
   </style>
 </head>
 <body>
-  <div class="loading-screen" id="loading-screen">
-    <div class="loading-spinner"></div>
-    <p data-i18n="common.loading">Loading...</p>
-  </div>
 
   <div class="dashboard-layout" id="dashboard-layout">
     
@@ -142,9 +113,6 @@
           <a href="admin-warnings.html" class="sidebar-link">
             <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
           </a>
-          <a href="admin-issues.html" class="sidebar-link">
-            <i class="fas fa-ticket-alt"></i><span>Issues</span>
-          </a>
           <a href="admin-custody.html" class="sidebar-link">
             <i class="fas fa-boxes-stacked"></i><span>Custody</span>
           </a>
@@ -153,9 +121,6 @@
           </a>
           <a href="admin-trainings.html" class="sidebar-link">
             <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
-          </a>
-          <a href="admin-system.html" class="sidebar-link">
-            <i class="fas fa-shield-alt"></i><span>Audit Log</span>
           </a>
         </div>
       </nav>
@@ -179,12 +144,17 @@
     <main class="dashboard-main">
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
-          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
           <h2 id="topbar-title">Users Management</h2>
         </div>
         <div class="dashboard-topbar-right">
-          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
-          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+          <button type="button" id="lang-toggle" class="topbar-toggle-btn" onclick="if(typeof toggleLanguage==='function')toggleLanguage()" aria-label="Toggle language" title="Toggle Language">
+            <svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" stroke="currentColor" stroke-width="2"/><path d="M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="lang-pill">عربي</span>
+          </button>
+          <button type="button" id="theme-toggle" class="topbar-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </header>
 
@@ -199,11 +169,11 @@
           
           <div class="action-btns" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button type="button" class="btn btn-secondary" onclick="simulateDataImport('csv', '#users-table-body', this)"><i class="fas fa-file-import"></i> Import Data</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#users-table-body', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#users-table-body', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#users-table-body', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#users-table-body', this)"><i class="fas fa-image"></i> Export PNG</button>
-            <button type="button" class="btn btn-primary" data-modal-target="#addStudentModal"><i class="fas fa-plus"></i> Add User</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('excel', 'users', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('csv', 'users', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('pdf', 'users', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('png', 'users', this)"><i class="fas fa-image"></i> Export PNG</button>
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('addStudentModal').classList.add('active'); document.body.style.overflow='hidden';"><i class="fas fa-plus"></i> Add User</button>
           </div>
         </div>
 
@@ -212,134 +182,122 @@
           <table class="table" style="width: 100%; min-width: 700px; text-align: left; border-collapse: collapse;">
             <thead>
               <tr style="background: var(--bg-secondary); border-bottom: 2px solid var(--border-default);">
-                <th style="padding: 1rem;">ID</th>
+                <th style="padding: 1rem;">Image</th>
                 <th style="padding: 1rem;">Name</th>
-                <th style="padding: 1rem;">Role</th>
-                <th style="padding: 1rem;">Department</th>
-                <th style="padding: 1rem;">Status</th>
                 <th style="padding: 1rem;">Actions</th>
               </tr>
             </thead>
             <tbody id="users-table-body">
-              <tr style="border-bottom: 1px solid var(--border-default); cursor: pointer;" onclick="document.getElementById('studentModal').classList.add('active'); document.body.style.overflow='hidden';">
-                <td style="padding: 1rem;">STU-2026-001</td>
+              <tr style="border-bottom: 1px solid var(--border-default); cursor: pointer;">
+                <td style="padding: 1rem;"><img src="../images/avatar-default.png" alt="User Image" style="width: 40px; height: 40px; border-radius: 50%;"></td>
                 <td style="padding: 1rem;"><strong>Sara Mohamed</strong></td>
-                <td style="padding: 1rem;">Student</td>
-                <td style="padding: 1rem;">Computer Science</td>
-                <td style="padding: 1rem;"><span class="badge" style="background: var(--success-100); color: var(--success-600);">Active</span></td>
                 <td style="padding: 1rem;">
                   <div class="action-btns" style="display: flex; gap: 0.25rem;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i></button>
-                    <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); document.getElementById('studentModal').classList.add('active'); document.body.style.overflow='hidden';" title="View"><i class="fas fa-eye"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); handleDataExport('csv', 'users', this);" title="Export"><i class="fas fa-file-export"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation(); document.getElementById('deleteStudentModal').classList.add('active'); document.body.style.overflow='hidden';" title="Delete"><i class="fas fa-trash"></i></button>
                   </div>
                 </td>
               </tr>
-              <tr style="border-bottom: 1px solid var(--border-default);">
-                <td style="padding: 1rem;">STF-2024-042</td>
+              <tr style="border-bottom: 1px solid var(--border-default); cursor: pointer;">
+                <td style="padding: 1rem;"><img src="../images/avatar-default.png" alt="User Image" style="width: 40px; height: 40px; border-radius: 50%;"></td>
                 <td style="padding: 1rem;"><strong>Ahmed Ali</strong></td>
-                <td style="padding: 1rem;">Lab Supervisor</td>
-                <td style="padding: 1rem;">Networking</td>
-                <td style="padding: 1rem;"><span class="badge" style="background: var(--success-100); color: var(--success-600);">Active</span></td>
                 <td style="padding: 1rem;">
                   <div class="action-btns" style="display: flex; gap: 0.25rem;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i></button>
-                    <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); document.getElementById('studentModal').classList.add('active'); document.body.style.overflow='hidden';" title="View"><i class="fas fa-eye"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); handleDataExport('csv', 'users', this);" title="Export"><i class="fas fa-file-export"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation(); document.getElementById('deleteStudentModal').classList.add('active'); document.body.style.overflow='hidden';" title="Delete"><i class="fas fa-trash"></i></button>
                   </div>
                 </td>
               </tr>
+            </tbody>
           </table>
         </div>
 
       </div>
 
-      <!-- Student Detail Modal -->
+      <!-- View User Modal -->
       <div id="studentModal" class="modal-overlay">
         <div class="modal">
           <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
-          <div class="modal-header">
-            <h4>Student Details: Sara Mohamed</h4>
-            <p class="text-muted">ID: STU-2026-001</p>
-          </div>
-          <div class="student-details-grid">
-            <div class="detail-item">
-              <strong>Department</strong>
-              <span>Computer Science</span>
+          <h4 style="margin-bottom: 1.5rem;">User Details</h4>
+          <form method="POST" action="" onsubmit="event.preventDefault(); if(this.closest('.modal-overlay')) this.closest('.modal-overlay').classList.remove('active'); document.body.style.overflow='';">
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Name</label>
+                <input type="text" name="name" class="form-control" value="Sara Mohamed" required>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email</label>
+                <input type="email" name="email" class="form-control" value="sara.m@student.ctu.edu" required>
+              </div>
             </div>
-            <div class="detail-item">
-              <strong>Email</strong>
-              <span>sara.m@student.ctu.edu</span>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password</label>
+                <input type="password" name="password" class="form-control" value="********" required>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <select name="role" class="form-select">
+                  <option value="admin">Admin</option>
+                  <option value="lab_supervisor">Lab Supervisor</option>
+                </select>
+              </div>
             </div>
-            <div class="detail-item">
-              <strong>Total Attendance</strong>
-              <span>45 Days</span>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Academic ID</label>
+                <input type="text" name="academic_id" class="form-control" value="STU-2026-001">
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Phone</label>
+                <input type="text" name="phone" class="form-control" value="+123456789">
+              </div>
             </div>
-            <div class="detail-item">
-              <strong>Total Warnings</strong>
-              <span>0</span>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Certificate / Degree</label>
+                <input type="text" name="degree" class="form-control" value="Computer Science">
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Total Attendance Days</label>
+                <input type="number" name="attendance_days" class="form-control" value="45" readonly>
+              </div>
             </div>
-          </div>
-          
-          <div class="card" style="padding: 1rem; background: var(--bg-secondary); margin-bottom: 1rem; border: 1px solid var(--border-default);">
-            <h5>Recent Attendance History</h5>
-            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
-              <li>2026-08-01: Attended</li>
-              <li>2026-08-02: Attended</li>
-              <li>2026-08-03: Absent</li>
-            </ul>
-          </div>
-
-          <div class="modal-actions" style="flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end;">
-            <!-- [BACKEND HINT]: Wrap these Excel/CSV/PDF buttons in PHP role check: if($_SESSION['role'] === 'admin') -->
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#studentModal', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#studentModal', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#studentModal', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#studentModal', this)"><i class="fas fa-image"></i> Export PNG</button>
-            <button type="button" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login as Student</button>
-          </div>
-          <div class="modal-actions" style="margin-top: 1rem; border-top: 1px solid var(--border-default); padding-top: 1rem;">
-            <button type="button" class="btn btn-secondary" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i> Edit</button>
-            <button type="button" class="btn btn-secondary" style="color: var(--danger-500);" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i> Delete</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Add Student Modal -->
-      <div id="addStudentModal" class="modal-overlay">
-        <div class="modal">
-          <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
-          <h4 style="margin-bottom: 1.5rem;">Add New Student</h4>
-          <form method="POST" action="">
-            <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
-              <input type="text" name="name" class="form-control" required>
+            <div style="margin-bottom: 1.5rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Profile Image URL</label>
+              <input type="text" name="image" class="form-control" value="../images/avatar-default.png">
             </div>
-            <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Department</label>
-              <input type="text" name="department" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Student</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-save"></i> Save Changes</button>
           </form>
         </div>
       </div>
 
-      <!-- Edit Student Modal -->
-      <div id="editStudentModal" class="modal-overlay">
+      <!-- Add User Modal -->
+      <div id="addStudentModal" class="modal-overlay">
         <div class="modal">
           <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
-          <h4 style="margin-bottom: 1.5rem;">Edit Student</h4>
-          <form method="POST" action="">
+          <h4 style="margin-bottom: 1.5rem;">Add New User</h4>
+          <form method="POST" action="" onsubmit="event.preventDefault(); if(this.closest('.modal-overlay')) this.closest('.modal-overlay').classList.remove('active'); document.body.style.overflow='';">
             <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
-              <input type="text" name="name" class="form-control" value="Sara Mohamed" required>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Name</label>
+              <input type="text" name="name" class="form-control" required>
             </div>
             <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Status</label>
-              <select name="status" class="form-select">
-                <option value="active">Active</option>
-                <option value="suspended">Suspended</option>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <select name="role" class="form-select">
+                <option value="admin">Admin</option>
+                <option value="lab_supervisor">Lab Supervisor</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create User</button>
           </form>
         </div>
       </div>
@@ -350,7 +308,7 @@
           <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
           <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Confirm Deletion</h4>
           <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete this student? This action cannot be undone.</p>
-          <form method="POST" action="">
+          <form method="POST" action="" onsubmit="event.preventDefault(); if(this.closest('.modal-overlay')) this.closest('.modal-overlay').classList.remove('active'); document.body.style.overflow='';">
             <button type="submit" class="btn btn-danger" style="width: 100%;">Yes, Delete Student</button>
           </form>
         </div>

@@ -6,8 +6,14 @@
   <title>CTU Support — Technical Support Hub</title>
   <script>
     (function() {
-      const savedTheme = localStorage.getItem('ctu-theme') || 'light';
+      const savedTheme = localStorage.getItem('ctu-theme') || localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+      }
+      const savedLang = localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
+      document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', savedLang);
     })();
   </script>
   <meta name="description" content="CTU Support Team — Professional IT support for Children's Technological University at Borg El Arab Technological University.">
@@ -22,11 +28,6 @@
   <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div class="loading-screen" id="loading-screen">
-    <div class="loading-spinner"></div>
-    <p data-i18n="common.loading">Loading...</p>
-  </div>
 
   <!-- CTU Support — Navbar Component -->
 <nav class="navbar" id="main-navbar">
@@ -64,18 +65,18 @@
       
       <div class="nav-divider desktop-only"></div>
       <!-- Language Toggle -->
-      <button class="btn-icon navbar-action-btn" id="lang-toggle" title="Toggle Language" aria-label="Toggle Language">
-        <i class="fas fa-globe"></i>
-        <span class="lang-text">عربي</span>
+      <button type="button" id="lang-toggle" class="topbar-toggle-btn" onclick="if(typeof toggleLanguage==='function')toggleLanguage()" aria-label="Toggle language" title="Toggle Language">
+        <svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" stroke="currentColor" stroke-width="2"/><path d="M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="lang-pill">عربي</span>
       </button>
 
       <!-- Theme Toggle -->
-      <button class="btn-icon navbar-action-btn" id="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
-        <i class="fas fa-moon"></i>
+      <button type="button" id="theme-toggle" class="topbar-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">
+        <svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
 
       <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+      <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
         <span></span>
         <span></span>
         <span></span>
@@ -902,10 +903,10 @@
         </div>
         <p class="footer-desc" data-i18n="hero.subtitle">Professional IT support for Children's Technological University.</p>
         <div class="footer-social">
-          <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="javascript:void(0)" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="javascript:void(0)" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="javascript:void(0)" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="javascript:void(0)" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
         </div>
       </div>
 

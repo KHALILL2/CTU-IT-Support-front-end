@@ -1,818 +1,888 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — CTU Support</title>
-  <script>
-    (function() {
-      const savedTheme = localStorage.getItem('ctu-theme') || 'light';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    })();
-  </script>
-  <meta name="description" content="Sign in to your CTU Support dashboard.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — CTU Support</title>
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('ctu-theme') || localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark-theme', 'dark-mode');
+        }
+        const savedLang = localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
+        document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', savedLang);
+      })();
+    </script>
+    <meta name="description" content="Sign in to your CTU Support dashboard." />
 
-  <!-- Icons & Vendor CSS (local) -->
-  <link rel="stylesheet" href="css/all.min.css">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Icons & Vendor CSS (local) -->
+    <link rel="stylesheet" href="css/all.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
 
-  <!-- Design System -->
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <!-- Auth-specific layout (extracted from former inline <style>) -->
-  <link rel="stylesheet" href="css/auth.css">
-</head>
-<body>
-  <div class="loading-screen" id="loading-screen">
-    <div class="loading-spinner"></div>
-    <p data-i18n="common.loading">Loading...</p>
-  </div>
-
-  <!-- CTU Support — Navbar Component -->
-<nav class="navbar" id="main-navbar">
-  <div class="navbar-container">
-    <!-- Brand -->
-    <a href="index.html" class="navbar-brand">
-      <div class="navbar-logo">
-        <i class="fas fa-headset"></i>
-      </div>
-      <div class="navbar-brand-text">
-        <span class="brand-name" data-i18n="nav.brand">CTU Support</span>
-        <span class="brand-sub">BATU</span>
-      </div>
-    </a>
-
-    <!-- Nav Links -->
-    <div class="nav-menu" id="nav-menu">
-      <a href="index.html" class="nav-link" data-i18n="nav.home">Home</a>
-      <a href="report.html" class="nav-link" data-i18n="nav.report">Report Problem</a>
-      
-      <!-- Mobile Auth Links -->
-      <div class="mobile-auth-links">
-        <a href="login.html" class="nav-link active" data-i18n="nav.login">Login</a>
-        <!-- <a href="signup.html" class="nav-link nav-link-cta d-none" data-i18n="nav.signup">Sign Up</a> -->
-      </div>
-    </div>
-
-    <!-- Right Actions -->
-    <div class="navbar-actions">
-      <!-- Desktop Auth Links -->
-      <div class="desktop-auth-links">
-        <a href="login.html" class="nav-link active" data-i18n="nav.login">Login</a>
-        <!-- <a href="signup.html" class="nav-link nav-link-cta d-none" data-i18n="nav.signup">Sign Up</a> -->
-      </div>
-      
-      <div class="nav-divider desktop-only"></div>
-      <!-- Language Toggle -->
-      <button class="btn-icon navbar-action-btn" id="lang-toggle" title="Toggle Language" aria-label="Toggle Language">
-        <i class="fas fa-globe"></i>
-        <span class="lang-text">عربي</span>
-      </button>
-
-      <!-- Theme Toggle -->
-      <button class="btn-icon navbar-action-btn" id="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
-        <i class="fas fa-moon"></i>
-      </button>
-
-      <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </div>
-</nav>
-
-<style>
-  /* === Navbar Styles === */
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--navbar-height);
-    z-index: 1000;
-    transition: all var(--transition-base);
-    border-bottom: 1px solid transparent;
-    background: var(--bg-glass-strong);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-  }
-
-  .navbar.scrolled {
-    border-bottom-color: var(--border-default);
-    box-shadow: var(--shadow-md);
-  }
-
-  .navbar-container {
-    max-width: var(--container-max);
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  /* Brand */
-  .navbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-    flex-shrink: 0;
-  }
-
-  .navbar-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-md);
-    background: var(--gradient-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-  }
-
-  .navbar-brand-text {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .brand-name {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
-
-  .brand-sub {
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: var(--primary-500);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  /* Nav Links */
-  .nav-menu {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem; /* Increased gap for main links */
-  }
-
-  .nav-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    white-space: nowrap;
-  }
-
-  .nav-link:hover {
-    color: var(--text-primary);
-    background: var(--bg-tertiary);
-  }
-
-  .nav-link.active {
-    color: var(--primary-500);
-    font-weight: 600;
-  }
-
-  .nav-link-cta {
-    background: var(--gradient-primary) !important;
-    color: white !important;
-    padding: 0.5rem 1.25rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
-  }
-
-  .nav-link-cta:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
-  }
-
-  /* Actions */
-  .navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem; /* Increased gap between actions */
-    flex-shrink: 0;
-  }
-
-  .desktop-auth-links {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .mobile-auth-links {
-    display: none; /* Hidden on desktop */
-  }
-
-  .nav-divider {
-    width: 1px;
-    height: 24px;
-    background-color: var(--border-default);
-    margin: 0 0.25rem;
-  }
-
-  .navbar-action-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.75rem;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-family: inherit;
-    transition: all var(--transition-fast);
-    white-space: nowrap;
-    height: 38px;
-    width: auto;
-  }
-
-  .navbar-action-btn:hover {
-    background: var(--bg-secondary);
-    color: var(--primary-500);
-    border-color: var(--primary-300);
-  }
-
-  .lang-text {
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
-  /* Mobile Menu Toggle (Hamburger) */
-  .mobile-menu-toggle {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    width: 38px;
-    height: 38px;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    padding: 8px;
-    transition: all var(--transition-fast);
-  }
-
-  .mobile-menu-toggle span {
-    display: block;
-    width: 20px;
-    height: 2px;
-    background: var(--text-secondary);
-    border-radius: 2px;
-    transition: all var(--transition-base);
-  }
-
-  .mobile-menu-toggle.open span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-
-  .mobile-menu-toggle.open span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .mobile-menu-toggle.open span:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .mobile-menu-toggle {
-      display: flex;
-    }
-
-    .nav-menu {
-      position: fixed;
-      top: var(--navbar-height);
-      left: 0;
-      right: 0;
-      background: var(--bg-glass-strong);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      flex-direction: column;
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-default);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: all var(--transition-base);
-      z-index: 999;
-      gap: 0.25rem;
-      pointer-events: none;
-    }
-
-    .nav-menu.open {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .nav-link {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      text-align: center;
-    }
-
-    .desktop-auth-links, .desktop-only {
-      display: none;
-    }
-
-    .mobile-auth-links {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border-glass);
-    }
-
-    .nav-link-cta {
-      margin-top: 0.25rem;
-    }
-
-    .navbar-action-btn .lang-text {
-      display: none;
-    }
-
-    .navbar-action-btn {
-      width: 38px;
-      padding: 0.5rem;
-      justify-content: center;
-    }
-  }
-
-  /* Spacer for fixed navbar */
-  body {
-    padding-top: var(--navbar-height);
-  }
-</style>
-
-  <section class="auth-section page-transition">
-    <div class="auth-container">
-
-      <!-- ── Left: Decorative Panel ───────────────────────────────────── -->
-      <div class="auth-visual">
-        <div class="auth-visual-content">
-          <div class="auth-visual-orb orb-1"></div>
-          <div class="auth-visual-orb orb-2"></div>
-          <div class="auth-visual-icon">
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <!-- Auth-specific layout (extracted from former inline <style>) -->
+    <link rel="stylesheet" href="css/auth.css" />
+  </head>
+  <body>
+    <!-- CTU Support — Navbar Component -->
+    <nav class="navbar" id="main-navbar">
+      <div class="navbar-container">
+        <!-- Brand -->
+        <a href="index.html" class="navbar-brand">
+          <div class="navbar-logo">
             <i class="fas fa-headset"></i>
           </div>
-          <h2>CTU Support</h2>
-          <p>Your one-stop technical support platform for Children's Technological University.</p>
-          <div class="auth-visual-features">
-            <div class="auth-feature"><i class="fas fa-check-circle"></i> <span>Track your reports in real-time</span></div>
-            <div class="auth-feature"><i class="fas fa-check-circle"></i> <span>Connect with support engineers</span></div>
-            <div class="auth-feature"><i class="fas fa-check-circle"></i> <span>Manage attendance &amp; profile</span></div>
+          <div class="navbar-brand-text">
+            <span class="brand-name" data-i18n="nav.brand">CTU Support</span>
+            <span class="brand-sub">BATU</span>
+          </div>
+        </a>
+
+        <!-- Nav Links -->
+        <div class="nav-menu" id="nav-menu">
+          <a href="index.html" class="nav-link" data-i18n="nav.home">Home</a>
+          <a href="report.html" class="nav-link" data-i18n="nav.report"
+            >Report Problem</a
+          >
+
+          <!-- Mobile Auth Links -->
+          <div class="mobile-auth-links">
+            <a href="login.html" class="nav-link active" data-i18n="nav.login"
+              >Login</a
+            >
+            <!-- <a href="signup.html" class="nav-link nav-link-cta d-none" data-i18n="nav.signup">Sign Up</a> -->
           </div>
         </div>
+
+        <!-- Right Actions -->
+        <div class="navbar-actions">
+          <!-- Desktop Auth Links -->
+          <div class="desktop-auth-links">
+            <a href="login.html" class="nav-link active" data-i18n="nav.login"
+              >Login</a
+            >
+            <!-- <a href="signup.html" class="nav-link nav-link-cta d-none" data-i18n="nav.signup">Sign Up</a> -->
+          </div>
+
+          <div class="nav-divider desktop-only"></div>
+          <!-- Language Toggle -->
+          <button type="button" id="lang-toggle" class="topbar-toggle-btn" onclick="if(typeof toggleLanguage==='function')toggleLanguage()" aria-label="Toggle language" title="Toggle Language">
+            <svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" stroke="currentColor" stroke-width="2"/><path d="M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="lang-pill">عربي</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button type="button" id="theme-toggle" class="topbar-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <!-- Mobile Menu Toggle -->
+          <button type="button"
+            class="mobile-menu-toggle"
+            id="mobile-menu-toggle"
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
       </div>
+    </nav>
 
-      <!-- ── Right: Login Form ─────────────────────────────────────────── -->
-      <div class="auth-form-wrapper">
-        <div class="auth-form-card reveal">
+    <style>
+      /* === Navbar Styles === */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--navbar-height);
+        z-index: 1000;
+        transition: all var(--transition-base);
+        border-bottom: 1px solid transparent;
+        background: var(--bg-glass-strong);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+      }
 
-          <div class="auth-form-header">
-            <h2 data-i18n="login.title">Welcome Back</h2>
-            <p data-i18n="login.subtitle">Sign in to access your dashboard</p>
+      .navbar.scrolled {
+        border-bottom-color: var(--border-default);
+        box-shadow: var(--shadow-md);
+      }
+
+      .navbar-container {
+        max-width: var(--container-max);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* Brand */
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+
+      .navbar-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius-md);
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      }
+
+      .navbar-brand-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-name {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1.2;
+      }
+
+      .brand-sub {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--primary-500);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      /* Nav Links */
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem; /* Increased gap for main links */
+      }
+
+      .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+      }
+
+      .nav-link:hover {
+        color: var(--text-primary);
+        background: var(--bg-tertiary);
+      }
+
+      .nav-link.active {
+        color: var(--primary-500);
+        font-weight: 600;
+      }
+
+      .nav-link-cta {
+        background: var(--gradient-primary) !important;
+        color: white !important;
+        padding: 0.5rem 1.25rem;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+      }
+
+      .nav-link-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+      }
+
+      /* Actions */
+      .navbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; /* Increased gap between actions */
+        flex-shrink: 0;
+      }
+
+      .desktop-auth-links {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .mobile-auth-links {
+        display: none; /* Hidden on desktop */
+      }
+
+      .nav-divider {
+        width: 1px;
+        height: 24px;
+        background-color: var(--border-default);
+        margin: 0 0.25rem;
+      }
+
+      .navbar-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.75rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-sm);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-family: inherit;
+        transition: all var(--transition-fast);
+        white-space: nowrap;
+        height: 38px;
+        width: auto;
+      }
+
+      .navbar-action-btn:hover {
+        background: var(--bg-secondary);
+        color: var(--primary-500);
+        border-color: var(--primary-300);
+      }
+
+      .lang-text {
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      /* Mobile Menu Toggle (Hamburger) */
+      .mobile-menu-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        width: 38px;
+        height: 38px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-default);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        padding: 8px;
+        transition: all var(--transition-fast);
+      }
+
+      .mobile-menu-toggle span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        background: var(--text-secondary);
+        border-radius: 2px;
+        transition: all var(--transition-base);
+      }
+
+      .mobile-menu-toggle.open span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      .mobile-menu-toggle.open span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .mobile-menu-toggle.open span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .mobile-menu-toggle {
+          display: flex;
+        }
+
+        .nav-menu {
+          position: fixed;
+          top: var(--navbar-height);
+          left: 0;
+          right: 0;
+          background: var(--bg-glass-strong);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          flex-direction: column;
+          padding: 1rem;
+          border-bottom: 1px solid var(--border-default);
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-10px);
+          transition: all var(--transition-base);
+          z-index: 999;
+          gap: 0.25rem;
+          pointer-events: none;
+        }
+
+        .nav-menu.open {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+
+        .nav-link {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          text-align: center;
+        }
+
+        .desktop-auth-links,
+        .desktop-only {
+          display: none;
+        }
+
+        .mobile-auth-links {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+          padding-top: 1rem;
+          border-top: 1px solid var(--border-glass);
+        }
+
+        .nav-link-cta {
+          margin-top: 0.25rem;
+        }
+
+        .navbar-action-btn .lang-text {
+          display: none;
+        }
+
+        .navbar-action-btn {
+          width: 38px;
+          padding: 0.5rem;
+          justify-content: center;
+        }
+      }
+
+      /* Spacer for fixed navbar */
+      body {
+        padding-top: var(--navbar-height);
+      }
+    </style>
+
+    <section class="auth-section page-transition">
+      <div class="auth-container">
+        <!-- ── Left: Decorative Panel ───────────────────────────────────── -->
+        <div class="auth-visual">
+          <div class="auth-visual-content">
+            <div class="auth-visual-orb orb-1"></div>
+            <div class="auth-visual-orb orb-2"></div>
+            <div class="auth-visual-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h2>CTU Support</h2>
+            <p>
+              Your one-stop technical support platform for Children's
+              Technological University.
+            </p>
+            <div class="auth-visual-features">
+              <div class="auth-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Track your reports in real-time</span>
+              </div>
+              <div class="auth-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Connect with support engineers</span>
+              </div>
+              <div class="auth-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Manage attendance &amp; profile</span>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <!-- Inline error banner (replaces alert/confirm) -->
-          <div class="auth-error" id="login-error" role="alert" aria-live="polite">
-            <i class="fas fa-circle-exclamation"></i>
-            <span id="login-error-msg">Invalid email or password.</span>
-          </div>
+        <!-- ── Right: Login Form ─────────────────────────────────────────── -->
+        <div class="auth-form-wrapper">
+          <div class="auth-form-card reveal">
+            <div class="auth-form-header">
+              <h2 data-i18n="login.title">Welcome Back</h2>
+              <p data-i18n="login.subtitle">Sign in to access your dashboard</p>
+            </div>
 
-          <!-- [BACKEND HINT]: To make this form work with PHP:
+            <!-- Inline error banner (replaces alert/confirm) -->
+            <div
+              class="auth-error"
+              id="login-error"
+              role="alert"
+              aria-live="polite"
+            >
+              <i class="fas fa-circle-exclamation"></i>
+              <span id="login-error-msg">Invalid email or password.</span>
+            </div>
+
+            <!-- [BACKEND HINT]: To make this form work with PHP:
                1. Add method="POST" and action="process_login.php" to the <form> tag below.
                2. The inputs already have name="email" and name="password" configured.
                3. Remove the ID "login-form" if you are deleting the JS validation below. -->
-          <form id="login-form" novalidate>
-            <div class="mb-4 p-3 rounded" style="background-color: var(--bg-secondary); font-size: 0.9rem;">
-              <strong>Demo Accounts:</strong><br>
-              Admin: admin@ctu.edu.eg<br>
-              Lab Supervisor: supervisor@ctu.edu.eg<br>
-              IT Support: support@ctu.edu.eg<br>
-              <em>(Password can be anything)</em>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="login-email" data-i18n="login.email">Email Address</label>
-              <div class="input-icon-wrapper" id="email-wrapper">
-                <i class="fas fa-envelope"></i>
-                <input
-                  type="email"
-                  class="form-input"
-                  id="login-email"
-                  name="email"
-                  required
-                  aria-required="true"
-                  autocomplete="email"
-                  placeholder="student@ctu.edu.eg"
-                >
+            <form id="login-form" method="POST" action="process_login.php" novalidate>
+              <div
+                class="mb-4 p-3 rounded"
+                style="background-color: var(--bg-secondary); font-size: 0.9rem"
+              >
+                <strong>Demo Accounts:</strong><br />
+                Admin: admin@ctu.edu.eg<br />
+                Lab Supervisor: supervisor@ctu.edu.eg<br />
+                <em>(Password can be anything)</em>
               </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="login-password" data-i18n="login.password">Password</label>
-              <div class="input-icon-wrapper" id="password-wrapper">
-                <i class="fas fa-lock"></i>
-                <input
-                  type="password"
-                  class="form-input"
-                  id="login-password"
-                  name="password"
-                  required
-                  aria-required="true"
-                  autocomplete="current-password"
-                  placeholder="••••••••"
+              <div class="form-group">
+                <label
+                  class="form-label"
+                  for="login-email"
+                  data-i18n="login.email"
+                  >Email Address</label
                 >
-                <button
-                  type="button"
-                  class="password-toggle"
-                  id="password-toggle-btn"
-                  aria-label="Toggle password visibility"
-                  aria-controls="login-password"
-                  aria-pressed="false"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
+                <div class="input-icon-wrapper" id="email-wrapper">
+                  <i class="fas fa-envelope"></i>
+                  <input
+                    type="email"
+                    class="form-input"
+                    id="login-email"
+                    name="email"
+                    required
+                    aria-required="true"
+                    autocomplete="email"
+                    placeholder="student@ctu.edu.eg"
+                  />
+                </div>
               </div>
+
+              <div class="form-group">
+                <label
+                  class="form-label"
+                  for="login-password"
+                  data-i18n="login.password"
+                  >Password</label
+                >
+                <div class="input-icon-wrapper" id="password-wrapper">
+                  <i class="fas fa-lock"></i>
+                  <input
+                    type="password"
+                    class="form-input"
+                    id="login-password"
+                    name="password"
+                    required
+                    aria-required="true"
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    id="password-toggle-btn"
+                    aria-label="Toggle password visibility"
+                    aria-controls="login-password"
+                    aria-pressed="false"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg ripple"
+                id="login-submit-btn"
+                style="width: 100%"
+                data-i18n="login.btn"
+              >
+                <i class="fas fa-right-to-bracket"></i> Sign In
+              </button>
+            </form>
+
+            <div class="auth-switch">
+              <span data-i18n="login.signup">Don't have an account?</span>
+              <a href="signup.html" data-i18n="login.signup.link">Sign Up</a>
             </div>
-
-            <button
-              type="submit"
-              class="btn btn-primary btn-lg ripple"
-              id="login-submit-btn"
-              style="width:100%"
-              data-i18n="login.btn"
-            >
-              <i class="fas fa-right-to-bracket"></i> Sign In
-            </button>
-          </form>
-
-          <div class="auth-switch">
-            <span data-i18n="login.signup">Don't have an account?</span>
-            <a href="signup.html" data-i18n="login.signup.link">Sign Up</a>
           </div>
-
         </div>
       </div>
+    </section>
 
-    </div>
-  </section>
+    <!-- ── Vendor / Legacy Scripts (classic, loaded first) ────────────────── -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
 
-  <!-- ── Vendor / Legacy Scripts (classic, loaded first) ────────────────── -->
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/app.js"></script>
+    <!-- ── Login Module (MOCK) ──────────────────────────────────────────────── -->
+    <script type="text/javascript">
+      // ── DOM refs ────────────────────────────────────────────────────────────
+      const form = document.getElementById("login-form");
+      const emailInput = document.getElementById("login-email");
+      const pwInput = document.getElementById("login-password");
+      const emailWrap = document.getElementById("email-wrapper");
+      const pwWrap = document.getElementById("password-wrapper");
+      const errorBanner = document.getElementById("login-error");
+      const errorMsg = document.getElementById("login-error-msg");
+      const submitBtn = document.getElementById("login-submit-btn");
+      const pwToggleBtn = document.getElementById("password-toggle-btn");
 
-  <!-- ── Login Module (MOCK) ──────────────────────────────────────────────── -->
-  <script type="text/javascript">
+      // ── Password visibility toggle ──────────────────────────────────────────
+      pwToggleBtn.addEventListener("click", () => {
+        const isHidden = pwInput.type === "password";
+        pwInput.type = isHidden ? "text" : "password";
+        pwToggleBtn.querySelector("i").className = isHidden
+          ? "fas fa-eye-slash"
+          : "fas fa-eye";
+        pwToggleBtn.setAttribute("aria-pressed", String(isHidden));
+      });
 
-    // ── DOM refs ────────────────────────────────────────────────────────────
-    const form        = document.getElementById('login-form');
-    const emailInput  = document.getElementById('login-email');
-    const pwInput     = document.getElementById('login-password');
-    const emailWrap   = document.getElementById('email-wrapper');
-    const pwWrap      = document.getElementById('password-wrapper');
-    const errorBanner = document.getElementById('login-error');
-    const errorMsg    = document.getElementById('login-error-msg');
-    const submitBtn   = document.getElementById('login-submit-btn');
-    const pwToggleBtn = document.getElementById('password-toggle-btn');
+      // ── Validation helpers ──────────────────────────────────────────────────
+      function setError(wrapper, input) {
+        wrapper.classList.add("is-error");
+        input.classList.add("shake");
+        setTimeout(() => {
+          input.classList.remove("shake");
+          wrapper.classList.remove("is-error");
+        }, 600);
+      }
 
-    // ── Password visibility toggle ──────────────────────────────────────────
-    pwToggleBtn.addEventListener('click', () => {
-      const isHidden = pwInput.type === 'password';
-      pwInput.type = isHidden ? 'text' : 'password';
-      pwToggleBtn.querySelector('i').className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
-      pwToggleBtn.setAttribute('aria-pressed', String(isHidden));
-    });
+      function showBanner(message) {
+        errorMsg.textContent = message;
+        errorBanner.classList.add("visible");
+      }
 
-    // ── Validation helpers ──────────────────────────────────────────────────
-    function setError(wrapper, input) {
-      wrapper.classList.add('is-error');
-      input.classList.add('shake');
-      setTimeout(() => {
-        input.classList.remove('shake');
-        wrapper.classList.remove('is-error');
-      }, 600);
-    }
+      function hideBanner() {
+        errorBanner.classList.remove("visible");
+      }
 
-    function showBanner(message) {
-      errorMsg.textContent = message;
-      errorBanner.classList.add('visible');
-    }
+      // Clear error state on user input
+      [emailInput, pwInput].forEach((inp) =>
+        inp.addEventListener("input", hideBanner),
+      );
 
-    function hideBanner() {
-      errorBanner.classList.remove('visible');
-    }
+      // ── Submit handler ──────────────────────────────────────────────────────
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        hideBanner();
 
-    // Clear error state on user input
-    [emailInput, pwInput].forEach((inp) => inp.addEventListener('input', hideBanner));
+        const email = emailInput.value.trim();
+        const password = pwInput.value;
 
-    // ── Submit handler ──────────────────────────────────────────────────────
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      hideBanner();
-
-      const email    = emailInput.value.trim();
-      const password = pwInput.value;
-
-      // Client-side validation
-      let valid = true;
-      if (!email) { setError(emailWrap, emailInput); valid = false; }
-      if (!password) { setError(pwWrap, pwInput); valid = false; }
-      if (!valid) return;
-
-      // Loading state
-      const originalHTML = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (window.t?.('common.loading') ?? 'Loading...');
-
-      try {
-        // Mock authentication based on email
-        let role = '';
-        if (email === 'admin@ctu.edu.eg') {
-          role = 'admin';
-        } else if (email === 'supervisor@ctu.edu.eg') {
-          role = 'lab_supervisor';
-        } else if (email === 'support@ctu.edu.eg') {
-          role = 'it_support';
-        } else {
-          throw { status: 401 };
+        // Client-side validation
+        let valid = true;
+        if (!email) {
+          setError(emailWrap, emailInput);
+          valid = false;
         }
-        
-        const DASHBOARD_ROUTES = {
-          'admin': 'admin/admin-overview.html',
-          'lab_supervisor': 'lab-supervisor/lab-supervisor-dashboard.html',
-          'it_support': 'support/support-overview.html',
-        };
+        if (!password) {
+          setError(pwWrap, pwInput);
+          valid = false;
+        }
+        if (!valid) return;
 
-        window.location.href = DASHBOARD_ROUTES[role];
+        // Loading state
+        const originalHTML = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> ' +
+          (window.t?.("common.loading") ?? "Loading...");
 
-      } catch (err) {
-        // Restore button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalHTML;
+        try {
+          // Mock authentication based on email
+          let role = "";
+          if (email === "admin@ctu.edu.eg") {
+            role = "admin";
+          } else if (email === "supervisor@ctu.edu.eg") {
+            role = "lab_supervisor";
+          } else {
+            throw { status: 401 };
+          }
 
-        // Show inline error — no alert/confirm
-        if (err?.status === 401 || err?.status === 400) {
-          showBanner(window.t?.('login.error.invalid') ?? 'Invalid email or password.');
-        } else if (err?.status === 0) {
-          showBanner(window.t?.('login.error.network') ?? 'Network error. Please check your connection.');
-        } else {
-          showBanner(window.t?.('login.error.generic') ?? 'Something went wrong. Please try again.');
+          const DASHBOARD_ROUTES = {
+            admin: "admin/admin-overview.html",
+            lab_supervisor: "lab-supervisor/lab-supervisor-dashboard.html",
+          };
+
+          window.location.href = DASHBOARD_ROUTES[role];
+        } catch (err) {
+          // Restore button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalHTML;
+
+          // Show inline error — no alert/confirm
+          if (err?.status === 401 || err?.status === 400) {
+            showBanner(
+              window.t?.("login.error.invalid") ?? "Invalid email or password.",
+            );
+          } else if (err?.status === 0) {
+            showBanner(
+              window.t?.("login.error.network") ??
+                "Network error. Please check your connection.",
+            );
+          } else {
+            showBanner(
+              window.t?.("login.error.generic") ??
+                "Something went wrong. Please try again.",
+            );
+          }
+        }
+      });
+    </script>
+
+    <!-- CTU Support — Footer Component -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <!-- Brand & Description -->
+          <div class="footer-col footer-brand-col">
+            <div class="footer-brand">
+              <div class="footer-logo">
+                <i class="fas fa-headset"></i>
+              </div>
+              <div>
+                <h4 data-i18n="nav.brand">CTU Support</h4>
+                <span class="footer-brand-sub">BATU</span>
+              </div>
+            </div>
+            <p class="footer-desc" data-i18n="hero.subtitle">
+              Professional IT support for Children's Technological University.
+            </p>
+            <div class="footer-social">
+              <a href="javascript:void(0)" class="social-link" aria-label="Facebook"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="javascript:void(0)" class="social-link" aria-label="Twitter"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="javascript:void(0)" class="social-link" aria-label="LinkedIn"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="javascript:void(0)" class="social-link" aria-label="GitHub"
+                ><i class="fab fa-github"></i
+              ></a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="footer-col">
+            <h5 data-i18n="footer.links">Quick Links</h5>
+            <ul class="footer-links">
+              <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+              <li>
+                <a href="report.html" data-i18n="nav.report">Report Problem</a>
+              </li>
+              <li><a href="login.html" data-i18n="nav.login">Login</a></li>
+              <li><a href="signup.html" data-i18n="nav.signup">Sign Up</a></li>
+            </ul>
+          </div>
+
+          <!-- Contact -->
+          <div class="footer-col">
+            <h5 data-i18n="footer.contact">Contact Us</h5>
+            <ul class="footer-contact-list">
+              <li>
+                <i class="fas fa-envelope"></i>
+                <span data-i18n="footer.email">support@ctu.batu.edu.eg</span>
+              </li>
+              <li>
+                <i class="fas fa-phone"></i>
+                <span data-i18n="footer.phone">+20 3 459 0000</span>
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i>
+                <span data-i18n="footer.address"
+                  >New Borg El Arab City, Alexandria, Egypt</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="footer-bottom">
+          <p data-i18n="footer.copyright">
+            © 2026 CTU Support Team. All rights reserved.
+          </p>
+          <p class="footer-powered" data-i18n="footer.powered">
+            Powered by Borg El Arab Technological University
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <style>
+      .site-footer {
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-default);
+        padding: 3rem 0 0;
+        margin-top: 4rem;
+        transition: background-color var(--transition-theme);
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 3rem;
+      }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .footer-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius-md);
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+
+      .footer-brand h4 {
+        font-size: 1.1rem;
+        line-height: 1.2;
+      }
+
+      .footer-brand-sub {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--primary-500);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .footer-desc {
+        font-size: 0.9rem;
+        color: var(--text-tertiary);
+        margin-bottom: 1.25rem;
+        line-height: 1.6;
+        max-width: 340px;
+      }
+
+      .footer-social {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .social-link {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-sm);
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-default);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        transition: all var(--transition-fast);
+        text-decoration: none;
+      }
+
+      .social-link:hover {
+        background: var(--primary-500);
+        color: white;
+        border-color: var(--primary-500);
+        transform: translateY(-2px);
+      }
+
+      .footer-col h5 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .footer-links {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        font-size: 0.9rem;
+        color: var(--text-tertiary);
+        text-decoration: none;
+        transition: color var(--transition-fast);
+      }
+
+      .footer-links a:hover {
+        color: var(--primary-500);
+      }
+
+      .footer-contact-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-contact-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--text-tertiary);
+      }
+
+      .footer-contact-list i {
+        color: var(--primary-500);
+        margin-top: 3px;
+        width: 16px;
+        flex-shrink: 0;
+      }
+
+      .footer-bottom {
+        margin-top: 2.5rem;
+        padding: 1.25rem 0;
+        border-top: 1px solid var(--border-default);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .footer-bottom p {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        margin: 0;
+      }
+
+      .footer-powered {
+        font-size: 0.75rem !important;
+      }
+
+      @media (max-width: 768px) {
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
         }
       }
-    });
-  </script>
-
-<!-- CTU Support — Footer Component -->
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-grid">
-      <!-- Brand & Description -->
-      <div class="footer-col footer-brand-col">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <i class="fas fa-headset"></i>
-          </div>
-          <div>
-            <h4 data-i18n="nav.brand">CTU Support</h4>
-            <span class="footer-brand-sub">BATU</span>
-          </div>
-        </div>
-        <p class="footer-desc" data-i18n="hero.subtitle">Professional IT support for Children's Technological University.</p>
-        <div class="footer-social">
-          <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
-        </div>
-      </div>
-
-      <!-- Quick Links -->
-      <div class="footer-col">
-        <h5 data-i18n="footer.links">Quick Links</h5>
-        <ul class="footer-links">
-          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-          <li><a href="report.html" data-i18n="nav.report">Report Problem</a></li>
-          <li><a href="login.html" data-i18n="nav.login">Login</a></li>
-          <li><a href="signup.html" data-i18n="nav.signup">Sign Up</a></li>
-        </ul>
-      </div>
-
-      <!-- Contact -->
-      <div class="footer-col">
-        <h5 data-i18n="footer.contact">Contact Us</h5>
-        <ul class="footer-contact-list">
-          <li>
-            <i class="fas fa-envelope"></i>
-            <span data-i18n="footer.email">support@ctu.batu.edu.eg</span>
-          </li>
-          <li>
-            <i class="fas fa-phone"></i>
-            <span data-i18n="footer.phone">+20 3 459 0000</span>
-          </li>
-          <li>
-            <i class="fas fa-map-marker-alt"></i>
-            <span data-i18n="footer.address">New Borg El Arab City, Alexandria, Egypt</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Bottom Bar -->
-    <div class="footer-bottom">
-      <p data-i18n="footer.copyright">© 2026 CTU Support Team. All rights reserved.</p>
-      <p class="footer-powered" data-i18n="footer.powered">Powered by Borg El Arab Technological University</p>
-    </div>
-  </div>
-</footer>
-
-<style>
-  .site-footer {
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-default);
-    padding: 3rem 0 0;
-    margin-top: 4rem;
-    transition: background-color var(--transition-theme);
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 3rem;
-  }
-
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .footer-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-md);
-    background: var(--gradient-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-
-  .footer-brand h4 {
-    font-size: 1.1rem;
-    line-height: 1.2;
-  }
-
-  .footer-brand-sub {
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: var(--primary-500);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .footer-desc {
-    font-size: 0.9rem;
-    color: var(--text-tertiary);
-    margin-bottom: 1.25rem;
-    line-height: 1.6;
-    max-width: 340px;
-  }
-
-  .footer-social {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .social-link {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-default);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    transition: all var(--transition-fast);
-    text-decoration: none;
-  }
-
-  .social-link:hover {
-    background: var(--primary-500);
-    color: white;
-    border-color: var(--primary-500);
-    transform: translateY(-2px);
-  }
-
-  .footer-col h5 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-  }
-
-  .footer-links {
-    list-style: none;
-    padding: 0;
-  }
-
-  .footer-links li {
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-links a {
-    font-size: 0.9rem;
-    color: var(--text-tertiary);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-
-  .footer-links a:hover {
-    color: var(--primary-500);
-  }
-
-  .footer-contact-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .footer-contact-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
-    color: var(--text-tertiary);
-  }
-
-  .footer-contact-list i {
-    color: var(--primary-500);
-    margin-top: 3px;
-    width: 16px;
-    flex-shrink: 0;
-  }
-
-  .footer-bottom {
-    margin-top: 2.5rem;
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--border-default);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .footer-bottom p {
-    font-size: 0.8rem;
-    color: var(--text-tertiary);
-    margin: 0;
-  }
-
-  .footer-powered {
-    font-size: 0.75rem !important;
-  }
-
-  @media (max-width: 768px) {
-    .footer-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .footer-bottom {
-      flex-direction: column;
-      text-align: center;
-    }
-  }
-</style>
-</body>
+    </style>
+  </body>
 </html>

@@ -403,7 +403,7 @@ const translations = {
  * Get the current language from localStorage or default to English
  */
 function getCurrentLang() {
-  return localStorage.getItem('ctu-lang') || 'en';
+  return localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
 }
 
 /**
@@ -448,12 +448,18 @@ function applyTranslations() {
  * Set the language and apply all changes
  */
 function setLanguage(lang) {
+  const isAr = lang === 'ar';
   localStorage.setItem('ctu-lang', lang);
+  localStorage.setItem('language', lang);
   
   // Set document direction
-  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  const dir = isAr ? 'rtl' : 'ltr';
   document.documentElement.setAttribute('dir', dir);
   document.documentElement.setAttribute('lang', lang);
+  if (document.body) {
+    document.body.setAttribute('dir', dir);
+    document.body.setAttribute('lang', lang);
+  }
   
   // Apply translations
   applyTranslations();
@@ -461,20 +467,30 @@ function setLanguage(lang) {
   // Update language toggle button text
   const langBtn = document.getElementById('lang-toggle');
   if (langBtn) {
-    const langText = langBtn.querySelector('.lang-text');
-    if (langText) {
-      langText.textContent = lang === 'ar' ? 'EN' : 'عربي';
+    const pill = langBtn.querySelector('.lang-pill') || langBtn.querySelector('.lang-text');
+    if (pill) {
+      pill.textContent = isAr ? 'EN' : 'عربي';
     }
+    langBtn.setAttribute('title', isAr ? 'Switch to English' : 'التبديل إلى العربية');
+    langBtn.setAttribute('aria-label', isAr ? 'Switch to English' : 'التبديل إلى العربية');
+    langBtn.setAttribute('dir', 'ltr');
   }
 
   // Dispatch custom event for page-specific handlers
   window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
 }
 
+let _i18nLastLangToggle = 0;
+
 /**
  * Toggle between Arabic and English
  */
-function toggleLanguage() {
+function toggleLanguage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const now = Date.now();
+  if (now - _i18nLastLangToggle < 250) return;
+  _i18nLastLangToggle = now;
+
   const currentLang = getCurrentLang();
   setLanguage(currentLang === 'en' ? 'ar' : 'en');
 }

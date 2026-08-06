@@ -6,8 +6,14 @@
   <title>Training Roster — Admin Dashboard</title>
   <script>
     (function() {
-      const savedTheme = localStorage.getItem('ctu-theme') || 'light';
+      const savedTheme = localStorage.getItem('ctu-theme') || localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+      }
+      const savedLang = localStorage.getItem('ctu-lang') || localStorage.getItem('language') || 'en';
+      document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', savedLang);
     })();
   </script>
 
@@ -22,11 +28,6 @@
 <body>
   <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file.
        If the user is not logged in or role !== 'admin', redirect them to login.php. -->
-       
-  <div class="loading-screen" id="loading-screen">
-    <div class="loading-spinner"></div>
-    <p data-i18n="common.loading">Loading...</p>
-  </div>
 
   <div class="dashboard-layout" id="dashboard-layout">
     
@@ -55,20 +56,14 @@
           <a href="admin-warnings.html" class="sidebar-link">
             <i class="fas fa-exclamation-triangle"></i><span>Warnings</span>
           </a>
-          <a href="admin-issues.html" class="sidebar-link">
-            <i class="fas fa-ticket-alt"></i><span>Issues</span>
-          </a>
           <a href="admin-custody.html" class="sidebar-link">
             <i class="fas fa-boxes-stacked"></i><span>Custody</span>
           </a>
           <a href="admin-reports.html" class="sidebar-link">
             <i class="fas fa-file-alt"></i><span>Daily Reports</span>
           </a>
-          <a href="admin-trainings.html" class="sidebar-link active">
+          <a href="admin-trainings.html" class="sidebar-link">
             <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
-          </a>
-          <a href="admin-system.html" class="sidebar-link">
-            <i class="fas fa-shield-alt"></i><span>Audit Log</span>
           </a>
         </div>
       </nav>
@@ -92,12 +87,17 @@
     <main class="dashboard-main">
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
-          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
           <h2 id="topbar-title">Training Roster</h2>
         </div>
         <div class="dashboard-topbar-right">
-          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
-          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+          <button type="button" id="lang-toggle" class="topbar-toggle-btn" onclick="if(typeof toggleLanguage==='function')toggleLanguage()" aria-label="Toggle language" title="Toggle Language">
+            <svg class="lang-globe-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" stroke="currentColor" stroke-width="2"/><path d="M2 12h20" stroke="currentColor" stroke-width="2"/></svg>
+            <span class="lang-pill">عربي</span>
+          </button>
+          <button type="button" id="theme-toggle" class="topbar-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </header>
 
@@ -111,11 +111,11 @@
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
             <a href="admin-trainings.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Trainings</a>
             <!-- [BACKEND HINT]: Wrap these Excel/CSV/PDF buttons in PHP role check: if($_SESSION['role'] === 'admin') -->
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#roster-table-body', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#roster-table-body', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#roster-table-body', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#roster-table-body', this)"><i class="fas fa-image"></i> Export PNG</button>
-            <button type="button" class="btn btn-primary" data-modal-target="#addAttendeeModal"><i class="fas fa-user-plus"></i> Add Attendee</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('excel', 'trainings', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('csv', 'trainings', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('pdf', 'trainings', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="handleDataExport('png', 'trainings', this)"><i class="fas fa-image"></i> Export PNG</button>
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('addAttendeeModal').classList.add('active'); document.body.style.overflow='hidden';"><i class="fas fa-user-plus"></i> Add Attendee</button>
           </div>
         </div>
 
@@ -135,7 +135,7 @@
                 <td>Sara Mohamed</td>
                 <td><span class="badge" style="background: var(--success-100); color: var(--success-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Confirmed</span></td>
                 <td>
-                  <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" data-modal-target="#removeAttendeeModal"><i class="fas fa-times"></i> Remove</button>
+                  <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="document.getElementById('removeAttendeeModal').classList.add('active'); document.body.style.overflow='hidden';"><i class="fas fa-times"></i> Remove</button>
                 </td>
               </tr>
               <tr>
@@ -143,7 +143,7 @@
                 <td>Ali Mostafa</td>
                 <td><span class="badge" style="background: var(--warning-100); color: var(--warning-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Pending</span></td>
                 <td>
-                  <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" data-modal-target="#removeAttendeeModal"><i class="fas fa-times"></i> Remove</button>
+                  <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="document.getElementById('removeAttendeeModal').classList.add('active'); document.body.style.overflow='hidden';"><i class="fas fa-times"></i> Remove</button>
                 </td>
               </tr>
             </tbody>
@@ -156,7 +156,7 @@
         <div class="modal">
           <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
           <h4 style="margin-bottom: 1.5rem;">Add Attendee</h4>
-          <form method="POST" action="">
+          <form method="POST" action="" onsubmit="event.preventDefault(); if(this.closest('.modal-overlay')) this.closest('.modal-overlay').classList.remove('active'); document.body.style.overflow='';">
             <div style="margin-bottom: 1rem;">
               <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Student</label>
               <select class="form-select" required>
@@ -176,7 +176,7 @@
           <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
           <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Remove Attendee</h4>
           <p style="margin-bottom: 1.5rem;">Are you sure you want to remove this student from the training session?</p>
-          <form method="POST" action="">
+          <form method="POST" action="" onsubmit="event.preventDefault(); if(this.closest('.modal-overlay')) this.closest('.modal-overlay').classList.remove('active'); document.body.style.overflow='';">
             <button type="submit" class="btn btn-danger" style="width: 100%;">Yes, Remove</button>
           </form>
         </div>
