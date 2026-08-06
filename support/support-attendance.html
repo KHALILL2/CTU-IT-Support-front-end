@@ -131,57 +131,36 @@
           <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
         </div>
       </header>
-
-      <div class="dashboard-content page-transition">
+      <div class="dashboard-content page-transition">
         
-        <div class="flex-between mb-4" style="align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="flex-between mb-4">
           <div>
-            <h3 style="margin-bottom: 0.25rem;">Daily Attendance</h3>
-            <p class="text-muted">Manage the attendance records for all students.</p>
+            <h3>Daily Attendance (Lab 1)</h3>
+            <p class="text-muted">Record student attendance for your assigned lab.</p>
           </div>
-          
-          <div style="display: flex; gap: 0.75rem;">
-            <!-- [BACKEND HINT]: Start New Day Form -->
-            <form method="POST" action="start_day.php">
-              <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Start New Day</button>
-            </form>
-            
-            <!-- [BACKEND HINT]: Export Form -->
-            <form method="POST" action="export_attendance.php">
-              <button type="submit" class="btn btn-secondary"><i class="fas fa-file-excel"></i> Export to Excel</button>
-            </form>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+            <!-- [BACKEND HINT]: Only PNG Export for non-admin -->
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#attendance-table-body', this)"><i class="fas fa-image"></i> Export PNG</button>
+            <button class="btn btn-primary" onclick="simulateDataImport('csv', '#attendance-table-body', this)"><i class="fas fa-file-import"></i> Import List</button>
           </div>
         </div>
 
-        <!-- [BACKEND HINT]: Loop over dates (days) in the database -->
-        <!-- Day 1 Block -->
-        <div class="day-block">
-          <div class="day-header">
-            <div class="day-title"><i class="fas fa-calendar-day"></i> Today (2026-10-25)</div>
-            
-            <!-- [BACKEND HINT]: Delete Day Form -->
-            <form method="POST" action="delete_day.php" onsubmit="return confirm('Are you sure you want to delete this day?');">
-              <input type="hidden" name="day_id" value="2026-10-25">
-              <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete Day</button>
-            </form>
-          </div>
-
-          <div class="table-responsive">
-            <!-- [BACKEND HINT]: Form to save attendance states for this specific day -->
-            <form method="POST" action="save_attendance.php">
-              <input type="hidden" name="day_id" value="2026-10-25">
-              <table class="table" style="width: 100%; border-collapse: collapse;">
+        <div class="card" style="padding: 1.5rem;">
+          <h5 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Section A - Morning Shift</h5>
+          <!-- [BACKEND HINT]: Wrap inside <form method="POST"> to submit attendance to server -->
+          <form method="POST" action="">
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; text-align: left; border-collapse: collapse; min-width: 600px;">
                 <thead>
-                  <tr style="border-bottom: 2px solid var(--border-default); text-align: left;">
-                    <th style="padding: 1rem;">Student Name</th>
-                    <th style="padding: 1rem;">Academic ID</th>
-                    <th style="padding: 1rem; width: 200px;">Status</th>
+                  <tr style="background: var(--bg-secondary); border-bottom: 2px solid var(--border-default);">
+                    <th style="padding: 1rem; font-weight: 600; color: var(--text-secondary);">Student Name</th>
+                    <th style="padding: 1rem; font-weight: 600; color: var(--text-secondary);">ID</th>
+                    <th style="padding: 1rem; font-weight: 600; color: var(--text-secondary);">Status</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <!-- [BACKEND HINT]: Loop over all students here -->
+                <tbody id="attendance-table-body">
                   <tr style="border-bottom: 1px solid var(--border-default);">
-                    <td style="padding: 1rem; font-weight: 500;">Omar Khaled</td>
+                    <td style="padding: 1rem; font-weight: 500;">Fatma Ali</td>
                     <td style="padding: 1rem; color: var(--text-muted);">20261001</td>
                     <td style="padding: 1rem;">
                       <select name="attendance[20261001]" class="status-select present">
@@ -191,7 +170,6 @@
                       </select>
                     </td>
                   </tr>
-                  
                   <tr style="border-bottom: 1px solid var(--border-default);">
                     <td style="padding: 1rem; font-weight: 500;">Ahmed Youssef</td>
                     <td style="padding: 1rem; color: var(--text-muted);">20261002</td>

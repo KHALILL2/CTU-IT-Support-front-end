@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2026-08-06
+
+### Added
+- **Role-Based Export System**: Implemented a comprehensive data extraction utility. Administrators can export tables as CSV, Excel, PDF, or PNG, while other roles (Support, Lab Supervisor) are strictly restricted to PNG (lossless image format) exports.
+- **Global Data Import Logic**: Implemented `simulateDataImport(fileType, targetTableId)` in `app.js`. When triggered, it successfully parses dummy JSON data and dynamically injects `<tr>` rows into the target table with UI feedback.
+- **Table IDs**: Added unique IDs to all table `<tbody>` elements across the workspace to support the new Export and Import javascript targeting.
+
+### Fixed
+- **Corrupted Markup Repairs**: Restored heavily truncated HTML and corrupted table structures in `support-warnings.html`, `lab-supervisor-attendance.html`, and `lab-supervisor-equipment.html`.
+
+## [2.1.2] - 2026-08-06
+
+### Fixed
+- **Massive UI Interaction Audit**: Systematically audited all dashboard files (`admin`, `support`, `lab-supervisor`) to replace dead buttons, missing links, and broken onclick handlers.
+- **Global Modal System Deployment**: Standardized all popup actions (Add, Edit, Delete, Issue Warning, Assign Equipment) to use the new `data-modal-target` and global `modal-overlay` structure handled seamlessly by `app.js`.
+- **Navigation Buttons**: Replaced dummy `href="#"` and `onclick="window.location.href"` with valid targets or appropriate data attributes.
+- **Created Missing Pages**: Generated `support-student-details.html` and `admin-training-roster.html` to fulfill missing UI flows.
+
 ## [2.1.1] - 2026-08-06
 
 ### Fixed

@@ -103,22 +103,6 @@
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
           <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-        </div>
-      </header>
-
-      <div class="dashboard-content page-transition">
-
-        <!-- History Table -->
-        <div class="mb-3 flex-between">
-          <div>
-            <h3 style="margin-bottom: 0.25rem;">Past Reports</h3>
-            <p class="text-muted">A history of reports you have submitted.</p>
-          </div>
-        </div>
-        
-        <div class="card mb-5">
-          <div class="table-responsive">
-            <table class="table" style="width: 100%; border-collapse: collapse;">
               <thead>
                 <tr style="border-bottom: 2px solid var(--border-default); text-align: left;">
                   <th style="padding: 1rem;">Date</th>
@@ -127,7 +111,7 @@
                   <th style="padding: 1rem;">Status</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="reports-table-body">
                 <!-- [BACKEND HINT]: Loop over past reports -->
                 <tr style="border-bottom: 1px solid var(--border-default);">
                   <td style="padding: 1rem;">2026-10-18</td>

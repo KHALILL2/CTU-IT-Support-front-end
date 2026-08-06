@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Custody — Admin Dashboard</title>
+  <title>Training Roster — Admin Dashboard</title>
   <script>
     (function() {
       const savedTheme = localStorage.getItem('ctu-theme') || 'light';
@@ -18,38 +18,6 @@
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/support.css">
   <link rel="stylesheet" href="../css/animations.css">
-  
-  <style>
-    .master-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background: var(--bg-primary);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .master-table th, .master-table td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border-default);
-    }
-    .master-table th {
-      background: var(--bg-secondary);
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .master-table tbody tr {
-      transition: background 0.2s;
-    }
-    .master-table tbody tr:hover {
-      background: var(--bg-secondary);
-    }
-    .action-btns {
-      display: flex;
-      gap: 0.5rem;
-    }
-  </style>
 </head>
 <body>
   <!-- [BACKEND HINT]: Add PHP Session authentication check at the very top of this file.
@@ -90,13 +58,13 @@
           <a href="admin-issues.html" class="sidebar-link">
             <i class="fas fa-ticket-alt"></i><span>Issues</span>
           </a>
-          <a href="admin-custody.html" class="sidebar-link active">
+          <a href="admin-custody.html" class="sidebar-link">
             <i class="fas fa-boxes-stacked"></i><span>Custody</span>
           </a>
           <a href="admin-reports.html" class="sidebar-link">
             <i class="fas fa-file-alt"></i><span>Daily Reports</span>
           </a>
-          <a href="admin-trainings.html" class="sidebar-link">
+          <a href="admin-trainings.html" class="sidebar-link active">
             <i class="fas fa-chalkboard-teacher"></i><span>Trainings</span>
           </a>
           <a href="admin-system.html" class="sidebar-link">
@@ -125,135 +93,100 @@
       <header class="dashboard-topbar">
         <div class="dashboard-topbar-left">
           <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-          <h2 id="topbar-title">Custody Management</h2>
+          <h2 id="topbar-title">Training Roster</h2>
         </div>
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
           <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-            <!-- [BACKEND HINT]: Form submission handles custody assignment -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-              <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Select Student</label>
-                <select class="form-select" name="student_id" required>
-                  <option value="">-- Choose a Student --</option>
-                  <option value="1">Sara Mohamed (STU-2026-001)</option>
-                  <option value="2">Ali Mostafa (STU-2026-002)</option>
-                </select>
-              </div>
-              <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Equipment Type</label>
-                <select class="form-select" name="equipment_type" required>
-                  <option value="">-- Type --</option>
-                  <option value="laptop">Laptop</option>
-                  <option value="mouse">Mouse</option>
-                  <option value="toolkit">Toolkit</option>
-                </select>
-              </div>
-              <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Quantity</label>
-                <input type="number" name="quantity" class="form-control" value="1" min="1" required>
-              </div>
-              <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500;">Date Assigned</label>
-                <input type="date" name="assigned_date" class="form-control" required>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-boxes-stacked"></i> Assign Equipment</button>
-          </form>
+        </div>
+      </header>
+
+      <div class="dashboard-content page-transition">
+        
+        <div class="flex-between mb-4">
+          <div>
+            <h3 style="margin-bottom: 0.25rem;">Roster: Network Troubleshooting</h3>
+            <p class="text-muted">August 15, 2026 at 10:00 AM</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+            <a href="admin-trainings.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Trainings</a>
+            <!-- [BACKEND HINT]: Wrap these Excel/CSV/PDF buttons in PHP role check: if($_SESSION['role'] === 'admin') -->
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#roster-table-body', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#roster-table-body', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#roster-table-body', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#roster-table-body', this)"><i class="fas fa-image"></i> Export PNG</button>
+            <button type="button" class="btn btn-primary" data-modal-target="#addAttendeeModal"><i class="fas fa-user-plus"></i> Add Attendee</button>
+          </div>
         </div>
 
-        <div class="search-bar mb-4">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search by student or equipment...">
-        </div>
-
-        <div class="table-responsive">
-          <table class="master-table">
+        <div class="table-responsive card">
+          <table class="table master-table" style="margin-bottom: 0;">
             <thead>
               <tr>
-                <th>Student</th>
-                <th>Equipment</th>
-                <th>Qty</th>
-                <th>Date Assigned</th>
+                <th>Student ID</th>
+                <th>Name</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="custody-table-body">
-              <!-- [BACKEND HINT]: Loop over custody records -->
+            <tbody id="roster-table-body">
               <tr>
+                <td>STU-2026-001</td>
                 <td>Sara Mohamed</td>
-                <td>Lenovo ThinkPad T14</td>
-                <td>1</td>
-                <td>2026-01-15</td>
-                <td><span class="badge" style="background: var(--success-100); color: var(--success-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Assigned</span></td>
+                <td><span class="badge" style="background: var(--success-100); color: var(--success-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Confirmed</span></td>
                 <td>
-                  <div class="action-btns">
-                    <button class="btn btn-secondary btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);" title="Return"><i class="fas fa-undo"></i></button>
-                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" data-modal-target="#removeAttendeeModal"><i class="fas fa-times"></i> Remove</button>
                 </td>
               </tr>
               <tr>
+                <td>STU-2026-002</td>
                 <td>Ali Mostafa</td>
-                <td>Networking Toolkit</td>
-                <td>1</td>
-                <td>2026-03-10</td>
-                <td><span class="badge" style="background: var(--warning-100); color: var(--warning-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Pending Return</span></td>
+                <td><span class="badge" style="background: var(--warning-100); color: var(--warning-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Pending</span></td>
                 <td>
-                  <div class="action-btns">
-                    <button class="btn btn-secondary btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);" title="Return"><i class="fas fa-undo"></i></button>
-                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" data-modal-target="#removeAttendeeModal"><i class="fas fa-times"></i> Remove</button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </div>
 
-      <!-- Edit Custody Modal -->
-      <div id="editCustodyModal" class="modal-overlay">
+      <!-- Add Attendee Modal -->
+      <div id="addAttendeeModal" class="modal-overlay">
         <div class="modal">
           <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
-          <h4 style="margin-bottom: 1.5rem;">Edit Custody Record</h4>
+          <h4 style="margin-bottom: 1.5rem;">Add Attendee</h4>
           <form method="POST" action="">
             <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Quantity</label>
-              <input type="number" name="quantity" class="form-control" value="1" required>
-            </div>
-            <div style="margin-bottom: 1.5rem;">
-              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Status</label>
-              <select name="status" class="form-select" required>
-                <option value="assigned">Assigned</option>
-                <option value="pending_return">Pending Return</option>
-                <option value="returned">Returned</option>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Student</label>
+              <select class="form-select" required>
+                <option value="">-- Choose Student --</option>
+                <option value="1">Sara Mohamed (STU-2026-001)</option>
+                <option value="2">Ali Mostafa (STU-2026-002)</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Roster</button>
           </form>
         </div>
       </div>
 
-      <!-- Return Custody Modal -->
-      <div id="returnCustodyModal" class="modal-overlay">
+      <!-- Remove Attendee Modal -->
+      <div id="removeAttendeeModal" class="modal-overlay">
         <div class="modal">
           <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
-          <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Return Equipment</h4>
-          <p style="margin-bottom: 1.5rem;">Confirm that this equipment has been returned by the student?</p>
+          <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Remove Attendee</h4>
+          <p style="margin-bottom: 1.5rem;">Are you sure you want to remove this student from the training session?</p>
           <form method="POST" action="">
-            <button type="submit" class="btn btn-danger" style="width: 100%;">Confirm Return</button>
+            <button type="submit" class="btn btn-danger" style="width: 100%;">Yes, Remove</button>
           </form>
         </div>
       </div>
+
     </main>
   </div>
 
-  <!-- Shared Global JS -->
   <script src="../js/app.js"></script>
   <script>
-    // Sidebar Toggle Logic
     document.addEventListener('DOMContentLoaded', () => {
       const sidebarEl = document.getElementById('sidebar');
       const sidebarToggle = document.getElementById('sidebar-toggle');

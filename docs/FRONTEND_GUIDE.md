@@ -86,13 +86,18 @@ When modifying HTML, rely on these standardized classes:
 ```
 
 ### Modals
-Modals are pure HTML/CSS. They are hidden by default and shown by adding the `.active` class to the `.modal-overlay`.
+Modals are pure HTML/CSS driven by a global JavaScript listener in `app.js`. They are hidden by default and shown by adding the `.active` class to the `.modal-overlay`.
+To trigger a modal, add the `data-modal-target="#id"` attribute to a button. To close it, add the `modal-close` class to the close button.
 ```html
+<!-- Trigger Button -->
+<button type="button" class="btn btn-primary" data-modal-target="#my-modal">Open Modal</button>
+
+<!-- Modal Structure -->
 <div class="modal-overlay" id="my-modal">
   <div class="modal">
+    <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
     <h3>Modal Title</h3>
     <p>Modal content goes here.</p>
-    <button onclick="document.getElementById('my-modal').classList.remove('active')">Close</button>
   </div>
 </div>
 ```

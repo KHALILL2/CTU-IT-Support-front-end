@@ -5,8 +5,49 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
+  // Init language early if possible
   initLanguage();
+
+  // --- Modal Logic ---
+  const modalTriggers = document.querySelectorAll('[data-modal-target]');
+  const modalCloses = document.querySelectorAll('.modal-close, [data-modal-close]');
+  const modals = document.querySelectorAll('.modal-overlay');
+
+  modalTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = trigger.getAttribute('data-modal-target');
+      const targetModal = document.querySelector(targetId);
+      if (targetModal) {
+        targetModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  const closeModal = (modal) => {
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  };
+
+  modalCloses.forEach(closeBtn => {
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal(closeBtn.closest('.modal-overlay'));
+    });
+  });
+
+  modals.forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal(modal);
+      }
+    });
+  });
+
+  initTheme();
   initLayout();
   initScrollReveal();
   hideLoadingScreen();
@@ -343,3 +384,124 @@ window.toggleTheme = toggleTheme;
 if (typeof toggleLanguage !== 'undefined') {
   window.toggleLanguage = toggleLanguage;
 }
+
+/* ========================
+   DATA IMPORT SIMULATION
+   ======================== */
+
+/**
+ * Simulates importing data from Excel/CSV and injecting it into a target table.
+ * @param {string} fileType - 'excel', 'csv', or 'data'
+ * @param {string} targetTableId - ID or selector of the tbody to inject into
+ * @param {HTMLElement} btn - The button that triggered the import
+ */
+window.simulateDataImport = function(fileType, targetTableId, btn) {
+  // Store original button state
+  const originalText = btn.innerHTML;
+  btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Importing...`;
+  btn.disabled = true;
+
+  /* 
+   * [BACKEND HINT] 
+   * PHP DEVELOPERS: The static JSON below ('dummyData') represents the expected data format.
+   * To make this dynamic:
+   * 1. Create a PHP script (e.g., 'import_data.php') that parses the uploaded CSV/Excel file.
+   * 2. Have the PHP script return JSON encoded data (`echo json_encode($parsedData);`).
+   * 3. Replace the 'dummyData' variable below with a `fetch('import_data.php')` call.
+   * 4. Or, pass the JSON directly from PHP on page load and trigger this function.
+   */
+  const dummyData = [
+    {
+      id: "ID-" + Math.floor(Math.random() * 10000),
+      name: "Imported User/Record A",
+      role: "Student",
+      date: new Date().toISOString().split('T')[0],
+      status: "Active"
+    },
+    {
+      id: "ID-" + Math.floor(Math.random() * 10000),
+      name: "Imported User/Record B",
+      role: "Staff",
+      date: new Date().toISOString().split('T')[0],
+      status: "Pending"
+    }
+  ];
+
+  // Simulate network delay
+  setTimeout(() => {
+    const tbody = document.querySelector(targetTableId);
+    if (tbody) {
+      // Loop through dummyData and inject rows
+      dummyData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.style.backgroundColor = 'rgba(16, 185, 129, 0.1)'; // Highlight new rows slightly
+        tr.innerHTML = `
+          <td><strong>${row.id}</strong></td>
+          <td>${row.name}</td>
+          <td>${row.role}</td>
+          <td>${row.date}</td>
+          <td><span class="badge badge-success">${row.status}</span></td>
+          <td>
+            <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+            <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+          </td>
+        `;
+        tbody.prepend(tr);
+        
+        // Remove highlight after 2s
+        setTimeout(() => {
+          tr.style.transition = 'background-color 1s ease';
+          tr.style.backgroundColor = '';
+        }, 2000);
+      });
+      
+      showToast(`Successfully imported ${dummyData.length} records from ${fileType.toUpperCase()}`, 'success');
+    } else {
+      showToast(`Error: Target table ${targetTableId} not found.`, 'error');
+    }
+
+    // Restore button state
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }, 1500);
+};
+
+/* ========================
+   GLOBAL DATA EXPORT
+   ======================== */
+
+/* [BACKEND HINT]:
+   The following frontend JS function simulates the export process.
+   For true Excel, CSV, and PDF exports, you MUST move this logic to the backend 
+   PHP server (e.g., using PhpSpreadsheet for Excel/CSV, and TCPDF/MPDF for PDF)
+   to ensure data security and handle large datasets securely.
+   The PNG export can remain partially on the frontend (e.g., using html2canvas) 
+   but is mocked here for the prototype.
+*/
+window.exportTableData = function(format, tableId, btn) {
+  // Store original button text/icon to restore later
+  const originalText = btn.innerHTML;
+  
+  // Set loading state
+  btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Exporting...`;
+  btn.disabled = true;
+
+  // Simulate generation delay
+  setTimeout(() => {
+    let message = '';
+    
+    if (format === 'png') {
+      // Simulate html2canvas snapshot
+      message = `Table snapshot captured! Saved as table_export.png`;
+    } else {
+      // Simulate server-side generation
+      message = `Successfully exported table data as ${format.toUpperCase()}`;
+    }
+    
+    showToast(message, 'success');
+
+    // Restore button state
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }, 1200); // 1.2s delay for simulation
+};

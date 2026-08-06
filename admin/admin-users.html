@@ -168,75 +168,8 @@
           <div class="sidebar-user-avatar"><img src="../images/avatar-default.png" alt="User Avatar" id="sidebar-avatar"></div>
           <div class="sidebar-user-info">
             <p class="sidebar-user-name" id="sidebar-user-name">System Admin</p>
-            <p class="sidebar-user-role" id="sidebar-user-role">Administrator</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-    <main class="dashboard-main">
-      <header class="dashboard-topbar">
-        <div class="dashboard-topbar-left">
-          <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-          <h2 id="topbar-title">User Management</h2>
-        </div>
-        <div class="dashboard-topbar-right">
-          <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
-          <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-        </div>
-      </header>
-
-      <div class="dashboard-content page-transition">
-        
-        <div class="flex-between mb-3">
-          <div>
-            <h3>Master Students Directory</h3>
-            <p class="text-muted">Manage all registered students</p>
-          </div>
-          <button class="btn btn-primary"><i class="fas fa-plus"></i> Add Student</button>
-        </div>
-
-        <div class="search-bar mb-4">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search students by ID or name...">
-        </div>
-
-        <div class="table-responsive">
-          <table class="master-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- [BACKEND HINT]: Loop over users. Example row below -->
-              <tr onclick="window.location.href='#studentModal'">
-                <td>STU-2026-001</td>
-                <td>Sara Mohamed</td>
-                <td>Computer Science</td>
-                <td><span class="badge" style="background: var(--success-100); color: var(--success-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Active</span></td>
-                <td>
-                  <div class="action-btns">
-                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();"><i class="fas fa-trash"></i></button>
-                  </div>
-                </td>
-              </tr>
-              <tr onclick="window.location.href='#studentModal'">
-                <td>STU-2026-002</td>
-                <td>Ali Mostafa</td>
-                <td>Information Technology</td>
-                <td><span class="badge" style="background: var(--danger-100); color: var(--danger-600); padding: 0.25rem 0.5rem; border-radius: 4px;">Suspended</span></td>
-                <td>
-                  <div class="action-btns">
-                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation();" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-secondary btn-sm" style="color: var(--danger-500);" onclick="event.stopPropagation();" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i></button>
                   </div>
                 </td>
               </tr>
@@ -248,8 +181,8 @@
 
       <!-- Student Detail Modal -->
       <div id="studentModal" class="modal-overlay">
-        <div class="modal-content">
-          <a href="#" class="modal-close"><i class="fas fa-times"></i></a>
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
           <div class="modal-header">
             <h4>Student Details: Sara Mohamed</h4>
             <p class="text-muted">ID: STU-2026-001</p>
@@ -282,15 +215,74 @@
             </ul>
           </div>
 
-          <div class="modal-actions">
-            <button class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
-            <button class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login as Student</button>
-            <div style="flex-grow: 1;"></div>
-            <button class="btn btn-secondary"><i class="fas fa-edit"></i> Edit</button>
-            <button class="btn btn-secondary" style="color: var(--danger-500);"><i class="fas fa-trash"></i> Delete</button>
+          <div class="modal-actions" style="flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end;">
+            <!-- [BACKEND HINT]: Wrap these Excel/CSV/PDF buttons in PHP role check: if($_SESSION['role'] === 'admin') -->
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('excel', '#studentModal', this)"><i class="fas fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('csv', '#studentModal', this)"><i class="fas fa-file-csv"></i> Export CSV</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('pdf', '#studentModal', this)"><i class="fas fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-secondary" onclick="exportTableData('png', '#studentModal', this)"><i class="fas fa-image"></i> Export PNG</button>
+            <button type="button" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login as Student</button>
+          </div>
+          <div class="modal-actions" style="margin-top: 1rem; border-top: 1px solid var(--border-default); padding-top: 1rem;">
+            <button type="button" class="btn btn-secondary" data-modal-target="#editStudentModal"><i class="fas fa-edit"></i> Edit</button>
+            <button type="button" class="btn btn-secondary" style="color: var(--danger-500);" data-modal-target="#deleteStudentModal"><i class="fas fa-trash"></i> Delete</button>
           </div>
         </div>
       </div>
+
+      <!-- Add Student Modal -->
+      <div id="addStudentModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1.5rem;">Add New Student</h4>
+          <form method="POST" action="">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Department</label>
+              <input type="text" name="department" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Student</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit Student Modal -->
+      <div id="editStudentModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1.5rem;">Edit Student</h4>
+          <form method="POST" action="">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
+              <input type="text" name="name" class="form-control" value="Sara Mohamed" required>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Status</label>
+              <select name="status" class="form-select">
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Student Modal -->
+      <div id="deleteStudentModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Confirm Deletion</h4>
+          <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete this student? This action cannot be undone.</p>
+          <form method="POST" action="">
+            <button type="submit" class="btn btn-danger" style="width: 100%;">Yes, Delete Student</button>
+          </form>
+        </div>
+      </div>
+
     </main>
   </div>
 

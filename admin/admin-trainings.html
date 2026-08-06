@@ -159,22 +159,6 @@
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
           <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-        </div>
-      </header>
-
-      <div class="dashboard-content page-transition">
-        
-        <div class="flex-between mb-3">
-          <div>
-            <h3>Training Sessions</h3>
-            <p class="text-muted">Manage training modules for IT support students.</p>
-          </div>
-        </div>
-
-        <!-- Add New Training Form -->
-        <div class="card mb-4" style="padding: 1.5rem;">
-          <h5 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Create New Training Session</h5>
-          <form method="POST" action="">
             <!-- [BACKEND HINT]: Form submission creates new training record -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
               <div style="grid-column: span 2;">
@@ -271,7 +255,7 @@
             <div class="training-footer">
               <span class="enrolled-count" style="background: var(--border-default); color: var(--text-secondary);"><i class="fas fa-users"></i> 25 Attended</span>
               <div style="display: flex; gap: 0.5rem;">
-                <button class="btn btn-secondary btn-sm" title="View Roster"><i class="fas fa-list"></i></button>
+                <a href="admin-training-roster.html" class="btn btn-secondary btn-sm" title="View Roster"><i class="fas fa-list"></i></a>
               </div>
             </div>
           </div>
@@ -279,6 +263,44 @@
         </div>
 
       </div>
+
+      <!-- Edit Training Modal -->
+      <div id="editTrainingModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1.5rem;">Edit Training Session</h4>
+          <form method="POST" action="">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Training Title</label>
+              <input type="text" name="title" class="form-control" value="Network Troubleshooting" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Date</label>
+                <input type="date" name="date" class="form-control" required>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Time</label>
+                <input type="time" name="time" class="form-control" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Cancel Training Modal -->
+      <div id="cancelTrainingModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Cancel Training Session</h4>
+          <p style="margin-bottom: 1.5rem;">Are you sure you want to cancel this training session? Enrolled students will be notified.</p>
+          <form method="POST" action="">
+            <button type="submit" class="btn btn-danger" style="width: 100%;">Yes, Cancel Session</button>
+          </form>
+        </div>
+      </div>
+
     </main>
   </div>
 

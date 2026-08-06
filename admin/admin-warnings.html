@@ -167,22 +167,6 @@
         <div class="dashboard-topbar-right">
           <button class="btn-icon navbar-action-btn" id="lang-toggle" aria-label="Toggle language"><i class="fas fa-globe"></i></button>
           <button class="btn-icon navbar-action-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-        </div>
-      </header>
-
-      <div class="dashboard-content page-transition">
-        
-        <div class="flex-between mb-3">
-          <div>
-            <h3>Global Warnings</h3>
-            <p class="text-muted">Issue and manage student warnings.</p>
-          </div>
-        </div>
-
-        <!-- Assign New Warning Form -->
-        <div class="card mb-4" style="padding: 1.5rem;">
-          <h5 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem;">Assign New Warning</h5>
-          <form method="POST" action="">
             <!-- [BACKEND HINT]: Form submission handles warning creation -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
               <div>
@@ -264,6 +248,42 @@
 
         </div>
 
+      </div>
+      </div>
+
+      <!-- Edit Warning Modal -->
+      <div id="editWarningModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1.5rem;">Edit Warning</h4>
+          <form method="POST" action="">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Warning Details</label>
+              <textarea name="details" class="form-control" rows="3" required></textarea>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Warning Level</label>
+              <select name="level" class="form-select" required>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3 (Suspension)</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Warning Modal -->
+      <div id="deleteWarningModal" class="modal-overlay">
+        <div class="modal">
+          <button type="button" class="btn-icon modal-close" style="position: absolute; top: 1rem; right: 1rem;"><i class="fas fa-times"></i></button>
+          <h4 style="margin-bottom: 1rem; color: var(--danger-500);">Delete Warning</h4>
+          <p style="margin-bottom: 1.5rem;">Are you sure you want to permanently delete this warning record?</p>
+          <form method="POST" action="">
+            <button type="submit" class="btn btn-danger" style="width: 100%;">Yes, Delete Warning</button>
+          </form>
+        </div>
       </div>
     </main>
   </div>
